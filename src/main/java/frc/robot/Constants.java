@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
 	public final static class TagAlignConstants {
@@ -13,7 +15,22 @@ public final class Constants {
 		public final static double kTagPIDkIomega = 0;
 		public final static double kTagPIDkDomega = 0;
 
-		public static final Pose2d[] kTargetPoses = new Pose2d[] {}; // Poses are in the same order as the enumerator.
+		public static final Pose2d[] kTargetPoses = new Pose2d[] {
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), //Amp
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), //SourceLeft
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), //etc.
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)) //StageCenterRight
+		}; // Poses are in the same order as the enumerator.
 		// TODO: populate poses
 
 		//TODO: tune all these parameters
@@ -30,8 +47,17 @@ public final class Constants {
 			SourceLeft,
 			SourceCenter,
 			SourceRight,
-			Speaker
-		}
+			Speaker,
+			StageLeftLeft, // The left side of the left stage
+			StageLeftCenter, // the center side of the left stage
+			StageLeftRight, // etc.
+			StageRightLeft,
+			StageRightCenter,
+			StageRightRight,
+			StageCenterLeft,
+			StageCenterCenter,
+			StageCenterRight // the right side of the center stage
+		} //stage left, stage right, and stage center are the locations written in the game manual pg. 28
 	}
 
 	public final static class DriveConstants {
