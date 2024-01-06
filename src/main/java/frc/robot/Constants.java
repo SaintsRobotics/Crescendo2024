@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 
 public final class Constants {
@@ -31,5 +32,10 @@ public final class Constants {
 			SourceRight,
 			Speaker
 		}
+	}
+
+	public final static class DriveConstants {
+		//TODO: init pose estimator with actual values
+		public static final SwerveDrivePoseEstimator kPoseEstimator = new SwerveDrivePoseEstimator(null, null, null, null);
 	}
 }
