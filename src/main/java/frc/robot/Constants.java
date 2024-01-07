@@ -4,14 +4,15 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public final class Constants {
 	public final static class TagAlignConstants {
-		public final static double kTagPIDkPxy = 0;
+		public final static double kTagPIDkPxy = 0; // xy PID constants
 		public final static double kTagPIDkIxy = 0;
 		public final static double kTagPIDkDxy = 0;
 
-		public final static double kTagPIDkPomega = 0;
+		public final static double kTagPIDkPomega = 0; // omega PID constants
 		public final static double kTagPIDkIomega = 0;
 		public final static double kTagPIDkDomega = 0;
 
@@ -58,6 +59,17 @@ public final class Constants {
 			StageCenterCenter,
 			StageCenterRight // the right side of the center stage
 		} //stage left, stage right, and stage center are the locations written in the game manual pg. 28
+
+		public static final double kFieldWidth = 651.25 * 0.0254; // Width of the field in meters
+
+		public static final NetworkTableInstance kNTInstance = NetworkTableInstance.create(); // Ideally all network table
+																																													// instances should be put in
+																																													// a wrapper and only the
+																																													// default instance should be
+																																													// used.
+		// TODO: write unit tests that write to NT limelight and verify PID output
+		// direction is correct. Needs to be implemented after drive since it uses pose
+		// estimator.
 	}
 
 	public final static class DriveConstants {
