@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorTimeBase;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,8 +19,8 @@ import frc.robot.Robot;
 
 /** Add your docs here. */
 public class SwerveModule {
-  private final CANSparkMax m_driveMotor;
-  private final CANSparkMax m_turningMotor;
+  private final CANSparkFlex m_driveMotor;
+  private final CANSparkFlex m_turningMotor;
 
   private final CANCoder m_turningEncoder;
 
@@ -48,8 +48,8 @@ public class SwerveModule {
       int turningEncoderPort,
       boolean driveMotorReversed,
       double turningEncoderOffset) {
-    m_driveMotor = new CANSparkMax(driveMotorPort, MotorType.kBrushless);
-    m_turningMotor = new CANSparkMax(turningMotorPort, MotorType.kBrushless);
+    m_driveMotor = new CANSparkFlex(driveMotorPort, MotorType.kBrushless);
+    m_turningMotor = new CANSparkFlex(turningMotorPort, MotorType.kBrushless);
     m_turningEncoder = new CANCoder(turningEncoderPort);
 
     // converts default units to meters per second
