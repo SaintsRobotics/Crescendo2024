@@ -100,20 +100,24 @@ public final class Constants {
 		public final static double kTagPIDkDomega = 0;
 
 		public static final Pose2d[] kTargetPoses = new Pose2d[] {
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), //Amp
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), //SourceLeft
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)), //etc.
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-				new Pose2d(new Translation2d(0, 0), new Rotation2d(0)) //StageCenterRight
+				new Pose2d(new Translation2d(585.75, 313), new Rotation2d(Math.toRadians(270))), //Amp //Change y based on length of robot using 28in long, Red side
+				
+				//Asumed that these are positions for a single source, so that you have 3 positions for the source on the left
+				//Left , center, right, all on same obj //TODO: Make sure these work with robot demensions/bumpers
+				new Pose2d(new Translation2d(590, 9), new Rotation2d(Math.toRadians(120))), //SourceLeft
+				new Pose2d(new Translation2d(631.125, 20.625), new Rotation2d(Math.toRadians(120))), //etc.
+				new Pose2d(new Translation2d(637, 34), new Rotation2d(Math.toRadians(120))),
+
+				new Pose2d(new Translation2d(598.125, 222.75), new Rotation2d(0)), //TODO: Check this (Red speaker)
+				new Pose2d(new Translation2d(464.5, 117.315), new Rotation2d(Math.toRadians(300))),
+				new Pose2d(new Translation2d(421.115, 161.62), new Rotation2d(Math.toRadians(180))),
+				new Pose2d(new Translation2d(459.75, 197.725), new Rotation2d(Math.toRadians(60))),
+				new Pose2d(new Translation2d(186.855, 195.662), new Rotation2d(Math.toRadians(120))),
+				new Pose2d(new Translation2d(182.245, 161.62), new Rotation2d(0)),
+				new Pose2d(new Translation2d(193.875, 123.75), new Rotation2d(Math.toRadians(240))),
+				new Pose2d(new Translation2d(78.375, 165), new Rotation2d(0)),
+				new Pose2d(new Translation2d(330, 165), new Rotation2d(0)), //Switch angle by 1pi if you want opposite rotation
+				new Pose2d(new Translation2d(585.75, 165), new Rotation2d(0)) //StageCenterRight
 		}; // Poses are in the same order as the enumerator.
 		// TODO: populate poses
 
