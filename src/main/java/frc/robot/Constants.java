@@ -72,7 +72,7 @@ public final class Constants {
     public static final double kDrivingGearRatio = 8.14; // SDS MK4i's in L1 configuration
 
     // TODO: Tune this PID before running on a robot on the ground
-    public static final double kPModuleTurningController = -0.3;
+    public static final double kPModuleTurningController = 0.3;
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
