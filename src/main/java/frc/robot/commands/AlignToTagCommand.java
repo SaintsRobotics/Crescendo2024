@@ -6,16 +6,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TagAlignConstants;
 import frc.robot.Constants.TagAlignConstants.AlignPosition;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class AlignToTagCommand extends CommandBase {
+public class AlignToTagCommand extends Command {
 
 	final DriveSubsystem m_subsystem;
 	final Pose2d m_target; // Desired pose
@@ -40,7 +37,7 @@ public class AlignToTagCommand extends CommandBase {
 		// (and faster). Indexing can be done by adding a constant to the ordinal when
 		// indexing the array. This will allows accessing the blue positions which
 		// should be put in the array after the red ones.
-		m_target = DriverStation.getAlliance().compareTo(Alliance.Red) == 0 ? redTarget
+		m_target = DriverStation.getAlliance().get().compareTo(Alliance.Red) == 0 ? redTarget
 				: new Pose2d(new Translation2d( // Flip poses of alliance is blue
 						TagAlignConstants.kFieldWidth - redTarget.getX(),
 						redTarget.getY()),
