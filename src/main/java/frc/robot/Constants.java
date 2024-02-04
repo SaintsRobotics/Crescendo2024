@@ -4,8 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -24,7 +29,7 @@ public final class Constants {
   /**
    * Input/Output constants
    */
-  public static class IOConstants {
+  public static final class IOConstants {
     public static final int kDriverControllerPort = 0;
 
     public static final double kControllerDeadband = 0.2;
@@ -72,7 +77,7 @@ public final class Constants {
     public static final double kDrivingGearRatio = 8.14; // SDS MK4i's in L1 configuration
 
     // TODO: Tune this PID before running on a robot on the ground
-    public static final double kPModuleTurningController = 0.3;
+    public static final double kPModuleTurningController = -0.3;
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -90,4 +95,25 @@ public final class Constants {
     // TODO: Tune this PID before running on a robot on the ground
     public static final double kPHeadingCorrectionController = 5;
   }
+
+  public static final class VisionConstants {
+    // TODO: Update cam pose relative to center of bot
+    public static final Pose3d kCamPose = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
+    public static final double[] kLimelightCamPose = {
+        kCamPose.getX(),
+        kCamPose.getY(),
+        kCamPose.getZ(),
+        kCamPose.getRotation().getX(),
+        kCamPose.getRotation().getY(),
+        kCamPose.getRotation().getZ() };
+
+    // TODO: Experiment with different std devs in the pose estimator
+    public static final Vector<N3> kOdometrySTDDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+    public static final Vector<N3> kVisionSTDDevs = VecBuilder.fill(0.9, 0.9, 0.9);
+
+    // Field size in meters
+    public static final double kFieldWidth = 8.21055;
+    public static final double kFieldLength = 16.54175;
+  }
+
 }
