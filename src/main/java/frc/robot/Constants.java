@@ -65,16 +65,17 @@ public final class Constants {
     public static final boolean kRearRightDriveMotorReversed = true;
 
     /** Distance between centers of right and left wheels on robot (in meters). */
-    public static final double kTrackWidth = 0.5;
+    public static final double kTrackWidth = 0.57785;
 
     /** Distance between front and back wheels on robot (in meters). */
-    public static final double kWheelBase = 0.5;
+    public static final double kWheelBase = 0.57785;
 
     /** Diameter of each wheel in the SDS MK4i swerve module (in meters) */
     public static final double kWheelDiameterMeters = 0.1;
 
     /** Gear ratio between the motor and the wheel. */
-    public static final double kDrivingGearRatio = 8.14; // SDS MK4i's in L1 configuration
+    public static final double kDrivingGearRatio = 8.14; // SDS MK4i's in L1 Configuration
+    // public static final double kDrivingGearRatio = 6.75; // SDS MK4i's in L2 configuration
 
     // TODO: Tune this PID before running on a robot on the ground
     public static final double kPModuleTurningController = -0.3;
@@ -85,10 +86,11 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
-    /** For a a SDS Mk4i L1 swerve base with Neos */
-    public static final double kMaxSpeedMetersPerSecond = 3.6576;
-    /** For a a SDS Mk4i L1 swerve base with Neos */
-    public static final double kMaxAngularSpeedRadiansPerSecond = 15.24 / 3;
+    /** For a a SDS Mk4i L1 swerve base with Neo Vortexes */
+    public static final double kMaxSpeedMetersPerSecond = 4.4196;
+    /** For a a SDS Mk4i L1 swerve base with Neo Vortexes */
+    public static final double kMaxAngularSpeedRadiansPerSecond = 10.8164;
+    // ^^ Calculated using the method taken from the old SDS github example
 
     /** Heading Correction */
     public static final double kHeadingCorrectionTurningStopTime = 0.2;
