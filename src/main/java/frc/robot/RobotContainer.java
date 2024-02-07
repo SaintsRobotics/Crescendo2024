@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -25,6 +26,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
 
@@ -72,6 +74,14 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(m_driverController, Button.kStart.value)
         .onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+
+    // TODO: Move shoot commands to operator controller
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
+        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
+        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
   }
 
   /**

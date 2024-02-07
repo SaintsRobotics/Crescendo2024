@@ -112,7 +112,7 @@ public class SwerveModule {
    * @param encoder The encoder to get the absolute angle of.
    * @return A Rotation2d of the absolute angle.
    */
-  public Rotation2d getEncoderAngle(CANcoder encoder) {
+  public static Rotation2d getEncoderAngle(CANcoder encoder) {
     return new Rotation2d(encoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI);
   }
 }
