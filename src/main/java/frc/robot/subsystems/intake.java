@@ -4,15 +4,59 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalSource;
+import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.math.controller.PIDController;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class intake extends SubsystemBase {
-  /** Creates a new intake. */
-  public intake() {}
+public class Intake extends SubsystemBase {
+  //TODO: add constants
+  CANSparkFlex intakeMotor = new CANSparkFlex(0, MotorType.kBrushless);
+  CANSparkFlex armMotor = new CANSparkFlex(0, MotorType.kBrushless);
+  
 
-  void load(int speed){
+  PIDController intakeVeloPID = new PIDController(0,0,0);
+  PIDController armPID = new PIDController(0,0,0);
+  DutyCycleEncoder armEncoder = new DutyCycleEncoder(0);
+  
+
+
+
+
+  /** Creates a new intake. */
+  public Intake() {
+    
+  }
+
+  void load(double speed){
+    intakeMotor.set(speed);
     //TODO: Implement load/unload through speed (which is a trigger)
   }
+    /**
+  *@param angle in radians
+  *@everyone join vc we are playing gartic phone
+  */
+
+  public void tiltToAngle(double angle) {
+    double motorPower = armPID.calculate(armEncoder.getAbsolutePosition(), angle);
+    armMotor.set(motorPower);
+  }
+
 
   @Override
   public void periodic() {
