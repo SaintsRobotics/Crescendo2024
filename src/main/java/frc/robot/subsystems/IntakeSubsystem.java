@@ -24,7 +24,7 @@ import edu.wpi.first.math.controller.PIDController;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Intake extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
   //TODO: add constants
   CANSparkFlex intakeMotor = new CANSparkFlex(0, MotorType.kBrushless);
   CANSparkFlex armMotor = new CANSparkFlex(0, MotorType.kBrushless);
@@ -39,15 +39,22 @@ public class Intake extends SubsystemBase {
 
 
   /** Creates a new intake. */
-  public Intake() {
+  public IntakeSubsystem() {
     
   }
-
-  void load(double speed){
+    /**
+     * 
+     * @param speed motor power to apply to intake
+  *@param angle in radians
+  *
+  */
+  public void load(double speed, double angle){
     intakeMotor.set(speed);
-    //TODO: Implement load/unload through speed (which is a trigger)
+    tiltToAngle(angle);
+
   }
     /**
+     * 
   *@param angle in radians
   *@everyone join vc we are playing gartic phone
   */
@@ -56,6 +63,7 @@ public class Intake extends SubsystemBase {
     double motorPower = armPID.calculate(armEncoder.getAbsolutePosition(), angle);
     armMotor.set(motorPower);
   }
+  
 
 
   @Override
