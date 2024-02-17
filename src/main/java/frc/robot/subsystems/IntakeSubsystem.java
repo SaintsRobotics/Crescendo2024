@@ -11,21 +11,17 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 
+//creates new motors and pid controllers lmao
 public class IntakeSubsystem extends SubsystemBase {
-  //TODO: add constants
-  CANSparkFlex intakeMotor = new CANSparkFlex(0, MotorType.kBrushless);
-  CANSparkFlex armMotor = new CANSparkFlex(0, MotorType.kBrushless);
+  CANSparkFlex intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
+  CANSparkFlex armMotor = new CANSparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
   
-
-  PIDController intakeVeloPID = new PIDController(0,0,0);
-  PIDController armPID = new PIDController(0,0,0);
-  DutyCycleEncoder armEncoder = new DutyCycleEncoder(0);
+  PIDController intakeVeloPID = new PIDController(IntakeConstants.kIntakeP,IntakeConstants.kIntakeI,IntakeConstants.kIntakeD);
+  PIDController armPID = new PIDController(IntakeConstants.kArmP,IntakeConstants.kArmI,IntakeConstants.kArmD);
+  DutyCycleEncoder armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderCh);
   
-
-
-
-
   /** Creates a new intake. */
   public IntakeSubsystem() {
     
@@ -41,19 +37,17 @@ public class IntakeSubsystem extends SubsystemBase {
     tiltToAngle(angle);
 
   }
-    /**
-     * 
-  *@param angle in radians
-  *@everyone join vc we are playing gartic phone
-  */
 
+  /**
+   * 
+   * @param angle motor to apply to intake
+   * 
+   */
   public void tiltToAngle(double angle) {
     double motorPower = armPID.calculate(armEncoder.getAbsolutePosition(), angle);
     armMotor.set(motorPower);
   }
   
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

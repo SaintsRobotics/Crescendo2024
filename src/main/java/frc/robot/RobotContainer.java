@@ -10,10 +10,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
+  //The robots subsystems are defined here
   public final ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
   public final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
   private boolean IntakeDropped = false;
@@ -22,9 +25,13 @@ public class RobotContainer {
   private XboxController controller = new XboxController(0);
   public RobotContainer() {
     configureBindings();
-    m_IntakeSubsystem.setDefaultCommand(new InstantCommand(()-> m_IntakeSubsystem.load(controller.getRightTriggerAxis()-controller.getLeftTriggerAxis(),IntakeDropped ? IntakeConstants.IntakeDroppedAngle : IntakeConstants.IntakeRaisedAngle),m_IntakeSubsystem));
+    m_IntakeSubsystem.setDefaultCommand(new InstantCommand(()-> m_IntakeSubsystem.load(controller.getRightTriggerAxis()-controller.getLeftTriggerAxis(),IntakeDropped ? IntakeConstants.kIntakeDroppedAngle : IntakeConstants.kIntakeRaisedAngle),m_IntakeSubsystem));
   }
 
+
+  /**
+   * checks for intake button on controller every tick
+   */
   public void periodic(){
     if(controller.getAButton()){
       lastAButton = true;
@@ -36,13 +43,16 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Use this method to define your button->command mappings.
+   */
   private void configureBindings() {
     new JoystickButton(controller, Button.kB.value)
-      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(0.75), m_ShooterSubsystem))
-      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(0), m_ShooterSubsystem));
+      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(ShooterConstants.kSpinSpeedTrue), m_ShooterSubsystem))
+      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(ShooterConstants.kSpinSpeedFalse), m_ShooterSubsystem));
     new JoystickButton(controller, Button.kA.value)
-      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(-0.75), m_ShooterSubsystem))
-      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(0), m_ShooterSubsystem));
+      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(-ShooterConstants.kSpinSpeedTrue), m_ShooterSubsystem))
+      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(ShooterConstants.kSpinSpeedFalse), m_ShooterSubsystem));
   }
 
   public Command getAutonomousCommand() {
