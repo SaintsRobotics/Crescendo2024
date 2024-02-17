@@ -20,12 +20,6 @@ public class ShooterSubsystem extends SubsystemBase {
     m_bottom.set(speed);
     m_top.set(speed);
   }
-
-  
-
-
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
