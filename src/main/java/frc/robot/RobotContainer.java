@@ -4,34 +4,37 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
+/*
+ * This class is where the bulk of the robot should be declared.  Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
+ * (including subsystems, commands, and button mappings) should be declared here.
+ */
 public class RobotContainer {
-  //The robots subsystems are defined here
-  public final ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
-  public final IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
+  public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private boolean IntakeDropped = false;
   private boolean lastAButton = false;
 
   private XboxController controller = new XboxController(0);
   public RobotContainer() {
+    // Configure the trigger bindings
     configureBindings();
-    m_IntakeSubsystem.setDefaultCommand(new InstantCommand(()-> m_IntakeSubsystem.load(controller.getRightTriggerAxis()-controller.getLeftTriggerAxis(),IntakeDropped ? IntakeConstants.kIntakeDroppedAngle : IntakeConstants.kIntakeRaisedAngle),m_IntakeSubsystem));
+    m_intakeSubsystem.setDefaultCommand(new InstantCommand(()-> m_IntakeSubsystem.load(controller.getRightTriggerAxis()-controller.getLeftTriggerAxis(),IntakeDropped ? IntakeConstants.IntakeDroppedAngle : IntakeConstants.IntakeRaisedAngle),m_IntakeSubsystem));
   }
 
-
-  /**
-   * checks for intake button on controller every tick
-   */
   public void periodic(){
     if(controller.getAButton()){
       lastAButton = true;
@@ -43,18 +46,20 @@ public class RobotContainer {
     }
   }
 
-  /**
-   * Use this method to define your button->command mappings.
-   */
   private void configureBindings() {
     new JoystickButton(controller, Button.kB.value)
-      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(ShooterConstants.kSpinSpeedTrue), m_ShooterSubsystem))
-      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(ShooterConstants.kSpinSpeedFalse), m_ShooterSubsystem));
+      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(0.75), m_ShooterSubsystem))
+      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(0), m_ShooterSubsystem));
     new JoystickButton(controller, Button.kA.value)
-      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(-ShooterConstants.kSpinSpeedTrue), m_ShooterSubsystem))
-      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(ShooterConstants.kSpinSpeedFalse), m_ShooterSubsystem));
+      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(-0.75), m_ShooterSubsystem))
+      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(0), m_ShooterSubsystem));
   }
 
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
