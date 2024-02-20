@@ -115,7 +115,7 @@ public final class Constants {
         kCamPose.getRotation().getZ() };
 
     // TODO: Experiment with different std devs in the pose estimator
-    public static final Vector<N3> kOdometrySTDDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+    public static final Vector<N3> kOdometrySTDDevs = VecBuilder.fill(0.1, 0.1, 0.01);
     public static final Vector<N3> kVisionSTDDevs = VecBuilder.fill(0.9, 0.9, 0.9);
 
     // Field size in meters
