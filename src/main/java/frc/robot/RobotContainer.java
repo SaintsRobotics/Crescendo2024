@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -29,30 +30,33 @@ public class RobotContainer {
   private boolean lastAButton = false;
 
   private XboxController controller = new XboxController(0);
+
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    m_intakeSubsystem.setDefaultCommand(new InstantCommand(()-> m_IntakeSubsystem.load(controller.getRightTriggerAxis()-controller.getLeftTriggerAxis(),IntakeDropped ? IntakeConstants.IntakeDroppedAngle : IntakeConstants.IntakeRaisedAngle),m_IntakeSubsystem));
+    m_intakeSubsystem.setDefaultCommand(new InstantCommand(
+        () -> m_intakeSubsystem.load(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis(),
+            IntakeDropped ? IntakeConstants.IntakeDroppedAngle : IntakeConstants.IntakeRaisedAngle),
+        m_intakeSubsystem));
   }
 
-  public void periodic(){
-    if(controller.getAButton()){
+  public void periodic() {
+    if (controller.getAButton()) {
       lastAButton = true;
       if (!lastAButton)
         IntakeDropped = !IntakeDropped;
-    }
-    else {
+    } else {
       lastAButton = false;
     }
   }
 
   private void configureBindings() {
     new JoystickButton(controller, Button.kB.value)
-      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(0.75), m_ShooterSubsystem))
-      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(0), m_ShooterSubsystem));
+        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
+        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
     new JoystickButton(controller, Button.kA.value)
-      .onTrue(new InstantCommand(() -> m_ShooterSubsystem.spin(-0.75), m_ShooterSubsystem))
-      .onFalse(new InstantCommand(() -> m_ShooterSubsystem.spin(0), m_ShooterSubsystem));
+        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
+        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
   }
 
   /**
