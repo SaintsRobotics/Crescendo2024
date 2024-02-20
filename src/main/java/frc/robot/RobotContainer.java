@@ -29,19 +29,18 @@ public class RobotContainer {
   private boolean IntakeDropped = false;
   private boolean lastAButton = false;
 
-  private XboxController controller = new XboxController(0);
+  private XboxController m_controller = new XboxController(0);
 
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    m_intakeSubsystem.setDefaultCommand(new InstantCommand(
-        () -> m_intakeSubsystem.load(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis(),
-            IntakeDropped ? IntakeConstants.IntakeDroppedAngle : IntakeConstants.IntakeRaisedAngle),
-        m_intakeSubsystem));
+    m_intakeSubsystem.setDefaultCommand(m_controller.getLeftTriggerAxis() > 0.5
+        ? new InstantCommand(m_intakeSubsystem::intakeDisk, m_intakeSubsystem)
+        : new InstantCommand(m_intakeSubsystem::stopIntaking, m_intakeSubsystem));
   }
 
   public void periodic() {
-    if (controller.getAButton()) {
+    if (m_controller.getAButton()) {
       lastAButton = true;
       if (!lastAButton)
         IntakeDropped = !IntakeDropped;
@@ -51,10 +50,16 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(controller, Button.kB.value)
+    new JoystickButton(m_controller, Button.kY.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.tiltToAngle(IntakeConstants.kIntakeLoweredAngle), m_intakeSubsystem))
+        .onFalse(new InstantCommand(m_intakeSubsystem::stopRotating, m_intakeSubsystem));
+    new JoystickButton(m_controller, Button.kX.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.tiltToAngle(IntakeConstants.kIntakeRaisedAngle), m_intakeSubsystem))
+        .onFalse(new InstantCommand(m_intakeSubsystem::stopRotating, m_intakeSubsystem));
+    new JoystickButton(m_controller, Button.kB.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
-    new JoystickButton(controller, Button.kA.value)
+    new JoystickButton(m_controller, Button.kA.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
   }

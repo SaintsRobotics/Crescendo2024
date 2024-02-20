@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -17,25 +17,25 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   CANSparkFlex intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
   CANSparkFlex armMotor = new CANSparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
-  
-  PIDController intakeVeloPID = new PIDController(IntakeConstants.kIntakeP,IntakeConstants.kIntakeI,IntakeConstants.kIntakeD);
-  PIDController armPID = new PIDController(IntakeConstants.kArmP,IntakeConstants.kArmI,IntakeConstants.kArmD);
+
+  PIDController intakeVeloPID = new PIDController(IntakeConstants.kIntakeP, IntakeConstants.kIntakeI,
+      IntakeConstants.kIntakeD);
+  PIDController armPID = new PIDController(IntakeConstants.kArmP, IntakeConstants.kArmI, IntakeConstants.kArmD);
   DutyCycleEncoder armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderCh);
-  
+
   /** Creates a new intake. */
   public IntakeSubsystem() {
-    
-  }
-    /**
-     * 
-     * @param speed motor power to apply to intake
-  *@param angle in radians
-  *
-  */
-  public void load(double speed, double angle){
-    intakeMotor.set(speed);
-    tiltToAngle(angle);
 
+  }
+
+  // Starts intaking the disk
+  public void intakeDisk() {
+    intakeMotor.set(IntakeConstants.kIntakeSpeed);
+  }
+
+  //
+  public void stopIntaking() {
+    intakeMotor.set(0);
   }
 
   /**
@@ -47,7 +47,10 @@ public class IntakeSubsystem extends SubsystemBase {
     double motorPower = armPID.calculate(armEncoder.getAbsolutePosition(), angle);
     armMotor.set(motorPower);
   }
-  
+  public void stopRotating(){
+    
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
