@@ -123,8 +123,10 @@ public final class Constants {
 
     }
     public static class ClimberConstants {
-        public final static int climberForwardChannel = 0;
-        public final static int climberReverseChannel = 1;
+        public final static int leftForwardChannel = 0;
+        public final static int rightForwardChannel = 0;
+        public final static int leftReverseChannel = 1;
+        public final static int rightReverseChannel = 1;
     
         public final static double minPressure = 50.0;
         public final static double maxPressure = 120.0;
