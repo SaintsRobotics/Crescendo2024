@@ -85,7 +85,9 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
     new JoystickButton(m_operatorController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.toggle(), m_shooterSubsystem));
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_shooterSubsystem));
+    new JoystickButton(m_operatorController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_shooterSubsystem));
   }
 
   /**

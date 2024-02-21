@@ -9,13 +9,14 @@ import frc.robot.Constants.ClimberConstants;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kOff;
 
 public class ClimberSubsystem {
-    // All
+
     private final DoubleSolenoid m_leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, ClimberConstants.leftForwardChannel, ClimberConstants.leftReverseChannel);
     private final DoubleSolenoid m_rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, ClimberConstants.rightForwardChannel, ClimberConstants.rightReverseChannel);
+    
     private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
+    
     private boolean enableCompressor = true;
     
-    //
     public ClimberSubsystem(){
         m_leftSolenoid.set(kOff);
         m_rightSolenoid.set(kOff);
