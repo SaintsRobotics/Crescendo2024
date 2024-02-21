@@ -100,18 +100,15 @@ public final class Constants {
 
     // Intake PID and Encoder Constants
     public static class IntakeConstants {
+        //TODO: figure out constants
+        //public static final boolean kPivotMotorInverted = true;
         public static final double kIntakeLoweredAngle = 9.0;
-        public static final double kIntakeRaisedAngle = 9.0;
+        public static final double kIntakeRaisedAngle = 60.0;
         public static final int kIntakeMotorID = 0;
+        public static final double kIntakeMotorSpeed = -3.0;
         public static final int kArmMotorID = 0;
-        public static final double kIntakeP = 0;
-        public static final double kIntakeI = 0;
-        public static final double kIntakeD = 0;
-        public static final double kArmP = 0;
-        public static final double kArmI = 0;
-        public static final double kArmD = 0;
         public static final int kArmEncoderCh = 0;
-        public static double kIntakeSpeed;
+        public static double kIntakeSpeed = 3.0;
     }
 
     // Shooter subsystem speed constants
