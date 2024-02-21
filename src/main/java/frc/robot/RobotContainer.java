@@ -34,7 +34,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
 
   /**
@@ -97,6 +98,14 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kA.value).whileTrue(
     //     AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new PathConstraints(
     //         DriveConstants.kMaxSpeedMetersPerSecond - 1, 5, DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
+
+    // TODO: Move shoot commands to operator controller
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
+        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
+        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
   }
 
   /**
