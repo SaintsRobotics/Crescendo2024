@@ -48,15 +48,10 @@ public final class Constants {
     public static final int kFrontRightTurningMotorPort = 37;
     public static final int kRearRightTurningMotorPort = 26;
 
-    public static final int kFrontLeftTurningEncoderPort = 19;
-    public static final int kRearLeftTurningEncoderPort = 20;
-    public static final int kFrontRightTurningEncoderPort = 18;
-    public static final int kRearRightTurningEncoderPort = 17;
-
-    public static final double kFrontLeftTurningEncoderOffset = 0;
-    public static final double kRearLeftTurningEncoderOffset = 0;
-    public static final double kFrontRightTurningEncoderOffset = 0;
-    public static final double kRearRightTurningEncoderOffset = 0;
+    public static final int kFrontLeftTurningEncoderPort = 5;
+    public static final int kRearLeftTurningEncoderPort = 6;
+    public static final int kFrontRightTurningEncoderPort = 3;
+    public static final int kRearRightTurningEncoderPort = 4;
 
     // TODO: Test motor orientations before driving on an actual robot
     public static final boolean kFrontLeftDriveMotorReversed = false;
@@ -78,7 +73,7 @@ public final class Constants {
     // public static final double kDrivingGearRatio = 6.75; // SDS MK4i's in L2 configuration
 
     // TODO: Tune this PID before running on a robot on the ground
-    public static final double kPModuleTurningController = -0.3;
+    public static final double kPModuleTurningController = 0.3;
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),

@@ -92,7 +92,7 @@ public class SwerveModule {
     m_state = SwerveModuleState.optimize(desiredState, getTurnEncoderAngle());
     driveOutput = m_state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
 
-    turnOutput = -m_turningPIDController.calculate(getTurnEncoderAngle().getRadians(),
+    turnOutput = m_turningPIDController.calculate(getTurnEncoderAngle().getRadians(),
         m_state.angle.getRadians());
 
     m_driveMotor.set(driveOutput);
@@ -108,6 +108,6 @@ public class SwerveModule {
    * @return A Rotation2d of the absolute angle.
    */
   public Rotation2d getTurnEncoderAngle() {
-    return new Rotation2d(-m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI);
+    return new Rotation2d(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI);
   }
 }
