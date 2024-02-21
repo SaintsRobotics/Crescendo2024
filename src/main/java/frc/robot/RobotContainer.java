@@ -12,11 +12,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /*
@@ -26,22 +24,18 @@ import frc.robot.subsystems.ShooterSubsystem;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  
+  // The robot's subsystems and commands are defined here
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-
-  private boolean IntakeDropped = false;
-  private boolean lastAButton = false;
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
 
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    m_intakeSubsystem.setDefaultCommand(m_driverController.getLeftTriggerAxis() > 0.5
-        ? new InstantCommand(m_intakeSubsystem::intakeDisk, m_intakeSubsystem)
-        : new InstantCommand(m_intakeSubsystem::stopIntaking, m_intakeSubsystem));
 
     m_robotDrive.setDefaultCommand(
         new RunCommand(
@@ -72,32 +66,16 @@ public class RobotContainer {
                     / 2,
                 !m_driverController.getRightBumper()),
             m_robotDrive));
-
-  }
-
-  public void periodic() {
-    if (m_driverController.getAButton()) {
-      lastAButton = true;
-      if (!lastAButton)
-        IntakeDropped = !IntakeDropped;
-    } else {
-      lastAButton = false;
-    }
   }
 
   /**
    * Use this method to define your button->command mappings.
    */
   private void configureBindings() {
+    new JoystickButton(m_driverController, Button.kStart.value)
+        .onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+
     // TODO: Move shoot commands to operator controller
-    new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new InstantCommand(() -> m_intakeSubsystem.tiltToAngle(IntakeConstants.kIntakeLoweredAngle),
-            m_intakeSubsystem))
-        .onFalse(new InstantCommand(m_intakeSubsystem::stopRotating, m_intakeSubsystem));
-    new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(new InstantCommand(() -> m_intakeSubsystem.tiltToAngle(IntakeConstants.kIntakeRaisedAngle),
-            m_intakeSubsystem))
-        .onFalse(new InstantCommand(m_intakeSubsystem::stopRotating, m_intakeSubsystem));
     new JoystickButton(m_driverController, Button.kB.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
