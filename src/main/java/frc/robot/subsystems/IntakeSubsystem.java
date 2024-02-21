@@ -9,19 +9,20 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.IntakeConstants;
 
-//creates new motors and pid controllers lmao
-public class IntakeSubsystem extends SubsystemBase {
-  CANSparkFlex intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
-  CANSparkFlex armMotor = new CANSparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
 
-  PIDController intakeVeloPID = new PIDController(IntakeConstants.kIntakeP, IntakeConstants.kIntakeI,
+public class IntakeSubsystem extends SubsystemBase {
+  CANSparkFlex m_intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
+  CANSparkFlex m_armMotor = new CANSparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
+
+  PIDController m_intakeVeloPID = new PIDController(IntakeConstants.kIntakeP, IntakeConstants.kIntakeI,
       IntakeConstants.kIntakeD);
-  PIDController armPID = new PIDController(IntakeConstants.kArmP, IntakeConstants.kArmI, IntakeConstants.kArmD);
-  DutyCycleEncoder armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderCh);
+  PIDController m_armPID = new PIDController(IntakeConstants.kArmP, IntakeConstants.kArmI, IntakeConstants.kArmD);
+
+  DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderCh);
 
   /** Creates a new intake. */
   public IntakeSubsystem() {
@@ -30,29 +31,32 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Starts intaking the disk
   public void intakeDisk() {
-    intakeMotor.set(IntakeConstants.kIntakeSpeed);
+    m_intakeMotor.set(IntakeConstants.kIntakeSpeed);
   }
 
-  //
+  //Stops rotating the intake
   public void stopIntaking() {
-    intakeMotor.set(0);
+    m_intakeMotor.set(0);
   }
 
   /**
-   * 
+   * Rotates the arm to a given angle
    * @param angle motor to apply to intake
    * 
    */
   public void tiltToAngle(double angle) {
-    double motorPower = armPID.calculate(armEncoder.getAbsolutePosition(), angle);
-    armMotor.set(motorPower);
+    m_armMotor.set(m_armPID.calculate(m_armEncoder.getAbsolutePosition(), angle));
   }
+
+  //Stops rotating the arm
   public void stopRotating(){
-    
+    m_armMotor.set(0);
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("Intake",m_intakeMotor.get()>0);
+
     // This method will be called once per scheduler run
   }
 }
