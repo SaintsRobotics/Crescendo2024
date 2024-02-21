@@ -15,10 +15,12 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
@@ -50,8 +52,8 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTable m_visionNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
 
   private final DoubleArraySubscriber m_botPose;
-  private final DoubleSubscriber m_cl;
-  private final DoubleSubscriber m_tl;
+
+  private final IntegerSubscriber m_tv;
 
   /** Creates a new Limelight. */
   public VisionSubsystem() {
@@ -61,13 +63,14 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Create subscribers to get values from the limelight
     m_botPose = m_visionNetworkTable.getDoubleArrayTopic("botpose_wpiblue").subscribe(null);
-    m_cl = m_visionNetworkTable.getDoubleTopic("cl").subscribe(0);
-    m_tl = m_visionNetworkTable.getDoubleTopic("tl").subscribe(0);
+    m_tv = m_visionNetworkTable.getIntegerTopic("tv").subscribe(0);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putBoolean("Limelight Has Target", m_tv.get() == 1);
   }
 
   public Optional<Measurement> getMeasurement() {
@@ -81,8 +84,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     TimestampedDoubleArray update = updates[updates.length - 1];
 
-    // If the latest update is empty then return nothing
-    if (Arrays.equals(update.value, new double[6])) {
+    // If the latest update is empty or we don't see an april tag then return
+    // nothing
+    if (Arrays.equals(update.value, new double[6]) || m_tv.get() == 0) {
       return Optional.empty();
     }
 
@@ -93,20 +97,8 @@ public class VisionSubsystem extends SubsystemBase {
     double pitch = Units.degreesToRadians(update.value[4]);
     double yaw = Units.degreesToRadians(update.value[5]);
 
-    double latency = m_cl.get() + m_tl.get();
-
-    double timestamp = (update.timestamp * 1e-6) - (latency * 1e-3);
+    double timestamp = Timer.getFPGATimestamp() - (update.value[6] / 1000.0);
     Pose3d pose = new Pose3d(new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw));
-
-    /*
-     * The limelight returns 3D field poses where (0, 0, 0) is located at the center
-     * of the field
-     * 
-     * So to input this pose into our pose estimator we need to tranform so that (0,
-     * 0, 0) is the right corner of the blue driver stations
-     */
-    // TODO: Check if we actually need to do this...
-    // pose.transformBy(new Transform3d(new Translation3d(VisionConstants.kFieldLength, VisionConstants.kFieldWidth, 0.0), new Rotation3d()));
 
     return Optional.of(new Measurement(
         timestamp,
