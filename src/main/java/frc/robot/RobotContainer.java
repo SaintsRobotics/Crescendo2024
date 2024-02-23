@@ -38,9 +38,10 @@ public class RobotContainer {
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
+  private final XboxController m_operatorController = new XboxController(IOConstants.kDriverControllerPort);
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * The container for the robot. Contains subsystems, IO devices, and commands.
    */
   public RobotContainer() {
 
@@ -50,8 +51,8 @@ public class RobotContainer {
         new HolonomicPathFollowerConfig(
             new PIDConstants(5, 0.0, 0.0), // Translation PID constants
             new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
-            4.5, // Max module speed, in m/s
-            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            DriveConstants.kMaxSpeedMetersPerSecond, // Max module speed, in m/s
+            Math.hypot(DriveConstants.kTrackWidth, DriveConstants.kWheelBase), // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig(true, true)),
         () -> false, m_robotDrive);
 
@@ -67,16 +68,16 @@ public class RobotContainer {
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
                         .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar)
-                    * 0.8,
+                        * IOConstants.kSlowModeScalar),
+                    // * 0.8,
                 MathUtil.applyDeadband(
                     -m_driverController.getLeftX(),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
                         .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar)
-                    * 0.8,
+                        * IOConstants.kSlowModeScalar),
+                    // * 0.8,
                 MathUtil.applyDeadband(
                     -m_driverController.getRightX(),
                     IOConstants.kControllerDeadband)
@@ -100,11 +101,10 @@ public class RobotContainer {
     //     AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new PathConstraints(
     //         DriveConstants.kMaxSpeedMetersPerSecond - 1, 5, DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
-    // TODO: Move shoot commands to operator controller
-    new JoystickButton(m_driverController, Button.kX.value)
+    new JoystickButton(m_operatorController, Button.kX.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
-    new JoystickButton(m_driverController, Button.kY.value)
+    new JoystickButton(m_operatorController, Button.kY.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
   }
