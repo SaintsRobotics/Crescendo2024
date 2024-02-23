@@ -6,7 +6,10 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants.ClimberConstants;
+
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kOff;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
 public class ClimberSubsystem {
 
@@ -43,8 +46,8 @@ public class ClimberSubsystem {
      * Extends both arms
      */
     public void forward() {
-        m_leftSolenoid.set(kOff);
-        m_rightSolenoid.set(kOff);
+        m_leftSolenoid.set(kForward);
+        m_rightSolenoid.set(kForward);
     }
 
     //TODO:fix doc
@@ -52,16 +55,16 @@ public class ClimberSubsystem {
      * Retracts the arm
      */
     public void reverse() {
-        m_leftSolenoid.set(kOff);
-        m_rightSolenoid.set(kOff);
+        m_leftSolenoid.set(kReverse);
+        m_rightSolenoid.set(kReverse);
     }
     /*
      * Toggles the state of the climber
      */
 
     public void toggle() {
-        m_leftSolenoid.set(kOff);
-        m_rightSolenoid.set(kOff);
+        m_leftSolenoid.toggle();;
+        m_rightSolenoid.toggle();;
     }
 
     //Toggles the state of the compressor (on/off)
