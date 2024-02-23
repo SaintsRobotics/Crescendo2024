@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.IntakeCommand;
@@ -112,8 +113,9 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
 
-    new JoystickButton(m_driverController, Button.kX.value)
-        .whileTrue(new IntakeCommand(m_intakeSubsystem));
+    new Trigger(() -> {
+      return m_driverController.getRightTriggerAxis() > 0.5;
+    }).whileTrue(new IntakeCommand(m_intakeSubsystem));
   }
 
   /**
@@ -133,9 +135,5 @@ public class RobotContainer {
 
     // return AutoBuilder.followPath(autonPath);
     return null;
-
-    // PathPlannerAuto pathPlannerAuto = new PathPlannerAuto("New Auto");
-
-    // return pathPlannerAuto;
   }
 }

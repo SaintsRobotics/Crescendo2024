@@ -4,67 +4,80 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.revrobotics.CANSparkFlex;
-import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.Rev2mDistanceSensor.Port;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  boolean deployed = true;
+  private boolean deployed = false;
+  private boolean haveNote = false;
 
-  private double m_pivotSpeed = 0;
+  private CANSparkFlex m_intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
+  private CANSparkFlex m_armMotor = new CANSparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
+
+  private PIDController m_armPID = new PIDController(0.5, 0, 0);
+
+  private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
+
+  private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard); // onboard I2C port;
+
   private double m_intakeSpeed = 0;
 
-  CANSparkFlex m_topFeeder = new CANSparkFlex(0, MotorType.kBrushless);
-  CANSparkFlex m_bottomFeeder = new CANSparkFlex(0, MotorType.kBrushless);
-  CANSparkFlex m_pivotMotor = new CANSparkFlex(0, MotorType.kBrushless);
-
-  PIDController m_pivotPID = new PIDController(0.5, 0, 0);
-
-  DutyCycleEncoder m_pivotEncoder = new DutyCycleEncoder(0);
-
-  Rev2mDistanceSensor m_distanceSensor;
-
-  /** Creates a new intake. */
+  /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
-    //m_pivotMotor.setInverted(Constants.IntakeConstants.kPivotMotorInverted);
+    // m_armMotor.setInverted(IntakeConstants.kArmMotorInverted);
+    // m_intakeMotor.setInverted(IntakeConstants.kIntakeMotorInverted);
 
-    // TODO: honestly no idea waht to set
-    //m_pivotEncoder.configMagnetOffset(Constants.IntakeConstants.kPivotEncoderOffset);
-    //m_pivotEncoder.configAbsoluteSensorRange();
+    m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
+    m_armEncoder.setDistancePerRotation(2 * Math.PI);
 
-    m_topFeeder.setIdleMode(IdleMode.kBrake);
-    m_bottomFeeder.setIdleMode(IdleMode.kBrake);
+    m_intakeMotor.setIdleMode(IdleMode.kCoast);
+    m_armMotor.setIdleMode(IdleMode.kBrake);
 
-    m_pivotMotor.setIdleMode(IdleMode.kBrake);
+    m_armPID.setTolerance(0.05);
 
-    m_pivotPID.setTolerance(2);
-
-    m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard); //onboard I2C port
-    m_distanceSensor.setAutomaticMode(true);
+    // TODO: See if this is needed
+    // m_distanceSensor.setAutomaticMode(true);
   }
 
-  public void turnOn(){
-    m_pivotPID.setSetpoint(Constants.IntakeConstants.kIntakeLoweredAngle);
+  public void armExtend() {
+    m_armPID.setSetpoint(IntakeConstants.kIntakeLoweredAngle);
+
+    stopIntake();
 
     deployed = true;
   }
 
-  public void turnOff(){
-    m_pivotPID.setSetpoint(Constants.IntakeConstants.kIntakeRaisedAngle);
+  public void armRetract() {
+    m_armPID.setSetpoint(IntakeConstants.kIntakeRaisedAngle);
+
+    stopIntake();
 
     deployed = false;
+  }
+
+  public void intake() {
+    if (deployed && !haveNote) {
+      m_intakeSpeed = IntakeConstants.kIntakeSpeed;
+    }
+  }
+
+  public void outake() {
+    if (!deployed && haveNote) {
+      m_intakeSpeed = -IntakeConstants.kIntakeSpeed;
+    }
+  }
+
+  public void stopIntake() {
+    m_intakeSpeed = 0;
   }
 
   /**
@@ -75,43 +88,25 @@ public class IntakeSubsystem extends SubsystemBase {
     return m_distanceSensor.getRange();
   }
 
-  /*
-   * Helper function to calculate motor speeds
-   * 
-   */
-  private void calculateSpeeds(){
-    if (m_pivotEncoder.getAbsolutePosition() > IntakeConstants.kIntakeLoweredAngle && m_pivotEncoder.getAbsolutePosition() < IntakeConstants.kIntakeRaisedAngle){
-      m_pivotSpeed = MathUtil.clamp(m_pivotPID.calculate(m_pivotEncoder.getAbsolutePosition()), -0.5, 0.5);
-    }
-    else{
-      if (m_pivotPID.atSetpoint()){
-        m_pivotSpeed = 0.0;
-      }
-    }
-    
-    if (m_pivotEncoder.getAbsolutePosition() < 15.0 && deployed){
-      m_intakeSpeed = Constants.IntakeConstants.kIntakeSpeed; //TODO: i have no idea which speed
-    } else {
-      m_intakeSpeed = 0.0;
-    }
-  }
-
   @Override
   public void periodic() {
-    calculateSpeeds();
+    haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
 
-    m_pivotMotor.set(m_pivotSpeed);
+    // If we have a note and the arm is deployed, automatically bring it back in
+    if (haveNote && deployed) {
+      stopIntake();
+      armRetract();
+    }
 
-    m_bottomFeeder.set(m_intakeSpeed);
-    m_topFeeder.set(m_intakeSpeed);
+    m_armMotor.set(m_armPID.calculate(m_armEncoder.getAbsolutePosition()));
+    m_intakeMotor.set(m_intakeSpeed);
+
+    SmartDashboard.putNumber("Arm Angle", m_armEncoder.getAbsolutePosition());
+    SmartDashboard.putBoolean("Arm Deployed?", deployed);
+    SmartDashboard.putBoolean("Have Note?", haveNote);
   }
 
-  public double getPivotPosition(){
-    return m_pivotEncoder.getAbsolutePosition();
-  }
-
-  public boolean readyForShooter(){
-    return (m_pivotEncoder.getAbsolutePosition() < Constants.IntakeConstants.kIntakeRaisedAngle + 5) 
-        || (m_pivotEncoder.getAbsolutePosition() > Constants.IntakeConstants.kIntakeRaisedAngle - 5);
+  public boolean readyToShoot() {
+    return haveNote && !deployed && m_armPID.atSetpoint();
   }
 }

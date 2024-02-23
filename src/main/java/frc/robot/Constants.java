@@ -95,17 +95,20 @@ public final class Constants {
     public static final double kPHeadingCorrectionController = 5;
   }
 
-  // Intake PID and Encoder Constants
-  public static class IntakeConstants {
-    // TODO: figure out constants
-    // public static final boolean kPivotMotorInverted = true;
-    public static final double kIntakeLoweredAngle = 9.0;
-    public static final double kIntakeRaisedAngle = 60.0;
+  public static final class IntakeConstants {
     public static final int kIntakeMotorID = 0;
-    public static final double kIntakeMotorSpeed = -3.0;
     public static final int kArmMotorID = 0;
-    public static final int kArmEncoderCh = 0;
-    public static double kIntakeSpeed = 3.0;
+    public static final int kArmEncoderChannel = 0;
+
+    public static final double kIntakeLoweredAngle = 0;
+    public static final double kIntakeRaisedAngle = 120;
+
+    public static final double kArmEncoderOffset = 0;
+
+    public static final double kIntakeSpeed = 3.0;
+
+    // TODO: Tune distance sensor threshold for detecting note
+    public static final double kDistanceSensorThreshold = 10;
   }
 
   public static final class ShooterConstants {
