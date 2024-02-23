@@ -1,0 +1,290 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.1307886445560125,
+        "y": 7.095801425645404
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7785079541790287,
+        "y": 7.037579465229853
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.106006481516509,
+        "y": 6.993912994918189
+      },
+      "prevControl": {
+        "x": 1.7785534081698255,
+        "y": 7.003008913622263
+      },
+      "nextControl": {
+        "x": 2.6300041252564776,
+        "y": 6.979357504814301
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.658925956149785,
+        "y": 7.394188972775109
+      },
+      "prevControl": {
+        "x": 7.324149683760361,
+        "y": 7.386911227723165
+      },
+      "nextControl": {
+        "x": 7.99370222853921,
+        "y": 7.401466717827053
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.6256753080882047,
+        "y": 6.993912994918189
+      },
+      "prevControl": {
+        "x": 3.6197774523208617,
+        "y": 7.081245935541516
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "shoot1",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "align"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "shoot"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "PickupShoot",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 1.0
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intake"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "align"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "shoot"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "PickUp2",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.5
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot3",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "align"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "shoot"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -134.99999999999997,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -101.30993247402026,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

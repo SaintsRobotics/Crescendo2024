@@ -4,9 +4,15 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,13 +36,28 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-
+  private final SendableChooser<Command> autoChooser;
+  
   private boolean IntakeDropped = false;
   private boolean lastAButton = false;
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
 
+
+  
+
   public RobotContainer() {
+
+    //Registering Named Commands for autonpaths
+    //registerCommand is looking for XXXXXXCommand, so things may need to be renamed. 
+   NamedCommands.registerCommand("shoot", m_shooterSubsystem.spin(0.75));
+   NamedCommands.registerCommand("align", DriverSubsystem.autoAlign());
+   NamedCommands.registerCommand("intake", m_intakeSubsystem.intakeDisk());
+
+    //All paths automatically 
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     // Configure the trigger bindings
     configureBindings();
     m_intakeSubsystem.setDefaultCommand(m_driverController.getLeftTriggerAxis() > 0.5
@@ -106,12 +127,16 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
   }
 
+
+  //adding auton Path options 
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
+    
   }
 }
