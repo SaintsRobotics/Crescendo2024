@@ -38,7 +38,7 @@ public class RobotContainer {
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
-  private final XboxController m_operatorController = new XboxController(IOConstants.kDriverControllerPort);
+  private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
