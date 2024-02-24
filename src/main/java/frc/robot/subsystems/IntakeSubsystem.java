@@ -37,11 +37,12 @@ public class IntakeSubsystem extends SubsystemBase {
     // m_intakeMotor.setInverted(IntakeConstants.kIntakeMotorInverted);
 
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
-    m_armEncoder.setDistancePerRotation(2 * Math.PI);
+    m_armEncoder.setDistancePerRotation(360);
 
     m_intakeMotor.setIdleMode(IdleMode.kCoast);
     m_armMotor.setIdleMode(IdleMode.kBrake);
 
+    // m_armPID.disableContinuousInput();
     m_armPID.setTolerance(0.05);
 
     // TODO: See if this is needed
@@ -98,12 +99,13 @@ public class IntakeSubsystem extends SubsystemBase {
       armRetract();
     }
 
-    m_armMotor.set(m_armPID.calculate(m_armEncoder.getAbsolutePosition()));
-    m_intakeMotor.set(m_intakeSpeed);
+    // m_armMotor.set(m_armPID.calculate(m_armEncoder.getDistance()));
+    // m_intakeMotor.set(m_intakeSpeed);
 
-    SmartDashboard.putNumber("Arm Angle", m_armEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putBoolean("Arm Deployed?", deployed);
     SmartDashboard.putBoolean("Have Note?", haveNote);
+    SmartDashboard.putNumber("pid output", m_armPID.calculate(m_armEncoder.getDistance()));
   }
 
   public boolean readyToShoot() {
