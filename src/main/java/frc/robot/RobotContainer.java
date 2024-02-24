@@ -50,9 +50,9 @@ public class RobotContainer {
 
     //Registering Named Commands for autonpaths
     //registerCommand is looking for XXXXXXCommand, so things may need to be renamed. 
-   NamedCommands.registerCommand("shoot", m_shooterSubsystem.spin(0.75));
-   NamedCommands.registerCommand("align", DriverSubsystem.autoAlign());
-   NamedCommands.registerCommand("intake", m_intakeSubsystem.intakeDisk());
+   NamedCommands.registerCommand("shoot", new InstantCommand(() -> m_shooterSubsystem.shooterTimedRun(Constants.ShooterConstants.kTimeShoot, Constants.ShooterConstants.kSpinSpeedTrue)));
+   //NamedCommands.registerCommand("align", DriverSubsystem.autoAlign());
+   NamedCommands.registerCommand("intake", new InstantCommand(() -> m_intakeSubsystem.intakeTimedRun(Constants.IntakeConstants.kTimeIntake), m_intakeSubsystem));
 
     //All paths automatically 
     autoChooser = AutoBuilder.buildAutoChooser();

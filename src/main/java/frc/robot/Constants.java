@@ -111,6 +111,7 @@ public final class Constants {
         public static final double kArmI = 0;
         public static final double kArmD = 0;
         public static final int kArmEncoderCh = 0;
+        public static final double kTimeIntake = 5;
         public static double kIntakeSpeed;
     }
 
@@ -118,6 +119,7 @@ public final class Constants {
     public static class ShooterConstants {
         public static final double kSpinSpeedTrue = 0.75;
         public static final double kSpinSpeedFalse = 0;
+        public static final double kTimeShoot = 5;
         public static int kBottomShooterMotorPort;
         public static int kTopShooterMotorPort;
 

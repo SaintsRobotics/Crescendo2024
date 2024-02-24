@@ -9,6 +9,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.IntakeConstants;
@@ -39,6 +42,17 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.set(0);
   }
 
+  public void intakeTimedRun(double time){
+    final Timer timer = new Timer();
+    timer.reset();
+    timer.start();
+    while(timer.get() != time){
+      m_intakeMotor.set(IntakeConstants.kIntakeSpeed);
+    }
+    m_intakeMotor.set(0);
+
+  }
+ 
   /**
    * Rotates the arm to a given angle
    * @param angle motor to apply to intake
