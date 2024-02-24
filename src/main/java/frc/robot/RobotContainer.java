@@ -4,11 +4,20 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -27,16 +36,28 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  public final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
-  private final XboxController m_operatorController = new XboxController(IOConstants.kDriverControllerPort);
+  private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * The container for the robot. Contains subsystems, IO devices, and commands.
    */
   public RobotContainer() {
+
+    AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
+        m_robotDrive::getChassisSpeeds,
+        m_robotDrive::autonDrive,
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
+            DriveConstants.kMaxSpeedMetersPerSecond, // Max module speed, in m/s
+            Math.hypot(DriveConstants.kTrackWidth, DriveConstants.kWheelBase), // Drive base radius in meters. Distance from robot center to furthest module.
+            new ReplanningConfig(true, true)),
+        () -> false, m_robotDrive);
+
     // Configure the trigger bindings
     configureBindings();
 
@@ -49,18 +70,18 @@ public class RobotContainer {
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
                         .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar)
-                    * 0.8,
+                        * IOConstants.kSlowModeScalar),
+                    // * 0.8,
                 MathUtil.applyDeadband(
                     -m_driverController.getLeftX(),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
                         .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar)
-                    * 0.8,
+                        * IOConstants.kSlowModeScalar),
+                    // * 0.8,
                 MathUtil.applyDeadband(
-                    m_driverController.getRightX(),
+                    -m_driverController.getRightX(),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxAngularSpeedRadiansPerSecond
                     * (1 - m_driverController
@@ -78,17 +99,16 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kStart.value)
         .onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
-    // TODO: Move shoot commands to operator controller
-    new JoystickButton(m_driverController, Button.kB.value)
+    // new JoystickButton(m_driverController, Button.kA.value).whileTrue(
+    //     AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new PathConstraints(
+    //         DriveConstants.kMaxSpeedMetersPerSecond - 1, 5, DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
+
+    new JoystickButton(m_operatorController, Button.kX.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
-    new JoystickButton(m_driverController, Button.kA.value)
+    new JoystickButton(m_operatorController, Button.kY.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
-    new JoystickButton(m_operatorController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_shooterSubsystem));
-    new JoystickButton(m_operatorController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_shooterSubsystem));
   }
 
   /**
@@ -97,6 +117,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("New New Path");
+
+    var alliance = DriverStation.getAlliance();
+    PathPlannerPath autonPath = path;
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      autonPath = autonPath.flipPath();
+    }
+    m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
+
+    // return AutoBuilder.followPath(autonPath);
+    return null;
+
+    // PathPlannerAuto pathPlannerAuto = new PathPlannerAuto("New Auto");
+
+    // return pathPlannerAuto;
   }
 }
