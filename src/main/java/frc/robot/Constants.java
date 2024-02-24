@@ -71,7 +71,8 @@ public final class Constants {
 
     /** Gear ratio between the motor and the wheel. */
     public static final double kDrivingGearRatio = 8.14; // SDS MK4i's in L1 Configuration
-    // public static final double kDrivingGearRatio = 6.75; // SDS MK4i's in L2 configuration
+    // public static final double kDrivingGearRatio = 6.75; // SDS MK4i's in L2
+    // configuration
 
     // TODO: Tune this PID before running on a robot on the ground
     public static final double kPModuleTurningController = 0.3;
@@ -92,6 +93,22 @@ public final class Constants {
     public static final double kHeadingCorrectionTurningStopTime = 0.2;
     // TODO: Tune this PID before running on a robot on the ground
     public static final double kPHeadingCorrectionController = 5;
+  }
+
+  public static final class IntakeConstants {
+    public static final int kIntakeMotorID = 25;
+    public static final int kArmMotorID = 39;
+    public static final int kArmEncoderChannel = 0;
+
+    public static final double kIntakeLoweredAngle = 0;
+    public static final double kIntakeRaisedAngle = 120;
+
+    public static final double kArmEncoderOffset = 0;
+
+    public static final double kIntakeSpeed = 3.0;
+
+    // TODO: Tune distance sensor threshold for detecting note
+    public static final double kDistanceSensorThreshold = 10;
   }
 
   public static final class ShooterConstants {

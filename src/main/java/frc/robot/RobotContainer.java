@@ -21,10 +21,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /*
@@ -37,6 +40,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+
   private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
@@ -54,7 +59,8 @@ public class RobotContainer {
             new PIDConstants(5, 0.0, 0.0), // Translation PID constants
             new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
             DriveConstants.kMaxSpeedMetersPerSecond, // Max module speed, in m/s
-            Math.hypot(DriveConstants.kTrackWidth, DriveConstants.kWheelBase), // Drive base radius in meters. Distance from robot center to furthest module.
+            Math.hypot(DriveConstants.kTrackWidth, DriveConstants.kWheelBase), // Drive base radius in meters. Distance
+                                                                               // from robot center to furthest module.
             new ReplanningConfig(true, true)),
         () -> false, m_robotDrive);
 
@@ -71,7 +77,7 @@ public class RobotContainer {
                     * (1 - m_driverController
                         .getLeftTriggerAxis()
                         * IOConstants.kSlowModeScalar),
-                    // * 0.8,
+                // * 0.8,
                 MathUtil.applyDeadband(
                     -m_driverController.getLeftX(),
                     IOConstants.kControllerDeadband)
@@ -79,7 +85,7 @@ public class RobotContainer {
                     * (1 - m_driverController
                         .getLeftTriggerAxis()
                         * IOConstants.kSlowModeScalar),
-                    // * 0.8,
+                // * 0.8,
                 MathUtil.applyDeadband(
                     -m_driverController.getRightX(),
                     IOConstants.kControllerDeadband)
@@ -109,6 +115,10 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, Button.kY.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
+
+    new Trigger(() -> {
+      return m_driverController.getRightTriggerAxis() > 0.5;
+    }).whileTrue(new IntakeCommand(m_intakeSubsystem));
   }
 
   /**
@@ -128,9 +138,5 @@ public class RobotContainer {
 
     // return AutoBuilder.followPath(autonPath);
     return null;
-
-    // PathPlannerAuto pathPlannerAuto = new PathPlannerAuto("New Auto");
-
-    // return pathPlannerAuto;
   }
 }
