@@ -29,9 +29,6 @@ public class ClimberSubsystem {
     
     //Runs once every tick (~20ms)
     public void periodic() {
-        // SmartDashboard.putNumber("Pressure", m_compressor.getPressure());
-        // SmartDashboard.putBoolean("Compressor Enabled", m_compressor.isEnabled());
-        // SmartDashboard.putBoolean("Startup Compressor", enableCompressor);
     }
     /*
      * Sets the state of the solenoid to off 
