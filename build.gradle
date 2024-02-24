@@ -70,7 +70,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     //testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    implementation files(project.fileTree('vendordeps/DistanceSensor-java/0.4.0/DistanceSensor-java-0.4.0.jar'))
+    implementation files('vendordeps/DistanceSensor-java/DistanceSensor-java-0.4.0.jar')
 }
 
 test {
