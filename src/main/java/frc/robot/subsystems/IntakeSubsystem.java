@@ -14,10 +14,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private boolean deployed = false;
   private boolean haveNote = false;
 
   private CANSparkFlex m_intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
@@ -51,28 +51,24 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void armExtend() {
     m_armPID.setSetpoint(IntakeConstants.kIntakeLoweredAngle);
-
-    stopIntake();
-
-    deployed = true;
   }
 
   public void armRetract() {
     m_armPID.setSetpoint(IntakeConstants.kIntakeRaisedAngle);
+  }
 
-    stopIntake();
-
-    deployed = false;
+  public boolean atSetpoint(){
+    return m_armPID.atSetpoint();
   }
 
   public void intake() {
-    if (deployed && !haveNote) {
+    if (!haveNote) {
       m_intakeSpeed = IntakeConstants.kIntakeSpeed;
     }
   }
 
   public void outake() {
-    if (!deployed && haveNote) {
+    if (haveNote) {
       m_intakeSpeed = -IntakeConstants.kIntakeSpeed;
     }
   }
@@ -91,24 +87,19 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
-
-    // If we have a note and the arm is deployed, automatically bring it back in
-    if (haveNote && deployed) {
-      stopIntake();
-      armRetract();
-    }
+    haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold ? true : false;
 
     // m_armMotor.set(m_armPID.calculate(m_armEncoder.getDistance()));
     // m_intakeMotor.set(m_intakeSpeed);
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
-    SmartDashboard.putBoolean("Arm Deployed?", deployed);
     SmartDashboard.putBoolean("Have Note?", haveNote);
     SmartDashboard.putNumber("pid output", m_armPID.calculate(m_armEncoder.getDistance()));
   }
 
   public boolean readyToShoot() {
-    return haveNote && !deployed && m_armPID.atSetpoint();
+    return haveNote && 
+        m_armPID.getSetpoint() == IntakeConstants.kIntakeRaisedAngle && 
+        m_armPID.atSetpoint();
   }
 }
