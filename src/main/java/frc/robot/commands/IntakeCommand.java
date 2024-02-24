@@ -20,6 +20,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     m_intakeSubsystem.armExtend();
+    m_intakeSubsystem.intake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,6 +33,7 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsystem.armRetract();
+    m_intakeSubsystem.stopIntake();
   }
 
   @Override
