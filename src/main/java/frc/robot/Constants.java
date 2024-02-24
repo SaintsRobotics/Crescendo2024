@@ -96,8 +96,8 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int kIntakeMotorID = 0;
-    public static final int kArmMotorID = 0;
+    public static final int kIntakeMotorID = 25;
+    public static final int kArmMotorID = 39;
     public static final int kArmEncoderChannel = 0;
 
     public static final double kIntakeLoweredAngle = 0;
