@@ -40,7 +40,6 @@ public class ClimberSubsystem {
         m_rightSolenoid.set(kOff);
     }
 
-    // TODO: fix doc after testing
     /**
      * Extends both arms
      */
@@ -49,7 +48,6 @@ public class ClimberSubsystem {
         m_rightSolenoid.set(kForward);
     }
 
-    // TODO:fix doc
     /**
      * Retracts both arms
      */
