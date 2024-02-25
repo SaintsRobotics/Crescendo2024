@@ -103,6 +103,7 @@ public final class Constants {
     // In degrees
     public static final double kIntakeLoweredAngle = 0;
     public static final double kIntakeRaisedAngle = 194;
+    public static final double kIntakeAmpScoringAngle = 100;
 
     /** Encoder offset in rotations */
     public static final double kArmEncoderOffset = 0.6692;
@@ -125,8 +126,6 @@ public final class Constants {
     
         public final static double minPressure = 50.0;
         public final static double maxPressure = 120.0;
-        
-    
     }
   public static final class VisionConstants {
     // TODO: Update cam pose relative to center of bot

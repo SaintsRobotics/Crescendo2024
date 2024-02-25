@@ -5,12 +5,15 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -22,12 +25,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.IntakeArmPositionCommand;
+import frc.robot.commands.NoteIntakeCommand;
+import frc.robot.commands.NoteOuttakeCommand;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.commands.DiskIntakeCommand;
-import frc.robot.commands.ExtendIntakeCommand;
-import frc.robot.commands.RetractIntakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -125,12 +129,21 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_robotDrive));
 
     new Trigger(() -> {
+      return m_driverController.getLeftTriggerAxis() > 0.5;
+    }).whileTrue(
+        new SequentialCommandGroup(
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+            new NoteIntakeCommand(m_intakeSubsystem),
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
+        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+
+    new Trigger(() -> {
       return m_driverController.getRightTriggerAxis() > 0.5;
     }).whileTrue(
-      new SequentialCommandGroup(
-        new ExtendIntakeCommand(m_intakeSubsystem), 
-        new DiskIntakeCommand(m_intakeSubsystem), 
-        new RetractIntakeCommand(m_intakeSubsystem)));
+        new SequentialCommandGroup(
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp),
+            new NoteOuttakeCommand(m_intakeSubsystem)))
+        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
   }
 
   /**
