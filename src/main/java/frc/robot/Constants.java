@@ -100,10 +100,12 @@ public final class Constants {
     public static final int kArmMotorID = 39;
     public static final int kArmEncoderChannel = 0;
 
+    // In degrees
     public static final double kIntakeLoweredAngle = 0;
-    public static final double kIntakeRaisedAngle = 120;
+    public static final double kIntakeRaisedAngle = 194;
 
-    public static final double kArmEncoderOffset = 0;
+    /** Encoder offset in rotations */
+    public static final double kArmEncoderOffset = 0.6692;
 
     public static final double kIntakeSpeed = 3.0;
 
