@@ -107,7 +107,6 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putBoolean("Arm Deployed?", deployed);
     SmartDashboard.putBoolean("Have Note?", haveNote);
-    SmartDashboard.putNumber("pid output", m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint));
   }
 
   public boolean readyToShoot() {
