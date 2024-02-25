@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.Optional;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
@@ -71,8 +69,6 @@ public class DriveSubsystem extends SubsystemBase {
       m_gyro.getRotation2d(), m_swerveModulePositions, new Pose2d(), VisionConstants.kOdometrySTDDevs,
       VisionConstants.kVisionSTDDevs);
 
-  private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-
   private final Field2d m_field = new Field2d();
 
   /** Creates a new DriveSubsystem. */
@@ -95,14 +91,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_poseEstimator.update(Robot.isReal() ? m_gyro.getRotation2d() : new Rotation2d(m_gyroAngle),
         m_swerveModulePositions);
-
-    Optional<Measurement> latestReading = m_visionSubsystem.getMeasurement();
-
-    // SmartDashboard.putBoolean("reading present", latestReading.isPresent());
-
-    if (latestReading.isPresent()) {
-      m_poseEstimator.addVisionMeasurement(latestReading.get().pose.toPose2d(), latestReading.get().timestamp);
-    }
 
     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
@@ -213,8 +201,12 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyroAngle = 0;
   }
 
-  public void addVisionMeasurement(Pose2d pose, double timestamp) {
-    m_poseEstimator.addVisionMeasurement(pose, timestamp);
+  public void addVisionMeasurement(Measurement measurement) {
+    m_poseEstimator.addVisionMeasurement(measurement.pose.toPose2d(), measurement.timestamp);
+  }
+
+  public void autonDrive(ChassisSpeeds desiredChassisSpeeds) {
+    swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
   }
 
   /**
@@ -222,7 +214,7 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param desiredStates The desired SwerveModule states.
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
+  private void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 
     m_frontLeft.setDesiredState(desiredStates[0]);
@@ -243,10 +235,6 @@ public class DriveSubsystem extends SubsystemBase {
     // simulator
     m_gyroAngle += DriveConstants.kDriveKinematics.toChassisSpeeds(desiredStates).omegaRadiansPerSecond
         * Robot.kDefaultPeriod;
-  }
-
-  public void autonDrive(ChassisSpeeds desiredChassisSpeeds) {
-    swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
   }
 
 }
