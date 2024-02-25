@@ -205,12 +205,16 @@ public class DriveSubsystem extends SubsystemBase {
     m_poseEstimator.addVisionMeasurement(measurement.pose.toPose2d(), measurement.timestamp);
   }
 
+  public void autonDrive(ChassisSpeeds desiredChassisSpeeds) {
+    swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
+  }
+
   /**
    * Sets the swerve ModuleStates. Overloaded for either auton builder or teleop.
    *
    * @param desiredStates The desired SwerveModule states.
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
+  private void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 
     m_frontLeft.setDesiredState(desiredStates[0]);
@@ -231,10 +235,6 @@ public class DriveSubsystem extends SubsystemBase {
     // simulator
     m_gyroAngle += DriveConstants.kDriveKinematics.toChassisSpeeds(desiredStates).omegaRadiansPerSecond
         * Robot.kDefaultPeriod;
-  }
-
-  public void autonDrive(ChassisSpeeds desiredChassisSpeeds) {
-    swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
   }
 
 }

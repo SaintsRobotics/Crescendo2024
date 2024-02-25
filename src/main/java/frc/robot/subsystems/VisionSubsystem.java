@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -56,7 +57,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private final IntegerSubscriber m_tv;
 
-  private List<Consumer<Measurement>> m_consumerList;
+  private List<Consumer<Measurement>> m_consumerList = new ArrayList<>(3);
 
   /** Creates a new Limelight. */
   public VisionSubsystem() {
