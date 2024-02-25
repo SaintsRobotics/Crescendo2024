@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
+import java.util.function.Consumer;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -49,11 +51,13 @@ import frc.robot.Constants.VisionConstants;
  */
 public class VisionSubsystem extends SubsystemBase {
 
-  NetworkTable m_visionNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
+  private NetworkTable m_visionNetworkTable = NetworkTableInstance.getDefault().getTable("limelight");
 
   private final DoubleArraySubscriber m_botPose;
 
   private final IntegerSubscriber m_tv;
+
+  private List<Consumer<Measurement>> m_consumerList = new ArrayList<>(3);
 
   /** Creates a new Limelight. */
   public VisionSubsystem() {
@@ -66,20 +70,33 @@ public class VisionSubsystem extends SubsystemBase {
     m_tv = m_visionNetworkTable.getIntegerTopic("tv").subscribe(0);
   }
 
+  /** Add a consumer, which the vision subsystem will push an update to every time there is an updated measurement */
+  public void addConsumer(Consumer<Measurement> consumer) {
+    m_consumerList.add(consumer);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
+    Measurement latestMeasurement = getMeasurement();
+
+    if (latestMeasurement != null) {
+      for (Consumer<Measurement> consumer : m_consumerList) {
+        consumer.accept(latestMeasurement);
+      }
+    }
+
     SmartDashboard.putBoolean("Limelight Has Target", m_tv.get() == 1);
   }
 
-  public Optional<Measurement> getMeasurement() {
+  public Measurement getMeasurement() {
     TimestampedDoubleArray[] updates = m_botPose.readQueue();
 
     // If we have had no updates since the last time this method ran then return
     // nothing
     if (updates.length == 0) {
-      return Optional.empty();
+      return null;
     }
 
     TimestampedDoubleArray update = updates[updates.length - 1];
@@ -87,7 +104,7 @@ public class VisionSubsystem extends SubsystemBase {
     // If the latest update is empty or we don't see an april tag then return
     // nothing
     if (Arrays.equals(update.value, new double[6]) || m_tv.get() == 0) {
-      return Optional.empty();
+      return null;
     }
 
     double x = update.value[0];
@@ -100,10 +117,10 @@ public class VisionSubsystem extends SubsystemBase {
     double timestamp = Timer.getFPGATimestamp() - (update.value[6] / 1000.0);
     Pose3d pose = new Pose3d(new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw));
 
-    return Optional.of(new Measurement(
+    return new Measurement(
         timestamp,
         pose,
-        VisionConstants.kVisionSTDDevs));
+        VisionConstants.kVisionSTDDevs);
   }
 
   public static class Measurement {
