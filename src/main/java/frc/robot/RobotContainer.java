@@ -45,7 +45,7 @@ public class RobotContainer {
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private final SendableChooser<Command> autoChooser;
-  
+
   private boolean IntakeDropped = false;
   private boolean lastAButton = false;
 
@@ -56,16 +56,18 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, IO devices, and commands.
    */
   public RobotContainer() {
-        //Registering Named Commands for autonpaths
-    //registerCommand is looking for XXXXXXCommand, so things may need to be renamed. 
-   NamedCommands.registerCommand("shoot", new InstantCommand(() -> m_shooterSubsystem.shooterTimedRun(Constants.ShooterConstants.kTimeShoot, Constants.ShooterConstants.kSpinSpeedTrue)));
-   //NamedCommands.registerCommand("align", DriverSubsystem.autoAlign());
-   NamedCommands.registerCommand("intake", new InstantCommand(() -> m_intakeSubsystem.intakeTimedRun(Constants.IntakeConstants.kTimeIntake), m_intakeSubsystem));
+    // Registering Named Commands for autonpaths
+    // registerCommand is looking for XXXXXXCommand, so things may need to be
+    // renamed.
+    NamedCommands.registerCommand("shoot", new InstantCommand(() -> m_shooterSubsystem
+        .shooterTimedRun(Constants.ShooterConstants.kTimeShoot, Constants.ShooterConstants.kShooterMotorSpeed)));
+        
+    NamedCommands.registerCommand("intake", new InstantCommand(
+        () -> m_intakeSubsystem.intakeTimedRun(Constants.IntakeConstants.kTimeIntake), m_intakeSubsystem));
 
-    //All paths automatically 
+    // All paths automatically
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
 
     AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
         m_robotDrive::getChassisSpeeds,
@@ -121,8 +123,10 @@ public class RobotContainer {
         .onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
     // new JoystickButton(m_driverController, Button.kA.value).whileTrue(
-    //     AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new PathConstraints(
-    //         DriveConstants.kMaxSpeedMetersPerSecond - 1, 5, DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
+    // AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new
+    // PathConstraints(
+    // DriveConstants.kMaxSpeedMetersPerSecond - 1, 5,
+    // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
     new JoystickButton(m_operatorController, Button.kX.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
@@ -136,8 +140,7 @@ public class RobotContainer {
     }).whileTrue(new IntakeCommand(m_intakeSubsystem));
   }
 
-
-  //adding auton Path options 
+  // adding auton Path options
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -145,7 +148,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerPath path = PathPlannerPath.fromPathFile("New New Path");
+    Command follow = autoChooser.getSelected();
+    PathPlannerPath path = PathPlannerPath.fromPathFile(follow.getName());
 
     var alliance = DriverStation.getAlliance();
     PathPlannerPath autonPath = path;

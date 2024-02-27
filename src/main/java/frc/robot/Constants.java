@@ -116,6 +116,7 @@ public final class Constants {
     public static final int kTopShooterMotorPort = 35;
     public static final int kBottomShooterMotorPort = 20;
     public static final double kTimeShoot = 5;
+    public static final double kShooterMotorSpeed = 0;
   }
 
   public static final class VisionConstants {
