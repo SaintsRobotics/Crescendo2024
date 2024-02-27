@@ -20,14 +20,14 @@ public class ClimberSubsystem extends SubsystemBase{
 
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
 
-  private boolean enableCompressor = true;
+  private boolean m_compressorEnabled;
 
   private Value m_state;
 
   public ClimberSubsystem() {
-        solenoidOff();
-        m_compressor.disable();
-        m_compressor.enableAnalog(ClimberConstants.minPressure, ClimberConstants.maxPressure);
+    m_compressorEnabled = false;
+    solenoidOff();
+    toggleCompressor();
     }
 
   // Runs once every tick (~20ms)
@@ -56,22 +56,13 @@ public class ClimberSubsystem extends SubsystemBase{
   public void reverse() {
     m_state = kReverse;
   }
-  /*
-   * Toggles the state of the climber
-   */
 
-  public void toggle() {
-    if(m_state == kForward){
-      m_state = kReverse;
-    }else if(m_state == kReverse){
-      m_state = kForward;
-    }
-  }
-
-  // Toggles the state of the compressor (on/off)
-  public void toggleCompresor() {
-    enableCompressor = !enableCompressor;
-    if (enableCompressor) {
+  /**
+   * Toggles the state of the compressor (on/off)
+   */ 
+  public void toggleCompressor() {
+    m_compressorEnabled = !m_compressorEnabled;
+    if (m_compressorEnabled) {
       m_compressor.enableAnalog(ClimberConstants.minPressure, ClimberConstants.maxPressure);
     } else {
       m_compressor.disable();
