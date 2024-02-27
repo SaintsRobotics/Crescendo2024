@@ -118,7 +118,8 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int kTopShooterMotorPort = 35;
     public static final int kBottomShooterMotorPort = 20;
-  }    
+  }
+
   public static class ClimberConstants {
         public final static int leftForwardChannel = 0;
         public final static int rightForwardChannel = 0;
@@ -146,6 +147,12 @@ public final class Constants {
     // Field size in meters
     public static final double kFieldWidth = 8.21055;
     public static final double kFieldLength = 16.54175;
+  }
+
+  public static final class LEDConstants{
+    //TODO: find plz
+    public static final int kLEDPort = 0;
+    public static final int kLEDLength = 10;
   }
 
 }
