@@ -71,7 +71,10 @@ private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
         
     NamedCommands.registerCommand("intake", new SequentialCommandGroup(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
                                 new NoteIntakeCommand(m_intakeSubsystem), 
-                                new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
+                                new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted),
+                                new WaitCommand(0.5), 
+                                new NoteOuttakeCommand(m_intakeSubsystem),
+                                new WaitCommand(0.5)));
 
     // All paths automatically
     
