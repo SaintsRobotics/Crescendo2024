@@ -151,7 +151,7 @@ public final class Constants {
 
   public static final class LEDConstants{
     //TODO: find plz
-    public static final int kLEDPort = 0;
+    public static final int kLEDPort = 9;
     public static final int kLEDLength = 10;
   }
 
