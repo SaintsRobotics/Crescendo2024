@@ -113,8 +113,10 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
     // new JoystickButton(m_driverController, Button.kA.value).whileTrue(
-    //     AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new PathConstraints(
-    //         DriveConstants.kMaxSpeedMetersPerSecond - 1, 5, DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
+    // AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new
+    // PathConstraints(
+    // DriveConstants.kMaxSpeedMetersPerSecond - 1, 5,
+    // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
     new JoystickButton(m_operatorController, Button.kX.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
@@ -124,9 +126,9 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
 
     new JoystickButton(m_operatorController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_robotDrive));
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_climberSubsystem));
     new JoystickButton(m_operatorController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_robotDrive));
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_climberSubsystem));
 
     new Trigger(() -> {
       return m_driverController.getLeftTriggerAxis() > 0.5;
