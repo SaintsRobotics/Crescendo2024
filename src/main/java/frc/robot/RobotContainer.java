@@ -13,6 +13,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -22,14 +24,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.IntakeArmPositionCommand;
+import frc.robot.commands.NoteIntakeCommand;
+import frc.robot.commands.NoteOuttakeCommand;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -45,11 +52,13 @@ public class RobotContainer {
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
-
+private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final SendableChooser<Command> autoChooser;
+
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -58,11 +67,11 @@ public class RobotContainer {
     // Registering Named Commands for autonpaths
     // registerCommand is looking for XXXXXXCommand, so things may need to be
     // renamed.
-    NamedCommands.registerCommand("shoot", new InstantCommand(() -> m_shooterSubsystem
-        .shooterTimedRun(Constants.ShooterConstants.kTimeShoot, Constants.ShooterConstants.kShooterMotorSpeed)));
+    NamedCommands.registerCommand("shoot", new SequentialCommandGroup(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem), new WaitCommand(0.5), new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem)));
         
-    NamedCommands.registerCommand("intake", new InstantCommand(
-        () -> m_intakeSubsystem.intakeTimedRun(Constants.IntakeConstants.kTimeIntake), m_intakeSubsystem));
+    NamedCommands.registerCommand("intake", new SequentialCommandGroup(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+                                new NoteIntakeCommand(m_intakeSubsystem), 
+                                new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
 
     // All paths automatically
     
@@ -143,8 +152,21 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_robotDrive));
 
     new Trigger(() -> {
+      return m_driverController.getLeftTriggerAxis() > 0.5;
+    }).whileTrue(
+        new SequentialCommandGroup(
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+            new NoteIntakeCommand(m_intakeSubsystem),
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
+        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+
+    new Trigger(() -> {
       return m_driverController.getRightTriggerAxis() > 0.5;
-    }).whileTrue(new IntakeCommand(m_intakeSubsystem));
+    }).whileTrue(
+        new SequentialCommandGroup(
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp),
+            new NoteOuttakeCommand(m_intakeSubsystem)))
+        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
   }
 
   // adding auton Path options

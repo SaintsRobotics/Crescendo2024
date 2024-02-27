@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private boolean deployed = false;
   private boolean haveNote = false;
 
   private CANSparkFlex m_intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
@@ -35,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard); // onboard I2C port;
 
   private double m_intakeSpeed = 0;
-  private double m_armSetpoint = IntakeConstants.kIntakeLoweredAngle;
+  private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
@@ -50,37 +49,33 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // m_armPID.disableContinuousInput();
     m_armPID.setTolerance(0.05);
-
-    // TODO: See if this is needed
-    // m_distanceSensor.setAutomaticMode(true);
   }
 
-  public void armExtend() {
-    m_armSetpoint = IntakeConstants.kIntakeLoweredAngle;
-
-    stopIntake();
-
-    deployed = true;
+  public void setArmPosition(ArmPosition position) {
+    switch (position) {
+      case Amp:
+        m_armSetpoint = IntakeConstants.kIntakeAmpScoringAngle;
+        break;
+      case Extended:
+        m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
+        break;
+      case Retracted:
+        m_armSetpoint = IntakeConstants.kIntakeLoweredAngle;
+      default:
+        break;
+    }
   }
 
-  public void armRetract() {
-    m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
-
-    stopIntake();
-
-    deployed = false;
+  public boolean armAtSetpoint() {
+    return m_armPID.atSetpoint();
   }
 
   public void intake() {
-    if (deployed && !haveNote) {
-      m_intakeSpeed = IntakeConstants.kIntakeSpeed;
-    }
+    m_intakeSpeed = IntakeConstants.kIntakeSpeed;
   }
 
-  public void outake() {
-    if (!deployed && haveNote) {
-      m_intakeSpeed = -IntakeConstants.kIntakeSpeed;
-    }
+  public void outtake() {
+    m_intakeSpeed = -IntakeConstants.kIntakeSpeed;
   }
 
   public void stopIntake() {
@@ -100,7 +95,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   /**
    * Gets distance from Rev 2m sensor
-   * 
    */
   public double getDistanceSensor() {
     return m_distanceSensor.getRange();
@@ -110,21 +104,20 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
 
-    // If we have a note and the arm is deployed, automatically bring it back in
-    if (haveNote && deployed) {
-      stopIntake();
-      armRetract();
-    }
-
     // m_armMotor.set(MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3));
-    // m_intakeMotor.set(m_intakeSpeed);
+    // m_intakeMotor.set((m_intakeSpeed >= 0 && haveNote) ? 0 : m_intakeSpeed);
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
-    SmartDashboard.putBoolean("Arm Deployed?", deployed);
     SmartDashboard.putBoolean("Have Note?", haveNote);
   }
 
-  public boolean readyToShoot() {
-    return haveNote && !deployed && m_armPID.atSetpoint();
+  public boolean haveNote() {
+    return haveNote;
+  }
+
+  public static enum ArmPosition {
+    Extended,
+    Retracted,
+    Amp
   }
 }
