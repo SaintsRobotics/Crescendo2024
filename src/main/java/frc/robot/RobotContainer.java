@@ -47,150 +47,152 @@ import frc.robot.subsystems.VisionSubsystem;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here
-  
+    // The robot's subsystems and commands are defined here
 
-  private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
-  private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
-private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
-  private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-  private final SendableChooser<Command> autoChooser;
+    private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
+    private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
+    private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+    private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+    private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+    private final SendableChooser<Command> autoChooser;
 
+    /**
+     * The container for the robot. Contains subsystems, IO devices, and commands.
+     */
+    public RobotContainer() {
+        // Registering Named Commands for autonpaths
+        NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
+                new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem),
+                new WaitCommand(0.5),
+                new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem)));
 
-  /**
-   * The container for the robot. Contains subsystems, IO devices, and commands.
-   */
-  public RobotContainer() {
-    // Registering Named Commands for autonpaths
-    // registerCommand is looking for XXXXXXCommand, so things may need to be
-    // renamed.
-    NamedCommands.registerCommand("shoot", new SequentialCommandGroup(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem), new WaitCommand(0.5), new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem)));
-        
-    NamedCommands.registerCommand("intake", new SequentialCommandGroup(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
-                                new NoteIntakeCommand(m_intakeSubsystem), 
-                                new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted),
-                                new WaitCommand(0.5), 
-                                new NoteOuttakeCommand(m_intakeSubsystem),
-                                new WaitCommand(0.5)));
+        NamedCommands.registerCommand("intake", new SequentialCommandGroup(
+                new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+                new NoteIntakeCommand(m_intakeSubsystem),
+                new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted),
+                new WaitCommand(0.5),
+                new NoteOuttakeCommand(m_intakeSubsystem),
+                new WaitCommand(0.5)));
 
-    // All paths automatically
-    
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+        // All paths automatically
 
-    AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
-        m_robotDrive::getChassisSpeeds,
-        m_robotDrive::autonDrive,
-        new HolonomicPathFollowerConfig(
-            new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
-            DriveConstants.kMaxSpeedMetersPerSecond, // Max module speed, in m/s
-            Math.hypot(DriveConstants.kTrackWidth, DriveConstants.kWheelBase), // Drive base radius in meters. Distance
-                                                                               // from robot center to furthest module.
-            new ReplanningConfig(true, true)),
-        () -> false, m_robotDrive);
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
+        AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
+                m_robotDrive::getChassisSpeeds,
+                m_robotDrive::autonDrive,
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
+                        DriveConstants.kMaxSpeedMetersPerSecond, // Max module speed, in m/s
+                        Math.hypot(DriveConstants.kTrackWidth, DriveConstants.kWheelBase), // Drive base radius in
+                                                                                           // meters. Distance
+                                                                                           // from robot center to
+                                                                                           // furthest module.
+                        new ReplanningConfig(true, true)),
+                () -> false, m_robotDrive);
 
-    // Configure the trigger bindings
-    configureBindings();
+        m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
 
-    m_robotDrive.setDefaultCommand(
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(
-                    -m_driverController.getLeftY(),
-                    IOConstants.kControllerDeadband)
-                    * DriveConstants.kMaxSpeedMetersPerSecond
-                    * (1 - m_driverController
-                        .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar),
-                // * 0.8,
-                MathUtil.applyDeadband(
-                    -m_driverController.getLeftX(),
-                    IOConstants.kControllerDeadband)
-                    * DriveConstants.kMaxSpeedMetersPerSecond
-                    * (1 - m_driverController
-                        .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar),
-                // * 0.8,
-                MathUtil.applyDeadband(
-                    -m_driverController.getRightX(),
-                    IOConstants.kControllerDeadband)
-                    * DriveConstants.kMaxAngularSpeedRadiansPerSecond
-                    * (1 - m_driverController
-                        .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar)
-                    / 2,
-                !m_driverController.getRightBumper()),
-            m_robotDrive));
-  }
+        // Configure the trigger bindings
+        configureBindings();
 
-  /**
-   * Use this method to define your button->command mappings.
-   */
-  private void configureBindings() {
-    new JoystickButton(m_driverController, Button.kStart.value)
-        .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
-
-    // new JoystickButton(m_driverController, Button.kA.value).whileTrue(
-    // AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new
-    // PathConstraints(
-    // DriveConstants.kMaxSpeedMetersPerSecond - 1, 5,
-    // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
-
-    new JoystickButton(m_operatorController, Button.kX.value)
-        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
-        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
-    new JoystickButton(m_operatorController, Button.kY.value)
-        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
-        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
-
-    new JoystickButton(m_operatorController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_robotDrive));
-    new JoystickButton(m_operatorController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_robotDrive));
-
-    new Trigger(() -> {
-      return m_driverController.getLeftTriggerAxis() > 0.5;
-    }).whileTrue(
-        new SequentialCommandGroup(
-            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
-            new NoteIntakeCommand(m_intakeSubsystem),
-            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
-        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
-
-    new Trigger(() -> {
-      return m_driverController.getRightTriggerAxis() > 0.5;
-    }).whileTrue(
-        new SequentialCommandGroup(
-            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp),
-            new NoteOuttakeCommand(m_intakeSubsystem)))
-        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
-  }
-
-  // adding auton Path options
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    Command follow = autoChooser.getSelected();
-    PathPlannerPath path = PathPlannerPath.fromPathFile(follow.getName());
-
-    var alliance = DriverStation.getAlliance();
-    PathPlannerPath autonPath = path;
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      autonPath = autonPath.flipPath();
+        m_robotDrive.setDefaultCommand(
+                new RunCommand(
+                        () -> m_robotDrive.drive(
+                                MathUtil.applyDeadband(
+                                        -m_driverController.getLeftY(),
+                                        IOConstants.kControllerDeadband)
+                                        * DriveConstants.kMaxSpeedMetersPerSecond
+                                        * (1 - m_driverController
+                                                .getLeftTriggerAxis()
+                                                * IOConstants.kSlowModeScalar),
+                                // * 0.8,
+                                MathUtil.applyDeadband(
+                                        -m_driverController.getLeftX(),
+                                        IOConstants.kControllerDeadband)
+                                        * DriveConstants.kMaxSpeedMetersPerSecond
+                                        * (1 - m_driverController
+                                                .getLeftTriggerAxis()
+                                                * IOConstants.kSlowModeScalar),
+                                // * 0.8,
+                                MathUtil.applyDeadband(
+                                        -m_driverController.getRightX(),
+                                        IOConstants.kControllerDeadband)
+                                        * DriveConstants.kMaxAngularSpeedRadiansPerSecond
+                                        * (1 - m_driverController
+                                                .getLeftTriggerAxis()
+                                                * IOConstants.kSlowModeScalar)
+                                        / 2,
+                                !m_driverController.getRightBumper()),
+                        m_robotDrive));
     }
-    m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
-    // return AutoBuilder.followPath(autonPath);
-    return null;
-  }
+    /**
+     * Use this method to define your button->command mappings.
+     */
+    private void configureBindings() {
+        new JoystickButton(m_driverController, Button.kStart.value)
+                .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+
+        // new JoystickButton(m_driverController, Button.kA.value).whileTrue(
+        // AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new
+        // PathConstraints(
+        // DriveConstants.kMaxSpeedMetersPerSecond - 1, 5,
+        // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
+
+        new JoystickButton(m_operatorController, Button.kX.value)
+                .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
+                .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
+        new JoystickButton(m_operatorController, Button.kY.value)
+                .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
+                .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
+
+        new JoystickButton(m_operatorController, Button.kA.value)
+                .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_robotDrive));
+        new JoystickButton(m_operatorController, Button.kB.value)
+                .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_robotDrive));
+
+        new Trigger(() -> {
+            return m_driverController.getLeftTriggerAxis() > 0.5;
+        }).whileTrue(
+                new SequentialCommandGroup(
+                        new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+                        new NoteIntakeCommand(m_intakeSubsystem),
+                        new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
+                .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+
+        new Trigger(() -> {
+            return m_driverController.getRightTriggerAxis() > 0.5;
+        }).whileTrue(
+                new SequentialCommandGroup(
+                        new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp),
+                        new NoteOuttakeCommand(m_intakeSubsystem)))
+                .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+    }
+
+    // adding auton Path options
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        Command follow = autoChooser.getSelected();
+        PathPlannerPath path = PathPlannerPath.fromPathFile(follow.getName());
+
+        var alliance = DriverStation.getAlliance();
+        PathPlannerPath autonPath = path;
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+            autonPath = autonPath.flipPath();
+        }
+        m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
+
+        // return AutoBuilder.followPath(autonPath);
+        return null;
+    }
 }
