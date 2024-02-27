@@ -13,8 +13,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -28,10 +26,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -41,16 +41,15 @@ import frc.robot.subsystems.ShooterSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-  public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private final SendableChooser<Command> autoChooser;
-
-  private boolean IntakeDropped = false;
-  private boolean lastAButton = false;
+  
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
+
+  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -66,6 +65,7 @@ public class RobotContainer {
         () -> m_intakeSubsystem.intakeTimedRun(Constants.IntakeConstants.kTimeIntake), m_intakeSubsystem));
 
     // All paths automatically
+    
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -80,6 +80,8 @@ public class RobotContainer {
                                                                                // from robot center to furthest module.
             new ReplanningConfig(true, true)),
         () -> false, m_robotDrive);
+
+    m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
 
     // Configure the trigger bindings
     configureBindings();
@@ -120,7 +122,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     new JoystickButton(m_driverController, Button.kStart.value)
-        .onTrue(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+        .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
     // new JoystickButton(m_driverController, Button.kA.value).whileTrue(
     // AutoBuilder.pathfindToPose(new Pose2d(2.8, 5.5, new Rotation2d()), new
@@ -134,6 +136,11 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, Button.kY.value)
         .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
         .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
+
+    new JoystickButton(m_operatorController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_robotDrive));
+    new JoystickButton(m_operatorController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_robotDrive));
 
     new Trigger(() -> {
       return m_driverController.getRightTriggerAxis() > 0.5;

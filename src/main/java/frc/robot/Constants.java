@@ -100,10 +100,12 @@ public final class Constants {
     public static final int kArmMotorID = 39;
     public static final int kArmEncoderChannel = 0;
 
+    // In degrees
     public static final double kIntakeLoweredAngle = 0;
-    public static final double kIntakeRaisedAngle = 120;
+    public static final double kIntakeRaisedAngle = 194;
 
-    public static final double kArmEncoderOffset = 0;
+    /** Encoder offset in rotations */
+    public static final double kArmEncoderOffset = 0.6692;
 
     public static final double kIntakeSpeed = 3.0;
     public static final double kTimeIntake = 5;
@@ -115,10 +117,18 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int kTopShooterMotorPort = 35;
     public static final int kBottomShooterMotorPort = 20;
-    public static final double kTimeShoot = 5;
-    public static final double kShooterMotorSpeed = 0;
-  }
-
+  }    
+  public static class ClimberConstants {
+        public final static int leftForwardChannel = 0;
+        public final static int rightForwardChannel = 0;
+        public final static int leftReverseChannel = 1;
+        public final static int rightReverseChannel = 1;
+    
+        public final static double minPressure = 50.0;
+        public final static double maxPressure = 120.0;
+        
+    
+    }
   public static final class VisionConstants {
     // TODO: Update cam pose relative to center of bot
     public static final Pose3d kCamPose = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
