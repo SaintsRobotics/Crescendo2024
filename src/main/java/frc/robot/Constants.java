@@ -101,6 +101,7 @@ public final class Constants {
     public static final int kArmEncoderChannel = 0;
 
     // In degrees
+    // In degrees
     public static final double kIntakeLoweredAngle = 0;
     public static final double kIntakeRaisedAngle = 194;
     public static final double kIntakeAmpScoringAngle = 100;

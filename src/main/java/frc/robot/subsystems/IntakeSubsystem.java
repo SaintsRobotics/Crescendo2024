@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.Rev2mDistanceSensor.Port;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,14 +23,14 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANSparkFlex m_intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
   private CANSparkFlex m_armMotor = new CANSparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
 
-  private PIDController m_armPID = new PIDController(0.5, 0, 0);
+  private PIDController m_armPID = new PIDController(0.0015, 0, 0);
 
   private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
   private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard); // onboard I2C port;
 
   private double m_intakeSpeed = 0;
-  private double m_armSetpoint = IntakeConstants.kIntakeLoweredAngle;
+  private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
@@ -40,8 +41,9 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armEncoder.setDistancePerRotation(360);
 
     m_intakeMotor.setIdleMode(IdleMode.kCoast);
-    m_armMotor.setIdleMode(IdleMode.kBrake);
+    m_armMotor.setIdleMode(IdleMode.kCoast);
 
+    // m_armPID.disableContinuousInput();
     m_armPID.setTolerance(0.05);
   }
 
@@ -87,7 +89,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
 
-    // m_armMotor.set(m_armPID.calculate(m_armEncoder.getDistance()));
+    // m_armMotor.set(MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3));
     // m_intakeMotor.set((m_intakeSpeed >= 0 && haveNote) ? 0 : m_intakeSpeed);
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
