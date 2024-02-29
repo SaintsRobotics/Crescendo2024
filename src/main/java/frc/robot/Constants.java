@@ -107,7 +107,7 @@ public final class Constants {
     public static final double kIntakeAmpScoringAngle = 100;
 
     /** Encoder offset in rotations */
-    public static final double kArmEncoderOffset = 0.6692;
+    public static final double kArmEncoderOffset = 0.6862;
 
     public static final double kIntakeSpeed = 3.0;
 
@@ -118,6 +118,8 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int kTopShooterMotorPort = 35;
     public static final int kBottomShooterMotorPort = 20;
+    public static final double kShooterSpeed = 3.0;
+    public static final double kShooterOff = 0;
   }    
   public static class ClimberConstants {
         public final static int leftForwardChannel = 0;

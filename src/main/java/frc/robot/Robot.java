@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  public ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  // public ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
 
   private Timer m_buttonTimer = new Timer();
   /**
@@ -59,10 +59,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if (RobotController.getUserButton() && m_buttonTimer.get() > 1) {
-      m_climberSubsystem.toggleCompressor();
-      m_buttonTimer.reset();
-    }
+    // if (RobotController.getUserButton() && m_buttonTimer.get() > 1) {
+    //   m_climberSubsystem.toggleCompressor();
+    //   m_buttonTimer.reset();
+    // }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

@@ -38,6 +38,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // m_intakeMotor.setInverted(IntakeConstants.kIntakeMotorInverted);
 
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
+    SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
     m_armEncoder.setDistancePerRotation(360);
 
     m_intakeMotor.setIdleMode(IdleMode.kCoast);
@@ -45,6 +46,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // m_armPID.disableContinuousInput();
     m_armPID.setTolerance(0.05);
+
+    m_armSetpoint = m_armEncoder.getDistance();
   }
 
   public void setArmPosition(ArmPosition position) {
@@ -87,13 +90,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
+    // haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
+    haveNote = false;
 
-    // m_armMotor.set(MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3));
-    // m_intakeMotor.set((m_intakeSpeed >= 0 && haveNote) ? 0 : m_intakeSpeed);
+    m_armMotor.set(-MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3) / 2);
+    m_intakeMotor.set((m_intakeSpeed >= 0 && haveNote) ? 0 : m_intakeSpeed);
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putBoolean("Have Note?", haveNote);
+    // SmartDashboard.putNumber("distance sensor", m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches));
+    SmartDashboard.putNumber("pid output", -MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3) / 2);
   }
 
   public boolean haveNote() {

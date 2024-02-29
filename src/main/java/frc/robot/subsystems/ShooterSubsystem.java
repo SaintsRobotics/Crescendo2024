@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,18 +16,36 @@ public class ShooterSubsystem extends SubsystemBase {
   CANSparkFlex m_bottom = new CANSparkFlex(ShooterConstants.kBottomShooterMotorPort, MotorType.kBrushless);
   CANSparkFlex m_top = new CANSparkFlex(ShooterConstants.kTopShooterMotorPort, MotorType.kBrushless);
 
+  private double m_topSpeed = 0;
+  private double m_bottomSpeed = 0;
+
   public ShooterSubsystem() {
+    m_bottom.setIdleMode(IdleMode.kCoast);
+    m_top.setIdleMode(IdleMode.kCoast);
 
   }
 
-  public void spin(double speed) {
-    m_bottom.set(speed);
-    m_top.set(speed);
+  public void setShootingSpeed(ShootSpeed speed) {
+    switch (speed){
+      case Shooting:
+        m_topSpeed = ShooterConstants.kShooterSpeed;
+        m_bottomSpeed = ShooterConstants.kShooterSpeed;
+      case Off:
+        m_topSpeed = 0.0;
+        m_bottomSpeed = 0.0;
+    }
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("Speed", m_bottom.);
+    m_bottom.set(m_bottomSpeed);
+    m_top.set(m_topSpeed);
   }
+
+  public static enum ShootSpeed{
+    Shooting,
+    Off
+  } 
 }
