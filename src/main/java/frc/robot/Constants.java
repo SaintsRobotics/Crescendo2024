@@ -117,7 +117,7 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int kTopShooterMotorPort = 35;
     public static final int kBottomShooterMotorPort = 20;
-    public static final double kShooterSpeed = 3.0;
+    public static final double kShooterSpeed = 0.7;
     public static final double kShooterOff = 0;
   }    
   public static class ClimberConstants {
