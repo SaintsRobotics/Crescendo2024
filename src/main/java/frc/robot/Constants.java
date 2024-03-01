@@ -101,15 +101,14 @@ public final class Constants {
     public static final int kArmEncoderChannel = 0;
 
     // In degrees
-    // In degrees
-    public static final double kIntakeLoweredAngle = 0;
-    public static final double kIntakeRaisedAngle = 194;
-    public static final double kIntakeAmpScoringAngle = 100;
+    public static final double kIntakeLoweredAngle = -193;
+    public static final double kIntakeRaisedAngle = 0;
+    public static final double kIntakeAmpScoringAngle = -93; // 193 - 100 (previous angle)
 
     /** Encoder offset in rotations */
-    public static final double kArmEncoderOffset = 0.6862;
+    public static final double kArmEncoderOffset = 0.2252;
 
-    public static final double kIntakeSpeed = 3.0;
+    public static final double kIntakeSpeed = 0.5;
 
     // TODO: Tune distance sensor threshold for detecting note
     public static final double kDistanceSensorThreshold = 10;
