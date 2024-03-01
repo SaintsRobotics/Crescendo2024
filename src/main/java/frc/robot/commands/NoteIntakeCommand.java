@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class NoteIntakeCommand extends Command {
@@ -39,6 +40,6 @@ public class NoteIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.haveNote();
+    return m_intakeSubsystem.haveNote() || m_intakeSubsystem.getArmPosition() != IntakeConstants.kIntakeLoweredAngle;
   }
 }
