@@ -1,0 +1,92 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7386506330235927,
+        "y": 4.297173922678052
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7386506330235927,
+        "y": 4.297173922678052
+      },
+      "isLocked": false,
+      "linkedName": "3bot_end"
+    },
+    {
+      "anchor": {
+        "x": 2.81792833754523,
+        "y": 4.982565462316666
+      },
+      "prevControl": {
+        "x": 2.3434239790419866,
+        "y": 5.068838982044528
+      },
+      "nextControl": {
+        "x": 3.3261962208727422,
+        "y": 4.8901531198934824
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.5540608867334065,
+        "y": 4.112349237831684
+      },
+      "prevControl": {
+        "x": 7.084298146082222,
+        "y": 4.027637923943765
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "3NoteBot2_end"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.5
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -59.470294100065914,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
