@@ -23,11 +23,11 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANSparkFlex m_intakeMotor = new CANSparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
   private CANSparkFlex m_armMotor = new CANSparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
 
-  private PIDController m_armPID = new PIDController(0.0014, 0, 0);
+  private PIDController m_armPID = new PIDController(0.002, 0, 0);
 
   private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
-  private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kMXP); // onboard I2C port;
+  private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard); // onboard I2C port;
 
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
@@ -43,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
     m_armMotor.setIdleMode(IdleMode.kCoast);
 
-    m_armPID.setTolerance(15);
+    m_armPID.setTolerance(10);
 
     m_armSetpoint = m_armEncoder.getDistance();
   }
@@ -78,7 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void outtake() {
-    m_intakeSpeed = -IntakeConstants.kIntakeSpeed;
+    m_intakeSpeed = -IntakeConstants.kIntakeSpeed - 0.5;
   }
 
   public void stopIntake() {
@@ -97,7 +97,7 @@ public class IntakeSubsystem extends SubsystemBase {
     haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
 
     //Note: negative because encoder goes from 0 to -193 cuz weird
-    double setMotorSpeed = -MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.4, 0.4);
+    double setMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.4, 0.4);
     m_armMotor.set(setMotorSpeed);
     m_intakeMotor.set(m_intakeSpeed);
     SmartDashboard.putNumber("intakespeed", m_intakeSpeed);

@@ -121,9 +121,9 @@ public class RobotContainer {
     // DriveConstants.kMaxSpeedMetersPerSecond - 1, 5,
     // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
-    new JoystickButton(m_operatorController, Button.kX.value)
-        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, true), new NoteOuttakeCommand(m_intakeSubsystem)))
-        .onFalse(new InstantCommand(() -> m_shooterSubsystem.setShootingSpeed(ShootSpeed.Off), m_shooterSubsystem));
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting), new NoteOuttakeCommand(m_intakeSubsystem)))
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
 
     // new JoystickButton(m_operatorController, Button.kA.value)
     //     .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_climberSubsystem));
