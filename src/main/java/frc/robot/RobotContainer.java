@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -28,10 +29,12 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
 import frc.robot.commands.NoteOuttakeCommand;
+import frc.robot.commands.ShooterSetSpeedCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
+import frc.robot.subsystems.ShooterSubsystem.ShootSpeed;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -46,7 +49,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
@@ -118,17 +121,14 @@ public class RobotContainer {
     // DriveConstants.kMaxSpeedMetersPerSecond - 1, 5,
     // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
-    new JoystickButton(m_operatorController, Button.kX.value)
-        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(0.75), m_shooterSubsystem))
-        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
-    new JoystickButton(m_operatorController, Button.kY.value)
-        .onTrue(new InstantCommand(() -> m_shooterSubsystem.spin(-0.75), m_shooterSubsystem))
-        .onFalse(new InstantCommand(() -> m_shooterSubsystem.spin(0), m_shooterSubsystem));
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting), new NoteOuttakeCommand(m_intakeSubsystem)))
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
 
-    new JoystickButton(m_operatorController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_climberSubsystem));
-    new JoystickButton(m_operatorController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_climberSubsystem));
+    // new JoystickButton(m_operatorController, Button.kA.value)
+    //     .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(), m_climberSubsystem));
+    // new JoystickButton(m_operatorController, Button.kB.value)
+    //     .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(), m_climberSubsystem));
 
     new Trigger(() -> {
       return m_driverController.getLeftTriggerAxis() > 0.5;
