@@ -101,8 +101,8 @@ public final class Constants {
     public static final int kArmEncoderChannel = 0;
 
     // In degrees
-    public static final double kIntakeLoweredAngle = -183;
-    public static final double kIntakeRaisedAngle = -6;
+    public static final double kIntakeLoweredAngle = -193;
+    public static final double kIntakeRaisedAngle = -10;
     public static final double kIntakeAmpScoringAngle = -93; // 193 - 100 (previous angle)
 
     /** Encoder offset in rotations */
