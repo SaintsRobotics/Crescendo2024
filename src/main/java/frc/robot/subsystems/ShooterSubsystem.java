@@ -31,8 +31,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setShootingSpeed(ShootSpeed speed) {
     switch (speed){
       case Shooting:
-        m_topSpeed = ShooterConstants.kShooterSpeed;
-        m_bottomSpeed = ShooterConstants.kShooterSpeed;
+        m_topSpeed = ShooterConstants.kShooterSpeedTop;
+        m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
         // System.out.println("shoot speed: " + ShooterConstants.kShooterSpeed);
         break;
       case Off:
