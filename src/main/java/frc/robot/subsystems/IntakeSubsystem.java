@@ -40,8 +40,8 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
     m_armEncoder.setDistancePerRotation(360);
 
-    m_intakeMotor.setIdleMode(IdleMode.kBrake);
-    m_armMotor.setIdleMode(IdleMode.kCoast);
+    m_intakeMotor.setIdleMode(IdleMode.kCoast);
+    m_armMotor.setIdleMode(IdleMode.kBrake);
 
     m_armPID.setTolerance(10);
 

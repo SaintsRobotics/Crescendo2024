@@ -33,7 +33,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
 
-    public static final double kControllerDeadband = 0.05;
+    public static final double kControllerDeadband = 0.1;
     public static final double kSlowModeScalar = 0.8;
   }
 
@@ -102,7 +102,7 @@ public final class Constants {
 
     // In degrees
     public static final double kIntakeLoweredAngle = -193;
-    public static final double kIntakeRaisedAngle = -10;
+    public static final double kIntakeRaisedAngle = 0;
     public static final double kIntakeAmpScoringAngle = -93; // 193 - 100 (previous angle)
 
     /** Encoder offset in rotations */
