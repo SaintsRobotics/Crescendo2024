@@ -102,7 +102,7 @@ public final class Constants {
 
     // In degrees
     public static final double kIntakeLoweredAngle = -193;
-    public static final double kIntakeRaisedAngle = -10;
+    public static final double kIntakeRaisedAngle = 0;
     public static final double kIntakeAmpScoringAngle = -93; // 193 - 100 (previous angle)
 
     /** Encoder offset in rotations */
