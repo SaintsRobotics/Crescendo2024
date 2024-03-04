@@ -147,6 +147,15 @@ public class RobotContainer {
         .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
   }
 
+  /** 
+   * Reset all subsystems on teleop init
+   */
+  public void resetAllSubsystems() {
+    m_intakeSubsystem.reset();
+    m_shooterSubsystem.reset();
+    m_robotDrive.reset();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

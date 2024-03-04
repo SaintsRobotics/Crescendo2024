@@ -28,6 +28,14 @@ public class ShooterSubsystem extends SubsystemBase {
     m_top.setInverted(true);
   }
 
+  public void reset() {
+    m_topSpeed = 0;
+    m_bottomSpeed = 0;
+
+    m_top.set(0);
+    m_bottom.set(0);
+  }
+
   public void setShootingSpeed(ShootSpeed speed) {
     switch (speed) {
       case Shooting:
