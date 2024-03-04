@@ -48,6 +48,14 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armSetpoint = m_armEncoder.getDistance();
   }
 
+  public void reset() {
+    m_intakeMotor.set(0);
+    m_armMotor.set(0);
+
+    m_intakeSpeed = 0;
+    m_armSetpoint = getDistanceSensor();
+  }
+
   public void setArmPosition(ArmPosition position) {
     switch (position) {
       case Amp:
