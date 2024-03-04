@@ -117,17 +117,43 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int kTopShooterMotorPort = 35;
     public static final int kBottomShooterMotorPort = 20;
+
+    /**
+     * Created as 'good' points for the setLED command
+     * Coordinates are in meter based on (0,0) being the source for the red alliance
+     */
+    //TODO: verify values, values were eyeballed using pathplanner
+    public static final double kTopShootX = 0.75;
+    public static final double kTopShootY = 6.7;
+    public static final double kTopShootAngle = 120;
+
+    public static final double kMiddleShootX = 1.4;
+    public static final double kMiddleShootY = 5.6;
+    public static final double kMiddleShootAngle = 180;
+
+    public static final double kBottomShootX = 0.75;
+    public static final double kBottomShootY = 4.4;
+    public static final double kBottomShootAngle = 240;
+
+    /**
+     * the tolerance for the possible shooting positions at which the isk goes in
+     */
+    // TODO:update maybe (currently arbitrary)
+    public static final double kPositionTolerance = 0.5;
+    public static final double kAngleTolerance = 10;
+
   }
 
   public static class ClimberConstants {
-        public final static int leftForwardChannel = 0;
-        public final static int rightForwardChannel = 0;
-        public final static int leftReverseChannel = 1;
-        public final static int rightReverseChannel = 1;
-    
-        public final static double minPressure = 50.0;
-        public final static double maxPressure = 120.0;
-    }
+    public final static int leftForwardChannel = 0;
+    public final static int rightForwardChannel = 0;
+    public final static int leftReverseChannel = 1;
+    public final static int rightReverseChannel = 1;
+
+    public final static double minPressure = 50.0;
+    public final static double maxPressure = 120.0;
+  }
+
   public static final class VisionConstants {
     // TODO: Update cam pose relative to center of bot
     public static final Pose3d kCamPose = new Pose3d(0, 0, 0, new Rotation3d(0, 0, 0));
@@ -148,8 +174,8 @@ public final class Constants {
     public static final double kFieldLength = 16.54175;
   }
 
-  public static final class LEDConstants{
-    //TODO: find plz
+  public static final class LEDConstants {
+    // TODO: find plz
     public static final int kLEDPort = 9;
     public static final int kLEDLength = 10;
   }
