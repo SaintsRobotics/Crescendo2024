@@ -73,7 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armPID.setSetpoint(m_armSetpoint);
   }
 
-  public double getArmPosition(){
+  public double getArmPosition() {
     return m_armSetpoint;
   }
 
@@ -104,7 +104,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
 
-    //Note: negative because encoder goes from 0 to -193 cuz weird
+    // Note: negative because encoder goes from 0 to -193 cuz weird
     double setMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.4, 0.4);
     m_armMotor.set(setMotorSpeed);
     m_intakeMotor.set(m_intakeSpeed);
