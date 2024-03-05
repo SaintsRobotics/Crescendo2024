@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_distanceSensor.setAutomaticMode(true);
 
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
-    SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("arm", getArmAngle());
     m_armEncoder.setDistancePerRotation(360);
 
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     m_armPID.setTolerance(10);
 
-    m_armSetpoint = m_armEncoder.getDistance();
+    m_armSetpoint = getArmAngle();
   }
 
   public void reset() {
@@ -53,7 +53,8 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armMotor.set(0);
 
     m_intakeSpeed = 0;
-    m_armSetpoint = getDistanceSensor();
+    m_armEncoder.setPositionOffset(m_armEncoder.getAbsolutePosition() - IntakeConstants.kArmEncoderOffset);
+    m_armSetpoint = getArmAngle();
   }
 
   public void setArmPosition(ArmPosition position) {
@@ -73,6 +74,9 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armPID.setSetpoint(m_armSetpoint);
   }
 
+  /**
+   * Returns the desired position of the arm
+   */
   public double getArmPosition(){
     return m_armSetpoint;
   }
@@ -96,8 +100,15 @@ public class IntakeSubsystem extends SubsystemBase {
   /**
    * Gets distance from Rev 2m sensor
    */
-  public double getDistanceSensor() {
+  private double getDistanceSensor() {
     return m_distanceSensor.getRange();
+  }
+
+  /**
+   * Returns the absolute angle value from the encoder
+   */
+  private double getArmAngle() {
+    return m_armEncoder.getDistance();
   }
 
   @Override
@@ -105,12 +116,12 @@ public class IntakeSubsystem extends SubsystemBase {
     haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
 
     //Note: negative because encoder goes from 0 to -193 cuz weird
-    double setMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.4, 0.4);
+    double setMotorSpeed = MathUtil.clamp(m_armPID.calculate(getArmAngle(), m_armSetpoint), -0.4, 0.4);
     m_armMotor.set(setMotorSpeed);
     m_intakeMotor.set(m_intakeSpeed);
     SmartDashboard.putNumber("intakespeed", m_intakeSpeed);
 
-    SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
+    SmartDashboard.putNumber("Arm Angle", getArmAngle());
     SmartDashboard.putBoolean("Have Note?", haveNote);
     SmartDashboard.putNumber("distance sensor", m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches));
     SmartDashboard.putNumber("pid output", setMotorSpeed);
