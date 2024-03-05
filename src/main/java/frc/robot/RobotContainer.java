@@ -147,7 +147,7 @@ public class RobotContainer {
         .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
   }
 
-  /** 
+  /**
    * Reset all subsystems on teleop init
    */
   public void resetAllSubsystems() {

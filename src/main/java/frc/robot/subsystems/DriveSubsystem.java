@@ -111,7 +111,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void reset() {
-    swerveModuleStates = new SwerveModuleState[] { new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
+    swerveModuleStates = new SwerveModuleState[] { new SwerveModuleState(), new SwerveModuleState(),
+        new SwerveModuleState(), new SwerveModuleState() };
   }
 
   /**
