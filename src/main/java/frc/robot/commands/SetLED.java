@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;;
 
 public class SetLED extends Command {
@@ -18,9 +19,23 @@ public class SetLED extends Command {
   private Pose2d m_odometry = m_driveSubsystem.getOdometry();
 
   private double[] m_pointsX = { ShooterConstants.kTopShootX, ShooterConstants.kMiddleShootX,
-      ShooterConstants.kBottomShootX };
+      ShooterConstants.kBottomShootX, 
+      //Intake Positions
+      IntakeConstants.KLeftRingX,
+      IntakeConstants.KRightRingX,
+    };
   private double[] m_pointsY = { ShooterConstants.kTopShootY, ShooterConstants.kMiddleShootY,
-      ShooterConstants.kBottomShootY };
+      ShooterConstants.kBottomShootY, IntakeConstants.KTopLeftRingY,
+      //Intake Positions
+      IntakeConstants.KTopLeftRingY,
+      IntakeConstants.KMiddleLeftRingY,
+      IntakeConstants.KBottomLeftRingY,
+      IntakeConstants.KTopRightRingY,
+      IntakeConstants.KSecondTopRightRingY,
+      IntakeConstants.KMiddleRightRingY,
+      IntakeConstants.KSecondBottomRightRingY,
+      IntakeConstants.KBottomRightRingY
+    };
   private double[] m_angles = { ShooterConstants.kTopShootAngle, ShooterConstants.kMiddleShootAngle,
       ShooterConstants.kBottomShootAngle };
 
@@ -35,7 +50,8 @@ public class SetLED extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    double robotX = m_odometry.getX();
+    double robotY = m_odometry.getY();
     for (int i = 0; i < 3; i++) {
       boolean validX = false;
       boolean validY = false;
@@ -43,12 +59,12 @@ public class SetLED extends Command {
       double X = m_pointsX[i];
       double Y = m_pointsY[i];
       double A = m_angles[i];
-      if (X + ShooterConstants.kPositionTolerance > m_odometry.getX()
-          && m_odometry.getX() > X - ShooterConstants.kPositionTolerance) {
+      if (X + ShooterConstants.kPositionTolerance > robotX
+          && robotX > X - ShooterConstants.kPositionTolerance) {
         validX = true;
       }
-      if (Y + ShooterConstants.kPositionTolerance > m_odometry.getY()
-          && m_odometry.getY() > Y - ShooterConstants.kPositionTolerance) {
+      if (Y + ShooterConstants.kPositionTolerance > robotY
+          && robotY > Y - ShooterConstants.kPositionTolerance) {
         validY = true;
         break;
       }
@@ -65,6 +81,30 @@ public class SetLED extends Command {
       }
     }
 
+    //Lighting for Intake Positions
+    //Run through the next 8 positions on the list
+    for(int i = 3; i < 11; i++){
+      //Figures out the rings x value (there is only 2 independent values per side)
+      double X;
+      if(i <= 5){
+        X = m_pointsX[3];
+      }else{
+        X = m_pointsX[4];
+      }
+      //Calculate distance to point
+      double dist = Math.hypot(robotX -X,robotY - m_pointsY[i]);
+      //Check if within an acceptable distance
+      if(dist >= IntakeConstants.kIntakeDist - IntakeConstants.KIntakePositionTolerance &&
+        dist <= IntakeConstants.kIntakeDist + IntakeConstants.KIntakePositionTolerance ){
+        //Estimates the proper angle
+        double estimateAngle = Math.toDegrees(Math.atan2(robotY - m_pointsY[i],robotX - X));
+        //Checks if the angle is within an acceptable measure
+        if(Math.abs(m_odometry.getRotation().getDegrees() - estimateAngle) <= IntakeConstants.KIntakeAngleTolerance){
+          m_ledSubsystem.setLED(0,0, 255);
+        }
+      }
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
