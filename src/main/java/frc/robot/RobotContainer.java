@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -53,10 +54,23 @@ public class RobotContainer {
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
 
+  private final SendableChooser<Command> autoChooser;
+
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
    */
   public RobotContainer() {
+    NamedCommands.registerCommand("Shoot",
+        new SequentialCommandGroup(
+          new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
+          new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem)), 
+          new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off)));
+
+    NamedCommands.registerCommand("Intake",
+      new SequentialCommandGroup(
+          new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+          new NoteIntakeCommand(m_intakeSubsystem),
+          new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
 
     AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
         m_robotDrive::getChassisSpeeds,
@@ -72,21 +86,15 @@ public class RobotContainer {
             new ReplanningConfig(true, true)),
         () -> false, m_robotDrive);
 
-    NamedCommands.registerCommand("Shoot",
-        new SequentialCommandGroup(new InstantCommand(() -> SmartDashboard.putBoolean("shooting", true)),
-            new WaitCommand(2),
-                new InstantCommand(() -> SmartDashboard.putBoolean("shooting", false))));
-
-    NamedCommands.registerCommand("Intake",
-        new SequentialCommandGroup(new InstantCommand(() -> SmartDashboard.putBoolean("Intaking", true)),
-            new WaitCommand(2),
-                new InstantCommand(() -> SmartDashboard.putBoolean("Intaking", false))));
     // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,
     // ShootSpeed.Shooting),
     // new ParallelDeadlineGroup(new WaitCommand(0.5), new
     // NoteOuttakeCommand(m_intakeSubsystem))));
 
     m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Configure the trigger bindings
     configureBindings();
@@ -180,16 +188,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Center4Note");
+    // PathPlannerPath path = PathPlannerPath.fromPathFile("Center4Note");
 
-    var alliance = DriverStation.getAlliance();
-    PathPlannerPath autonPath = path;
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      autonPath = autonPath.flipPath();
-    }
-    m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
+    // var alliance = DriverStation.getAlliance();
+    // PathPlannerPath autonPath = path;
+    // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+    //   autonPath = autonPath.flipPath();
+    // }
+    // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
-    return AutoBuilder.followPath(autonPath);
+    // return AutoBuilder.followPath(autonPath);
     // return null;
+    return autoChooser.getSelected();
   }
 }
