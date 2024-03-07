@@ -27,21 +27,21 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
-  //private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard); // onboard I2C port;
+  private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kMXP); // onboard I2C port;
 
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
-    //m_distanceSensor.setAutomaticMode(true);
+    m_distanceSensor.setAutomaticMode(true);
 
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
     SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
     m_armEncoder.setDistancePerRotation(360);
 
-    m_intakeMotor.setIdleMode(IdleMode.kBrake);
-    m_armMotor.setIdleMode(IdleMode.kCoast);
+    m_intakeMotor.setIdleMode(IdleMode.kCoast);
+    m_armMotor.setIdleMode(IdleMode.kBrake);
 
     m_armPID.setTolerance(10);
 
@@ -97,7 +97,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * Gets distance from Rev 2m sensor
    */
   public double getDistanceSensor() {
-    return 0;//m_distanceSensor.getRange();
+    return m_distanceSensor.getRange();
   }
 
   @Override
@@ -112,7 +112,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putBoolean("Have Note?", haveNote);
-    //SmartDashboard.putNumber("distance sensor", m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches));
+    SmartDashboard.putNumber("distance sensor", m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches));
     SmartDashboard.putNumber("pid output", setMotorSpeed);
   }
 
