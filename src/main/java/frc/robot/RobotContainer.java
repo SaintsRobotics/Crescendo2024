@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -14,10 +15,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
@@ -67,6 +71,20 @@ public class RobotContainer {
                                                                                // furthest module.
             new ReplanningConfig(true, true)),
         () -> false, m_robotDrive);
+
+    NamedCommands.registerCommand("Shoot",
+        new SequentialCommandGroup(new InstantCommand(() -> SmartDashboard.putBoolean("shooting", true)),
+            new WaitCommand(2),
+                new InstantCommand(() -> SmartDashboard.putBoolean("shooting", false))));
+
+    NamedCommands.registerCommand("Intake",
+        new SequentialCommandGroup(new InstantCommand(() -> SmartDashboard.putBoolean("Intaking", true)),
+            new WaitCommand(2),
+                new InstantCommand(() -> SmartDashboard.putBoolean("Intaking", false))));
+    // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,
+    // ShootSpeed.Shooting),
+    // new ParallelDeadlineGroup(new WaitCommand(0.5), new
+    // NoteOuttakeCommand(m_intakeSubsystem))));
 
     m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
 
@@ -162,7 +180,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerPath path = PathPlannerPath.fromPathFile("New New Path");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Center4Note");
 
     var alliance = DriverStation.getAlliance();
     PathPlannerPath autonPath = path;
@@ -171,7 +189,7 @@ public class RobotContainer {
     }
     m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
-    // return AutoBuilder.followPath(autonPath);
-    return null;
+    return AutoBuilder.followPath(autonPath);
+    // return null;
   }
 }
