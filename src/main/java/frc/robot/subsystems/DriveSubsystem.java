@@ -110,6 +110,11 @@ public class DriveSubsystem extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
+  public void reset() {
+    swerveModuleStates = new SwerveModuleState[] { new SwerveModuleState(), new SwerveModuleState(),
+        new SwerveModuleState(), new SwerveModuleState() };
+  }
+
   /**
    * Returns the currently-estimated pose of the robot.
    *

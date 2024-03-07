@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,8 +28,16 @@ public class ShooterSubsystem extends SubsystemBase {
     m_top.setInverted(true);
   }
 
+  public void reset() {
+    m_topSpeed = 0;
+    m_bottomSpeed = 0;
+
+    m_top.set(0);
+    m_bottom.set(0);
+  }
+
   public void setShootingSpeed(ShootSpeed speed) {
-    switch (speed){
+    switch (speed) {
       case Shooting:
         m_topSpeed = ShooterConstants.kShooterSpeedTop;
         m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
@@ -43,7 +51,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public double returnCurrentSpeed(){
+  public double returnCurrentSpeed() {
     return m_bottom.getEncoder().getVelocity();
   }
 
@@ -57,8 +65,8 @@ public class ShooterSubsystem extends SubsystemBase {
     m_top.set(m_topSpeed);
   }
 
-  public static enum ShootSpeed{
+  public static enum ShootSpeed {
     Shooting,
     Off
-  } 
+  }
 }
