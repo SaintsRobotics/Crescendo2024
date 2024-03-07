@@ -18,15 +18,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -40,10 +34,16 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "CenterNote"
+                        "pathName": "CenterNote-Center"
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
@@ -56,15 +56,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -78,10 +72,16 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "LeftNote"
+                        "pathName": "LeftNote-Center"
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
@@ -94,15 +94,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -116,10 +110,16 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RightNote"
+                        "pathName": "RightNote-Center"
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
