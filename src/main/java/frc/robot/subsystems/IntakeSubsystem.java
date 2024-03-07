@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
-  private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kOnboard); // onboard I2C port;
+  private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kMXP); // onboard I2C port;
 
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
@@ -40,8 +40,8 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
     m_armEncoder.setDistancePerRotation(360);
 
-    m_intakeMotor.setIdleMode(IdleMode.kBrake);
-    m_armMotor.setIdleMode(IdleMode.kCoast);
+    m_intakeMotor.setIdleMode(IdleMode.kCoast);
+    m_armMotor.setIdleMode(IdleMode.kBrake);
 
     m_armPID.setTolerance(10);
 
