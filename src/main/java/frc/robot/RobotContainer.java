@@ -75,6 +75,9 @@ public class RobotContainer {
           new NoteIntakeCommand(m_intakeSubsystem),
           new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
 
+    NamedCommands.registerCommand("Intake in", 
+      new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+
     AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
         m_robotDrive::getChassisSpeeds,
         m_robotDrive::autonDrive,
@@ -86,7 +89,7 @@ public class RobotContainer {
                                                                                // meters. Distance
                                                                                // from robot center to
                                                                                // furthest module.
-            new ReplanningConfig(true, true)),
+            new ReplanningConfig(false, false)),
         () -> false, m_robotDrive);
 
     // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,

@@ -47,6 +47,6 @@ public class ShooterSetSpeedCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_ShooterSubsystem.returnCurrentSpeed() > 0.8;
+    return m_timer.get() > 1.5;
   }
 }
