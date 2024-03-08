@@ -117,19 +117,19 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int kTopShooterMotorPort = 20;
     public static final int kBottomShooterMotorPort = 35;
-    public static final double kShooterSpeedTop = 0.75;
+    public static final double kShooterSpeedTop = 0.8;
     public static final double kShooterSpeedBottom = 0.9;
     public static final double kShooterOff = 0;
   }
 
   public static class ClimberConstants {
-    public final static int leftForwardChannel = 0;
-    public final static int rightForwardChannel = 0;
-    public final static int leftReverseChannel = 1;
-    public final static int rightReverseChannel = 1;
+    public final static int leftForwardChannel = 4;
+    public final static int rightForwardChannel = 1;
+    public final static int leftReverseChannel = 2;
+    public final static int rightReverseChannel = 3;
 
-    public final static double minPressure = 50.0;
-    public final static double maxPressure = 120.0;
+    public final static double minPressure = 100.0;
+    public final static double maxPressure = 110.0;
   }
 
   public static final class VisionConstants {

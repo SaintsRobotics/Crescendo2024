@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -27,14 +28,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
-  private Rev2mDistanceSensor m_distanceSensor = new Rev2mDistanceSensor(Port.kMXP); // onboard I2C port;
+  /** If true, the distance sensor will be used to determine if we have a note */
+  private boolean m_distanceSensorToggle = Robot.isReal();
+  private Rev2mDistanceSensor m_distanceSensor = m_distanceSensorToggle ? new Rev2mDistanceSensor(Port.kMXP) : null; // NavX I2C access port
 
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
-    m_distanceSensor.setAutomaticMode(true);
+    if (m_distanceSensorToggle) m_distanceSensor.setAutomaticMode(true);
 
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
     SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
@@ -96,24 +99,36 @@ public class IntakeSubsystem extends SubsystemBase {
   /**
    * Gets distance from Rev 2m sensor
    */
-  public double getDistanceSensor() {
+  private double getDistanceSensor() {
+    if (m_distanceSensor.getRange() == -1) {
+      m_distanceSensorToggle = false;
+    }
     return m_distanceSensor.getRange();
+  }
+
+  public boolean getDistanceSensorToggle() {
+    return m_distanceSensorToggle;
+  }
+
+  /** Toggles whether the distance sensor is used */
+  public void toggleDistanceSensor() {
+    m_distanceSensorToggle = !m_distanceSensorToggle;
   }
 
   @Override
   public void periodic() {
-    haveNote = getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold;
+    haveNote = getDistanceSensorToggle() ? getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold : false;
 
     // Note: negative because encoder goes from 0 to -193 cuz weird
-    double setMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.4, 0.4);
-    m_armMotor.set(setMotorSpeed);
+    double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.4, 0.4);
+    m_armMotor.set(armMotorSpeed);
     m_intakeMotor.set(m_intakeSpeed);
     SmartDashboard.putNumber("intakespeed", m_intakeSpeed);
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putBoolean("Have Note?", haveNote);
-    SmartDashboard.putNumber("distance sensor", m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches));
-    SmartDashboard.putNumber("pid output", setMotorSpeed);
+    SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches) : -1);
+    SmartDashboard.putNumber("pid output", armMotorSpeed);
   }
 
   public boolean haveNote() {

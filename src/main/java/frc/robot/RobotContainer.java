@@ -5,19 +5,22 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
@@ -26,6 +29,7 @@ import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
 import frc.robot.commands.NoteOuttakeCommand;
 import frc.robot.commands.ShooterSetSpeedCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
@@ -44,15 +48,32 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
+  private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
+
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
    */
   public RobotContainer() {
+    NamedCommands.registerCommand("Shoot",
+        new SequentialCommandGroup(
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
+            new ParallelDeadlineGroup(new WaitCommand(2), new NoteOuttakeCommand(m_intakeSubsystem)),
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off)));
+
+    NamedCommands.registerCommand("Intake",
+        new SequentialCommandGroup(
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+            new NoteIntakeCommand(m_intakeSubsystem),
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
+
+    NamedCommands.registerCommand("Intake in",
+        new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
 
     AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
         m_robotDrive::getChassisSpeeds,
@@ -65,10 +86,18 @@ public class RobotContainer {
                                                                                // meters. Distance
                                                                                // from robot center to
                                                                                // furthest module.
-            new ReplanningConfig(true, true)),
+            new ReplanningConfig(false, false)),
         () -> false, m_robotDrive);
 
+    // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,
+    // ShootSpeed.Shooting),
+    // new ParallelDeadlineGroup(new WaitCommand(0.5), new
+    // NoteOuttakeCommand(m_intakeSubsystem))));
+
     m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Configure the trigger bindings
     configureBindings();
@@ -122,12 +151,12 @@ public class RobotContainer {
             new NoteOuttakeCommand(m_intakeSubsystem)))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
 
-    // new JoystickButton(m_operatorController, Button.kA.value)
-    // .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
-    // m_climberSubsystem));
-    // new JoystickButton(m_operatorController, Button.kB.value)
-    // .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(),
-    // m_climberSubsystem));
+    new JoystickButton(m_operatorController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
+            m_climberSubsystem));
+    new JoystickButton(m_operatorController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(),
+            m_climberSubsystem));
 
     new Trigger(() -> {
       return m_driverController.getLeftTriggerAxis() > 0.5;
@@ -162,16 +191,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerPath path = PathPlannerPath.fromPathFile("New New Path");
+    // PathPlannerPath path = PathPlannerPath.fromPathFile("Center4Note");
 
-    var alliance = DriverStation.getAlliance();
-    PathPlannerPath autonPath = path;
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      autonPath = autonPath.flipPath();
-    }
-    m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
+    // var alliance = DriverStation.getAlliance();
+    // PathPlannerPath autonPath = path;
+    // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+    // autonPath = autonPath.flipPath();
+    // }
+    // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
     // return AutoBuilder.followPath(autonPath);
-    return null;
+    // return null;
+    return autoChooser.getSelected();
   }
 }

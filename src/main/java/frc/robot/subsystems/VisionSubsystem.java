@@ -86,7 +86,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (latestMeasurement != null) {
       for (Consumer<Measurement> consumer : m_consumerList) {
-        consumer.accept(latestMeasurement);
+        // consumer.accept(latestMeasurement);
       }
     }
 
