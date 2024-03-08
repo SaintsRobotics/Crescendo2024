@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -20,12 +21,17 @@ public class ShooterSubsystem extends SubsystemBase {
   private double m_topSpeed = 0;
   private double m_bottomSpeed = 0;
 
+  SlewRateLimiter m_topLimiter = new SlewRateLimiter(0.2);
+ SlewRateLimiter m_bottomLimiter = new SlewRateLimiter(0.2);
+
   public ShooterSubsystem() {
     m_bottom.setIdleMode(IdleMode.kCoast);
     m_top.setIdleMode(IdleMode.kCoast);
 
     m_bottom.setInverted(true);
     m_top.setInverted(true);
+
+    //m_bottom.getEncoder().setPositionConversionFactor();
   }
 
   public void reset() {
@@ -40,7 +46,9 @@ public class ShooterSubsystem extends SubsystemBase {
     switch (speed) {
       case Shooting:
         m_topSpeed = ShooterConstants.kShooterSpeedTop;
+        m_topSpeed = m_topLimiter.calculate(m_topSpeed);
         m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
+        m_bottomSpeed = m_bottomLimiter.calculate(m_topSpeed);
         // System.out.println("shoot speed: " + ShooterConstants.kShooterSpeed);
         break;
       case Off:
@@ -63,6 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     m_bottom.set(m_bottomSpeed);
     m_top.set(m_topSpeed);
+  
   }
 
   public static enum ShootSpeed {
