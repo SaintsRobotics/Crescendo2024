@@ -6,13 +6,11 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -56,7 +54,6 @@ public class RobotContainer {
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
-  
   private final SendableChooser<Command> autoChooser;
 
   /**
@@ -65,18 +62,18 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
-          new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
-          new ParallelDeadlineGroup(new WaitCommand(2), new NoteOuttakeCommand(m_intakeSubsystem)), 
-          new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off)));
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
+            new ParallelDeadlineGroup(new WaitCommand(2), new NoteOuttakeCommand(m_intakeSubsystem)),
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off)));
 
     NamedCommands.registerCommand("Intake",
-      new SequentialCommandGroup(
-          new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
-          new NoteIntakeCommand(m_intakeSubsystem),
-          new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
+        new SequentialCommandGroup(
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+            new NoteIntakeCommand(m_intakeSubsystem),
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
 
-    NamedCommands.registerCommand("Intake in", 
-      new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+    NamedCommands.registerCommand("Intake in",
+        new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
 
     AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
         m_robotDrive::getChassisSpeeds,
@@ -155,11 +152,11 @@ public class RobotContainer {
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
 
     new JoystickButton(m_operatorController, Button.kA.value)
-      .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
-      m_climberSubsystem));
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
+            m_climberSubsystem));
     new JoystickButton(m_operatorController, Button.kB.value)
-      .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(),
-      m_climberSubsystem));
+        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(),
+            m_climberSubsystem));
 
     new Trigger(() -> {
       return m_driverController.getLeftTriggerAxis() > 0.5;
@@ -199,7 +196,7 @@ public class RobotContainer {
     // var alliance = DriverStation.getAlliance();
     // PathPlannerPath autonPath = path;
     // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-    //   autonPath = autonPath.flipPath();
+    // autonPath = autonPath.flipPath();
     // }
     // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
