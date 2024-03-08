@@ -103,7 +103,7 @@ public class IntakeSubsystem extends SubsystemBase {
     if (m_distanceSensor.getRange() == -1) {
       m_distanceSensorToggle = false;
     }
-    return m_distanceSensorToggle ? m_distanceSensor.getRange() : -1;
+    return m_distanceSensor.getRange();
   }
 
   public boolean getDistanceSensorToggle() {

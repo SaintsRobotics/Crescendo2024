@@ -31,6 +31,7 @@ import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
 import frc.robot.commands.NoteOuttakeCommand;
 import frc.robot.commands.ShooterSetSpeedCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
@@ -49,11 +50,13 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
+  private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
+  
   private final SendableChooser<Command> autoChooser;
 
   /**
@@ -148,12 +151,12 @@ public class RobotContainer {
             new NoteOuttakeCommand(m_intakeSubsystem)))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
 
-    // new JoystickButton(m_operatorController, Button.kA.value)
-    // .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
-    // m_climberSubsystem));
-    // new JoystickButton(m_operatorController, Button.kB.value)
-    // .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(),
-    // m_climberSubsystem));
+    new JoystickButton(m_operatorController, Button.kA.value)
+      .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
+      m_climberSubsystem));
+    new JoystickButton(m_operatorController, Button.kB.value)
+      .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(),
+      m_climberSubsystem));
 
     new Trigger(() -> {
       return m_driverController.getLeftTriggerAxis() > 0.5;
