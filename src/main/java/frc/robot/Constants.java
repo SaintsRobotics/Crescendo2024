@@ -106,7 +106,7 @@ public final class Constants {
     public static final double kIntakeAmpScoringAngle = -93; // 193 - 100 (previous angle)
 
     /** Encoder offset in rotations */
-    public static final double kArmEncoderOffset = 0.2252;
+    public static final double kArmEncoderOffset = 0.3415;
 
     public static final double kIntakeSpeed = 0.5;
 
