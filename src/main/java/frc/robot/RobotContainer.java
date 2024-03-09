@@ -4,13 +4,8 @@
 
 package frc.robot;
 
-import java.nio.file.Path;
-import java.util.List;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -144,7 +139,7 @@ public class RobotContainer {
                     * DriveConstants.kMaxAngularSpeedRadiansPerSecond
                     * (1 - m_driverController
                         .getRightTriggerAxis()
-                      * IOConstants.kSlowModeScalar)
+                        * IOConstants.kSlowModeScalar)
                     / 2,
                 !m_driverController.getLeftBumper()),
             m_robotDrive));
@@ -172,40 +167,40 @@ public class RobotContainer {
         .onTrue(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp))
         .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
 
-       // Intake, Driver Controller Right Trigger
-       new Trigger(() -> {
-        return m_driverController.getLeftTriggerAxis() > 0.5;
-      }).whileTrue(
-          new SequentialCommandGroup(
-              new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
-              new NoteIntakeCommand(m_intakeSubsystem),
-              new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
-          .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
-  
-      // Outtake, Operator Controller Right Trigger
-      new Trigger(() -> {
-        return m_operatorController.getRightTriggerAxis() > 0.5;
-      }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
-  
-      new Trigger(() -> {
-        return m_operatorController.getLeftTriggerAxis() > 0.5;
-      }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5))
-          .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.04));
-  
-      // Climber Up, Operator Controller Right Bumper + A Button
-      new Trigger(() -> {
-        return m_operatorController.getAButton() && m_operatorController.getRightBumper();
-      }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
-  
-      // Climber Down, Operator Controller Right Bumper + B Button
-      new Trigger(() -> {
-        return m_operatorController.getBButton() && m_operatorController.getRightBumper();
-      }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
-  
-      // Toggle Distance Sensor, Operatoe Controller Left Bumper + Start Button
-      new Trigger(() -> {
-        return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
-      }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+    // Intake, Driver Controller Right Trigger
+    new Trigger(() -> {
+      return m_driverController.getLeftTriggerAxis() > 0.5;
+    }).whileTrue(
+        new SequentialCommandGroup(
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+            new NoteIntakeCommand(m_intakeSubsystem),
+            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
+        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+
+    // Outtake, Operator Controller Right Trigger
+    new Trigger(() -> {
+      return m_operatorController.getRightTriggerAxis() > 0.5;
+    }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
+
+    new Trigger(() -> {
+      return m_operatorController.getLeftTriggerAxis() > 0.5;
+    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5))
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.04));
+
+    // Climber Up, Operator Controller Right Bumper + A Button
+    new Trigger(() -> {
+      return m_operatorController.getAButton() && m_operatorController.getRightBumper();
+    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
+
+    // Climber Down, Operator Controller Right Bumper + B Button
+    new Trigger(() -> {
+      return m_operatorController.getBButton() && m_operatorController.getRightBumper();
+    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
+
+    // Toggle Distance Sensor, Operatoe Controller Left Bumper + Start Button
+    new Trigger(() -> {
+      return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
+    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
   }
 
   /**
@@ -223,19 +218,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    
-  ///List<PathPlannerPath> pathGroup = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected().getName());
-  //PathPlannerAuto path = PathPlannerAuto.getPathGroupFromAutoFile(pathGroup);
 
-    //var alliance = DriverStation.getAlliance();
-     //PathPlannerPath pathGroup = path;
-     //if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-     //autonPath = autonPath.flipPath();
-     //}
-     //m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
+    /// List<PathPlannerPath> pathGroup =
+    /// PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected().getName());
+    // PathPlannerAuto path = PathPlannerAuto.getPathGroupFromAutoFile(pathGroup);
+
+    // var alliance = DriverStation.getAlliance();
+    // PathPlannerPath pathGroup = path;
+    // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+    // autonPath = autonPath.flipPath();
+    // }
+    // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
     // return new PathPlannerAuto(autoChooser.getSelected().getName());
-    return autoChooser.getSelected(); 
-    
+    return autoChooser.getSelected();
+
   }
 }
