@@ -126,6 +126,7 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("intakespeed", m_intakeSpeed);
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
+    SmartDashboard.putNumber("Arm Absolute Angle", m_armEncoder.getAbsolutePosition());
     SmartDashboard.putBoolean("Have Note?", haveNote);
     SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches) : -1);
     SmartDashboard.putNumber("pid output", armMotorSpeed);

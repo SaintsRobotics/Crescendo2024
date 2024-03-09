@@ -69,7 +69,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
-            new ParallelDeadlineGroup(new WaitCommand(2), new NoteOuttakeCommand(m_intakeSubsystem)),
+            new NoteOuttakeCommand(m_intakeSubsystem),
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off)));
 
     NamedCommands.registerCommand("Intake",
@@ -93,12 +93,18 @@ public class RobotContainer {
                                                                                // from robot center to
                                                                                // furthest module.
             new ReplanningConfig(false, false)),
-        () ->  
-        {var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;}, m_robotDrive);
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        }, m_robotDrive);
 
     // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,
     // ShootSpeed.Shooting),
