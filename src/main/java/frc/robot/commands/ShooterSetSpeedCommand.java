@@ -13,14 +13,18 @@ public class ShooterSetSpeedCommand extends Command {
   ShooterSubsystem m_ShooterSubsystem;
   double m_shooterSpeed = 0;
 
+
+  double set_time = 1.5;
   Timer m_timer = new Timer();
 
   ShootSpeed m_shootSpeed;
 
   /** Creates a new ShootCommand. */
-  public ShooterSetSpeedCommand(ShooterSubsystem shooterSubsystem, ShootSpeed shootSpeed) {
+  public ShooterSetSpeedCommand(ShooterSubsystem shooterSubsystem, ShootSpeed shootSpeed, double time) {
     m_ShooterSubsystem = shooterSubsystem;
     addRequirements(m_ShooterSubsystem);
+
+    set_time = time;
 
     m_shootSpeed = shootSpeed;
   }
@@ -47,6 +51,6 @@ public class ShooterSetSpeedCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.get() > 1.5;
+    return m_timer.get() > set_time;
   }
 }

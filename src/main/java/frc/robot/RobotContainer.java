@@ -68,9 +68,9 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5),
             new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem)),
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off)));
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.01)));
 
     NamedCommands.registerCommand("Intake",
         new SequentialCommandGroup(
@@ -164,9 +164,9 @@ public class RobotContainer {
     // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
     new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
+        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5),
             new NoteOuttakeCommand(m_intakeSubsystem)))
-        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.3));
 
     new JoystickButton(m_operatorController, Button.kA.value)
         .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
