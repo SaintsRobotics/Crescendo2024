@@ -37,6 +37,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     m_leftSolenoid.set(m_state);
     m_rightSolenoid.set(m_state);
+    SmartDashboard.putString("pneumatics state", m_state.name());
     SmartDashboard.putNumber("pressure", m_pHub.getPressure(0));
   }
 
