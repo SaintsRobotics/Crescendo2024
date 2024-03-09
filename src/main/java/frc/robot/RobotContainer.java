@@ -127,7 +127,7 @@ public class RobotContainer {
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
-                        .getLeftTriggerAxis()
+                        .getRightTriggerAxis()
                         * IOConstants.kSlowModeScalar),
                 // * 0.8,
                 MathUtil.applyDeadband(
@@ -135,7 +135,7 @@ public class RobotContainer {
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
-                        .getLeftTriggerAxis()
+                        .getRightTriggerAxis()
                         * IOConstants.kSlowModeScalar),
                 // * 0.8,
                 MathUtil.applyDeadband(
@@ -143,7 +143,7 @@ public class RobotContainer {
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxAngularSpeedRadiansPerSecond
                     * (1 - m_driverController
-                        .getLeftTriggerAxis()
+                        .getRightTriggerAxis()
                       * IOConstants.kSlowModeScalar)
                     / 2,
                 !m_driverController.getLeftBumper()),
@@ -174,7 +174,7 @@ public class RobotContainer {
 
        // Intake, Driver Controller Right Trigger
        new Trigger(() -> {
-        return m_driverController.getRightTriggerAxis() > 0.5;
+        return m_driverController.getLeftTriggerAxis() > 0.5;
       }).whileTrue(
           new SequentialCommandGroup(
               new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
