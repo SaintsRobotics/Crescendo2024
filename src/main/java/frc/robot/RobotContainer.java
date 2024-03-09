@@ -4,13 +4,19 @@
 
 package frc.robot;
 
+import java.nio.file.Path;
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -87,7 +93,12 @@ public class RobotContainer {
                                                                                // from robot center to
                                                                                // furthest module.
             new ReplanningConfig(false, false)),
-        () -> false, m_robotDrive);
+        () ->  
+        {var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;}, m_robotDrive);
 
     // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,
     // ShootSpeed.Shooting),
@@ -127,7 +138,7 @@ public class RobotContainer {
                     * DriveConstants.kMaxAngularSpeedRadiansPerSecond
                     * (1 - m_driverController
                         .getLeftTriggerAxis()
-                        * IOConstants.kSlowModeScalar)
+                      * IOConstants.kSlowModeScalar)
                     / 2,
                 !m_driverController.getRightBumper()),
             m_robotDrive));
@@ -191,17 +202,19 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // PathPlannerPath path = PathPlannerPath.fromPathFile("Center4Note");
+    
+  ///List<PathPlannerPath> pathGroup = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected().getName());
+  //PathPlannerAuto path = PathPlannerAuto.getPathGroupFromAutoFile(pathGroup);
 
-    // var alliance = DriverStation.getAlliance();
-    // PathPlannerPath autonPath = path;
-    // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-    // autonPath = autonPath.flipPath();
-    // }
-    // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
+    //var alliance = DriverStation.getAlliance();
+     //PathPlannerPath pathGroup = path;
+     //if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+     //autonPath = autonPath.flipPath();
+     //}
+     //m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
-    // return AutoBuilder.followPath(autonPath);
-    // return null;
-    return autoChooser.getSelected();
+    // return new PathPlannerAuto(autoChooser.getSelected().getName());
+    return autoChooser.getSelected(); 
+    
   }
 }

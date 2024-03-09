@@ -52,6 +52,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Intake in"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
           }
         },
@@ -90,6 +96,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Intake in"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
           }
         },
@@ -123,6 +135,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake in"
           }
         },
         {
