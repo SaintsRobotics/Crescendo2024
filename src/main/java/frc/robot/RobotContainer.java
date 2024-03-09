@@ -146,7 +146,7 @@ public class RobotContainer {
                         .getLeftTriggerAxis()
                       * IOConstants.kSlowModeScalar)
                     / 2,
-                !m_driverController.getRightBumper()),
+                !m_driverController.getLeftBumper()),
             m_robotDrive));
   }
 
@@ -168,29 +168,44 @@ public class RobotContainer {
             new NoteOuttakeCommand(m_intakeSubsystem)))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.3));
 
-    new JoystickButton(m_operatorController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.forward(),
-            m_climberSubsystem));
-    new JoystickButton(m_operatorController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_climberSubsystem.reverse(),
-            m_climberSubsystem));
-
-    new Trigger(() -> {
-      return m_driverController.getLeftTriggerAxis() > 0.5;
-    }).whileTrue(
-        new SequentialCommandGroup(
-            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
-            new NoteIntakeCommand(m_intakeSubsystem),
-            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
+        .onTrue(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp))
         .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
 
-    new Trigger(() -> {
-      return m_driverController.getRightTriggerAxis() > 0.5;
-    }).whileTrue(
-        new SequentialCommandGroup(
-            new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp),
-            new NoteOuttakeCommand(m_intakeSubsystem)))
-        .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+       // Intake, Driver Controller Right Trigger
+       new Trigger(() -> {
+        return m_driverController.getRightTriggerAxis() > 0.5;
+      }).whileTrue(
+          new SequentialCommandGroup(
+              new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
+              new NoteIntakeCommand(m_intakeSubsystem),
+              new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)))
+          .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+  
+      // Outtake, Operator Controller Right Trigger
+      new Trigger(() -> {
+        return m_operatorController.getRightTriggerAxis() > 0.5;
+      }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
+  
+      new Trigger(() -> {
+        return m_operatorController.getLeftTriggerAxis() > 0.5;
+      }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5))
+          .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.04));
+  
+      // Climber Up, Operator Controller Right Bumper + A Button
+      new Trigger(() -> {
+        return m_operatorController.getAButton() && m_operatorController.getRightBumper();
+      }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
+  
+      // Climber Down, Operator Controller Right Bumper + B Button
+      new Trigger(() -> {
+        return m_operatorController.getBButton() && m_operatorController.getRightBumper();
+      }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
+  
+      // Toggle Distance Sensor, Operatoe Controller Left Bumper + Start Button
+      new Trigger(() -> {
+        return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
+      }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
   }
 
   /**

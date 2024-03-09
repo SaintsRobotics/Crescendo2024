@@ -128,8 +128,8 @@ public final class Constants {
     public final static int leftReverseChannel = 2;
     public final static int rightReverseChannel = 3;
 
-    public final static double minPressure = 100.0;
-    public final static double maxPressure = 110.0;
+    public final static double minPressure = 95.0;
+    public final static double maxPressure = 105.0;
   }
 
   public static final class VisionConstants {
