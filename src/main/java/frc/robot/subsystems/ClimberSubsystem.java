@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  private final DoubleSolenoid m_leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,
+  private final DoubleSolenoid m_leftSolenoid = new DoubleSolenoid(2, PneumaticsModuleType.REVPH,
       ClimberConstants.leftForwardChannel, ClimberConstants.leftReverseChannel);
-  private final DoubleSolenoid m_rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,
-      ClimberConstants.rightForwardChannel, ClimberConstants.rightReverseChannel);
+  private final DoubleSolenoid m_rightSolenoid = new DoubleSolenoid(2, PneumaticsModuleType.REVPH,
+      ClimberConstants.rightReverseChannel, ClimberConstants.rightForwardChannel);
   private PneumaticHub m_pHub;
 
   private boolean m_compressorEnabled;
@@ -37,6 +37,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     m_leftSolenoid.set(m_state);
     m_rightSolenoid.set(m_state);
+    SmartDashboard.putString("pneumatics state", m_state.name());
     SmartDashboard.putNumber("pressure", m_pHub.getPressure(0));
   }
 
