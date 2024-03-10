@@ -120,6 +120,9 @@ public final class Constants {
     public static final double kShooterSpeedTop = 0.8;
     public static final double kShooterSpeedBottom = 0.9;
     public static final double kShooterOff = 0;
+
+    public static final double kShooterOffTime = 0.04; 
+    public static final double kShooterOnTime = 1.5; 
   }
 
   public static class ClimberConstants {

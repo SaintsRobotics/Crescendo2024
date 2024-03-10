@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
 import frc.robot.commands.NoteOuttakeCommand;
@@ -63,9 +64,9 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5),
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
             new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem)),
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.01)));
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime)));
 
     NamedCommands.registerCommand("Intake",
         new SequentialCommandGroup(
@@ -159,9 +160,9 @@ public class RobotContainer {
     // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
     new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5),
+        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
             new NoteOuttakeCommand(m_intakeSubsystem)))
-        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.3));
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp))
@@ -184,8 +185,8 @@ public class RobotContainer {
 
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
-    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5))
-        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.04));
+    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime))
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     // Climber Up, Operator Controller Right Bumper + A Button
     new Trigger(() -> {
