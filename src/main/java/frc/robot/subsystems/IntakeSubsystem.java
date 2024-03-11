@@ -120,7 +120,7 @@ public class IntakeSubsystem extends SubsystemBase {
     haveNote = getDistanceSensorToggle() ? getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold : false;
 
     // Note: negative because encoder goes from 0 to -193 cuz weird
-    double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.4, 0.4);
+    double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
     m_armMotor.set(armMotorSpeed);
     m_intakeMotor.set(m_intakeSpeed);
     SmartDashboard.putNumber("intakespeed", m_intakeSpeed);
@@ -130,6 +130,7 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Have Note?", haveNote);
     SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches) : -1);
     SmartDashboard.putNumber("pid output", armMotorSpeed);
+    SmartDashboard.putNumber("Get offset", m_armEncoder.getPositionOffset());
   }
 
   public boolean haveNote() {
