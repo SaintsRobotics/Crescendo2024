@@ -1,76 +1,76 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-
-import frc.robot.Constants.ClimberConstants;
-
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kOff;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
-public class ClimberSubsystem {
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimberConstants;
 
-    private final DoubleSolenoid m_leftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,
-            ClimberConstants.leftForwardChannel, ClimberConstants.leftReverseChannel);
-    private final DoubleSolenoid m_rightSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH,
-            ClimberConstants.rightForwardChannel, ClimberConstants.rightReverseChannel);
+public class ClimberSubsystem extends SubsystemBase {
+  private final DoubleSolenoid m_leftSolenoid = new DoubleSolenoid(2, PneumaticsModuleType.REVPH,
+      ClimberConstants.leftForwardChannel, ClimberConstants.leftReverseChannel);
+  private final DoubleSolenoid m_rightSolenoid = new DoubleSolenoid(2, PneumaticsModuleType.REVPH,
+      ClimberConstants.rightReverseChannel, ClimberConstants.rightForwardChannel);
+  private PneumaticHub m_pHub;
 
-    private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
+  private boolean m_compressorEnabled;
 
-    private boolean enableCompressor = true;
+  private Value m_state;
 
-    public ClimberSubsystem() {
-        m_leftSolenoid.set(kOff);
-        m_rightSolenoid.set(kOff);
-        m_compressor.disable();
-        m_compressor.enableAnalog(ClimberConstants.minPressure, ClimberConstants.maxPressure);
+  public ClimberSubsystem() {
+    m_compressorEnabled = false;
+    m_pHub = new PneumaticHub(2);
+
+    solenoidOff();
+
+    m_compressorEnabled = false;
+    toggleCompressor();
+  }
+
+  // Runs once every tick (~20ms)
+  public void periodic() {
+    m_leftSolenoid.set(m_state);
+    m_rightSolenoid.set(m_state);
+    SmartDashboard.putString("pneumatics state", m_state.name());
+    SmartDashboard.putNumber("pressure", m_pHub.getPressure(0));
+  }
+
+  /**
+   * Sets the state of the solenoid to off
+   */
+  public void solenoidOff() {
+    m_state = kOff;
+  }
+
+  /**
+   * Extends both arms
+   */
+  public void forward() {
+    m_state = kForward;
+  }
+
+  /**
+   * Retracts both arms
+   */
+  public void reverse() {
+    m_state = kReverse;
+  }
+
+  /**
+   * Toggles the state of the compressor (on/off)
+   */
+  public void toggleCompressor() {
+    m_compressorEnabled = !m_compressorEnabled;
+    if (m_compressorEnabled) {
+      m_pHub.enableCompressorAnalog(ClimberConstants.minPressure, ClimberConstants.maxPressure);
+    } else {
+      m_pHub.disableCompressor();
     }
-
-    // Runs once every tick (~20ms)
-    public void periodic() {
-    }
-
-    /**
-     * Sets the state of the solenoid to off
-     */
-    public void off() {
-        m_leftSolenoid.set(kOff);
-        m_rightSolenoid.set(kOff);
-    }
-
-    /**
-     * Extends both arms
-     */
-    public void forward() {
-        m_leftSolenoid.set(kForward);
-        m_rightSolenoid.set(kForward);
-    }
-
-    /**
-     * Retracts both arms
-     */
-    public void reverse() {
-        m_leftSolenoid.set(kReverse);
-        m_rightSolenoid.set(kReverse);
-    }
-    /*
-     * Toggles the state of the climber
-     */
-
-    public void toggle() {
-        m_leftSolenoid.toggle();
-        m_rightSolenoid.toggle();
-    }
-
-    // Toggles the state of the compressor (on/off)
-    public void toggleCompresor() {
-        enableCompressor = !enableCompressor;
-        if (enableCompressor) {
-            m_compressor.enableAnalog(ClimberConstants.minPressure, ClimberConstants.maxPressure);
-        } else {
-            m_compressor.disable();
-        }
-    }
+  }
 }

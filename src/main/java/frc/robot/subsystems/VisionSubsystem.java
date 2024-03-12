@@ -70,7 +70,10 @@ public class VisionSubsystem extends SubsystemBase {
     m_tv = m_visionNetworkTable.getIntegerTopic("tv").subscribe(0);
   }
 
-  /** Add a consumer, which the vision subsystem will push an update to every time there is an updated measurement */
+  /**
+   * Add a consumer, which the vision subsystem will push an update to every time
+   * there is an updated measurement
+   */
   public void addConsumer(Consumer<Measurement> consumer) {
     m_consumerList.add(consumer);
   }
@@ -83,7 +86,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (latestMeasurement != null) {
       for (Consumer<Measurement> consumer : m_consumerList) {
-        consumer.accept(latestMeasurement);
+        // consumer.accept(latestMeasurement);
       }
     }
 

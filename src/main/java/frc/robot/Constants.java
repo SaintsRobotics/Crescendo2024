@@ -33,7 +33,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
 
-    public static final double kControllerDeadband = 0.05;
+    public static final double kControllerDeadband = 0.1;
     public static final double kSlowModeScalar = 0.8;
   }
 
@@ -101,14 +101,14 @@ public final class Constants {
     public static final int kArmEncoderChannel = 0;
 
     // In degrees
-    public static final double kIntakeLoweredAngle = 0;
-    public static final double kIntakeRaisedAngle = 194;
-    public static final double kIntakeAmpScoringAngle = 100;
+    public static final double kIntakeLoweredAngle = -193;
+    public static final double kIntakeRaisedAngle = 0;
+    public static final double kIntakeAmpScoringAngle = -93; // 193 - 100 (previous angle)
 
     /** Encoder offset in rotations */
-    public static final double kArmEncoderOffset = 0.6692;
+    public static final double kArmEncoderOffset = 0.3415;
 
-    public static final double kIntakeSpeed = 3.0;
+    public static final double kIntakeSpeed = 0.5;
 
 
     /** Intake Coordninates */
@@ -141,43 +141,21 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int kTopShooterMotorPort = 35;
-    public static final int kBottomShooterMotorPort = 20;
-
-    /**
-     * Created as 'good' points for the setLED command
-     * Coordinates are in meter based on (0,0) being the source for the red alliance
-     */
-    //TODO: verify values, values were eyeballed using pathplanner
-    public static final double kTopShootX = 0.75;
-    public static final double kTopShootY = 6.7;
-    public static final double kTopShootAngle = 120;
-
-    public static final double kMiddleShootX = 1.4;
-    public static final double kMiddleShootY = 5.6;
-    public static final double kMiddleShootAngle = 180;
-
-    public static final double kBottomShootX = 0.75;
-    public static final double kBottomShootY = 4.4;
-    public static final double kBottomShootAngle = 240;
-
-    /**
-     * the tolerance for the possible shooting positions at which the isk goes in
-     */
-    // TODO:update maybe (currently arbitrary)
-    public static final double kPositionTolerance = 0.5;
-    public static final double kAngleTolerance = 10;
-
+    public static final int kTopShooterMotorPort = 20;
+    public static final int kBottomShooterMotorPort = 35;
+    public static final double kShooterSpeedTop = 0.8;
+    public static final double kShooterSpeedBottom = 0.9;
+    public static final double kShooterOff = 0;
   }
 
   public static class ClimberConstants {
-    public final static int leftForwardChannel = 0;
-    public final static int rightForwardChannel = 0;
-    public final static int leftReverseChannel = 1;
-    public final static int rightReverseChannel = 1;
+    public final static int leftForwardChannel = 4;
+    public final static int rightForwardChannel = 1;
+    public final static int leftReverseChannel = 2;
+    public final static int rightReverseChannel = 3;
 
-    public final static double minPressure = 50.0;
-    public final static double maxPressure = 120.0;
+    public final static double minPressure = 100.0;
+    public final static double maxPressure = 110.0;
   }
 
   public static final class VisionConstants {

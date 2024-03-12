@@ -94,20 +94,25 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
-    SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
-    SmartDashboard.putNumber("odometryX", m_poseEstimator.getEstimatedPosition().getX());
-    SmartDashboard.putNumber("odometryY", m_poseEstimator.getEstimatedPosition().getY());
+    // SmartDashboard.putNumber("gyro angle", m_gyro.getAngle());
+    // SmartDashboard.putNumber("odometryX", m_poseEstimator.getEstimatedPosition().getX());
+    // SmartDashboard.putNumber("odometryY", m_poseEstimator.getEstimatedPosition().getY());
 
-    // AdvantageScope Logging
-    double[] logData = {
-        m_frontLeft.getPosition().angle.getDegrees(), m_frontLeft.driveOutput,
-        m_frontRight.getPosition().angle.getDegrees(), m_frontRight.driveOutput,
-        m_rearLeft.getPosition().angle.getDegrees(), m_rearLeft.driveOutput,
-        m_rearRight.getPosition().angle.getDegrees(), m_rearRight.driveOutput,
-    };
-    SmartDashboard.putNumberArray("AdvantageScope Swerve States", logData);
+    // // AdvantageScope Logging
+    // double[] logData = {
+    //     m_frontLeft.getPosition().angle.getDegrees(), m_frontLeft.driveOutput,
+    //     m_frontRight.getPosition().angle.getDegrees(), m_frontRight.driveOutput,
+    //     m_rearLeft.getPosition().angle.getDegrees(), m_rearLeft.driveOutput,
+    //     m_rearRight.getPosition().angle.getDegrees(), m_rearRight.driveOutput,
+    // };
+    // SmartDashboard.putNumberArray("AdvantageScope Swerve States", logData);
 
     setModuleStates(swerveModuleStates);
+  }
+
+  public void reset() {
+    swerveModuleStates = new SwerveModuleState[] { new SwerveModuleState(), new SwerveModuleState(),
+        new SwerveModuleState(), new SwerveModuleState() };
   }
 
   /**
