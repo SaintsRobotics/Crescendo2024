@@ -24,28 +24,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle5thNote-Right"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
+                  "pathName": "MoveOut-Right"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MoveOut-Right"
           }
         }
       ]

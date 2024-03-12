@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7516461186768542,
-      "y": 4.35
+      "x": 1.3470318873095533,
+      "y": 5.5216374597852385
     },
-    "rotation": -60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -22,15 +22,16 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "sequential",
                 "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "MoveOut-Right"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "CenterNote-Center"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -45,13 +46,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Intake in"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "Shoot"
           }
         }
       ]
