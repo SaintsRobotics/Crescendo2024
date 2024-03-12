@@ -22,16 +22,9 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "CenterNote-Center"
-                      }
-                    }
-                  ]
+                  "pathName": "CenterNote-Center"
                 }
               },
               {
@@ -60,16 +53,9 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "LeftNote-Center"
-                      }
-                    }
-                  ]
+                  "pathName": "LeftNote-Center"
                 }
               },
               {

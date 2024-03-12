@@ -76,8 +76,16 @@ public class RobotContainer {
             new NoteIntakeCommand(m_intakeSubsystem),
             new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
 
-    NamedCommands.registerCommand("Pre-Speed - 30%",
-      new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Halfway, 0.01));
+    NamedCommands.registerCommand("Prep-Speed - 60%",
+      new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Prep, 0.01));
+
+    NamedCommands.registerCommand("Spin up Shooter",
+      new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 0.01));
+
+    NamedCommands.registerCommand("Spin down Shooter",
+      new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.01));
+
+    NamedCommands.registerCommand("Outtake", new NoteOuttakeCommand(m_intakeSubsystem));
 
     NamedCommands.registerCommand("Intake in",
         new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
