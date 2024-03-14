@@ -42,6 +42,10 @@ public class ShooterSubsystem extends SubsystemBase {
         m_topSpeed = ShooterConstants.kShooterSpeedTop;
         m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
         break;
+      case Halfway:
+        m_topSpeed = ShooterConstants.kPreShooterSpeed;
+        m_bottomSpeed = ShooterConstants.kPreShooterSpeed;
+        break;
       case Off:
         m_topSpeed = 0.0;
         m_bottomSpeed = 0.0;
@@ -65,6 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static enum ShootSpeed {
     Shooting,
+    Halfway,
     Off
   }
 }

@@ -11,6 +11,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -25,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
 import frc.robot.commands.NoteOuttakeCommand;
@@ -49,7 +53,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
 
@@ -64,15 +68,18 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
-            new ParallelDeadlineGroup(new WaitCommand(2), new NoteOuttakeCommand(m_intakeSubsystem)),
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off)));
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
+            new ParallelDeadlineGroup(new WaitCommand(0.8), new NoteOuttakeCommand(m_intakeSubsystem)),
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime)));
 
     NamedCommands.registerCommand("Intake",
         new SequentialCommandGroup(
             new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended),
             new NoteIntakeCommand(m_intakeSubsystem),
             new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted)));
+
+    NamedCommands.registerCommand("Pre-Speed - 30%",
+      new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Halfway, 0.01));
 
     NamedCommands.registerCommand("Intake in",
         new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
@@ -89,7 +96,18 @@ public class RobotContainer {
                                                                                // from robot center to
                                                                                // furthest module.
             new ReplanningConfig(false, false)),
-        () -> false, m_robotDrive);
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        }, m_robotDrive);
 
     // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,
     // ShootSpeed.Shooting),
@@ -150,9 +168,9 @@ public class RobotContainer {
     // DriveConstants.kMaxAngularSpeedRadiansPerSecond - 1, 5)));
 
     new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting),
+        .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
             new NoteOuttakeCommand(m_intakeSubsystem)))
-        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp))
@@ -175,18 +193,18 @@ public class RobotContainer {
 
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
-    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting))
-        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off));
+    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime))
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     // Climber Up, Operator Controller Right Bumper + A Button
-    new Trigger(() -> {
-      return m_operatorController.getAButton() && m_operatorController.getRightBumper();
-    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
+    // new Trigger(() -> {
+    //   return m_operatorController.getAButton() && m_operatorController.getRightBumper();
+    // }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
 
-    // Climber Down, Operator Controller Right Bumper + B Button
-    new Trigger(() -> {
-      return m_operatorController.getBButton() && m_operatorController.getRightBumper();
-    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
+    // // Climber Down, Operator Controller Right Bumper + B Button
+    // new Trigger(() -> {
+    //   return m_operatorController.getBButton() && m_operatorController.getRightBumper();
+    // }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
     // Toggle Distance Sensor, Operatoe Controller Left Bumper + Start Button
     new Trigger(() -> {
@@ -209,17 +227,29 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // PathPlannerPath path = PathPlannerPath.fromPathFile("Center4Note");
+
+    /// List<PathPlannerPath> pathGroup =
+    /// PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected().getName());
+    // PathPlannerAuto path = PathPlannerAuto.getPathGroupFromAutoFile(pathGroup);
 
     // var alliance = DriverStation.getAlliance();
-    // PathPlannerPath autonPath = path;
+    // PathPlannerPath pathGroup = path;
     // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
     // autonPath = autonPath.flipPath();
     // }
     // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
-    // return AutoBuilder.followPath(autonPath);
-    // return null;
+    // return new PathPlannerAuto(autoChooser.getSelected().getName());
     return autoChooser.getSelected();
+
+    // return new SequentialCommandGroup(
+    //         new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 3),
+    //         new ParallelDeadlineGroup(new WaitCommand(1.5), new NoteOuttakeCommand(m_intakeSubsystem)),
+    //         new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.01)
+    //         , new ParallelDeadlineGroup(new WaitCommand(20), new RepeatCommand(new InstantCommand(() -> m_robotDrive.autonDrive(new ChassisSpeeds(3, 0, 0)))))
+    //         );
+
+
+
   }
 }
