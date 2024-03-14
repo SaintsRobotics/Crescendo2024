@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
+import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
 
 public class LEDSubsystem extends SubsystemBase {
   private final AddressableLED m_LED = new AddressableLED(LEDConstants.kLEDPort);
@@ -20,8 +21,8 @@ public class LEDSubsystem extends SubsystemBase {
     m_LED.setData(m_LEDBuffer);
     m_LED.start();
 
-    // Yellow when bot turns on.
-    setLED(50, 50, 0);
+    // Blue when bot turns on.
+    setLED(0, 0, 255);
 
     SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
   }
@@ -39,5 +40,16 @@ public class LEDSubsystem extends SubsystemBase {
     }
     m_LED.setData(m_LEDBuffer);
     SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
+  }
+
+  public void addIntakeStatus(ArmPosition s){
+    switch (s){
+      case Extended:
+        setLED(0, 255, 255);
+        break;
+      case Retracted:
+        setLED(0, 250, 0);
+        break;
+    }
   }
 }

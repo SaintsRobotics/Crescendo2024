@@ -32,6 +32,7 @@ import frc.robot.commands.ShooterSetSpeedCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShootSpeed;
@@ -50,6 +51,7 @@ public class RobotContainer {
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+  private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
@@ -95,6 +97,7 @@ public class RobotContainer {
     // NoteOuttakeCommand(m_intakeSubsystem))));
 
     m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
+    m_intakeSubsystem.addConsumer(m_ledSubsystem::addIntakeStatus);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
