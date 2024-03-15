@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -20,7 +16,6 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.VisionSubsystem.Measurement;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -39,8 +34,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
-
-  private List<Consumer<ArmPosition>> m_consumerList = new ArrayList<>(3);
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
@@ -81,10 +74,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     m_armPID.setSetpoint(m_armSetpoint);
-
-    for (Consumer<ArmPosition> consumer : m_consumerList) {
-      consumer.accept(position);
-    }
   }
 
   public double getArmPosition() {
@@ -105,10 +94,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stopIntake() {
     m_intakeSpeed = 0;
-  }
-
-  public void addConsumer(Consumer<ArmPosition> consumer) {
-    m_consumerList.add(consumer);
   }
 
   /**

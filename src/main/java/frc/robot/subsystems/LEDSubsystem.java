@@ -9,9 +9,6 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
-import frc.robot.subsystems.ShooterSubsystem.ShootSpeed;
 
 public class LEDSubsystem extends SubsystemBase {
   private final AddressableLED m_LED = new AddressableLED(LEDConstants.kLEDPort);
@@ -23,8 +20,8 @@ public class LEDSubsystem extends SubsystemBase {
     m_LED.setData(m_LEDBuffer);
     m_LED.start();
 
-    // Blue when bot turns on.
-    setLED(0, 0, 255);
+    // Yellow when bot turns on.
+    setLED(50, 50, 0);
 
     SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
   }
@@ -42,43 +39,5 @@ public class LEDSubsystem extends SubsystemBase {
     }
     m_LED.setData(m_LEDBuffer);
     SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
-  }
-
-  public void addIntakeStatus(ArmPosition s) {
-    switch (s) {
-      case Extended:
-        setLED(0, 255, 255);
-        break;
-      case Retracted:
-        setLED(0, 250, 0);
-        break;
-    }
-  }
-
-//TODO: potentially streamline
-  public void addShooterStatus(ShootSpeed s, double tspeed, double bspeed) {
-    switch (s) {
-      case Shooting:
-        if (tspeed > ShooterConstants.kTopShooterSpeed && bspeed > ShooterConstants.kBottomShooterSpeed) {
-          setLED(0, 255, 255);
-        } else if (tspeed > ShooterConstants.kPreShooterSpeed && bspeed > ShooterConstants.kPreShooterSpeed) {
-          setLED(255, 0, 170);
-        } else {
-          setLED(255, 0, 0);
-        }
-        break;
-
-      case Halfway:
-        if (tspeed > ShooterConstants.kPreShooterSpeed && bspeed > ShooterConstants.kPreShooterSpeed) {
-          setLED(255, 0, 170);
-        } else {
-          setLED(255, 0, 0);
-        }
-        break;
-      default:
-        setLED(255, 0, 0);
-        break;
-
-    }
   }
 }
