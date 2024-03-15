@@ -5,6 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+
+import java.util.function.Consumer;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -16,6 +19,8 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   CANSparkFlex m_bottom = new CANSparkFlex(ShooterConstants.kBottomShooterMotorPort, MotorType.kBrushless);
   CANSparkFlex m_top = new CANSparkFlex(ShooterConstants.kTopShooterMotorPort, MotorType.kBrushless);
+
+  private Consumer<ShootSpeed> consumer;
 
   private double m_topSpeed = 0;
   private double m_bottomSpeed = 0;
@@ -39,8 +44,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setShootingSpeed(ShootSpeed speed) {
     switch (speed) {
       case Shooting:
-        m_topSpeed = ShooterConstants.kShooterSpeedTop;
-        m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
+        m_topSpeed = ShooterConstants.kTopShooterSpeed;
+        m_bottomSpeed = ShooterConstants.kBottomShooterSpeed;
         break;
       case Halfway:
         m_topSpeed = ShooterConstants.kPreShooterSpeed;
@@ -51,6 +56,8 @@ public class ShooterSubsystem extends SubsystemBase {
         m_bottomSpeed = 0.0;
         break;
     }
+
+    consumer.accept(speed);
   }
 
   public double returnCurrentSpeed() {
