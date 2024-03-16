@@ -67,7 +67,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
-            new ParallelDeadlineGroup(new WaitCommand(0.8), new NoteOuttakeCommand(m_intakeSubsystem)),
+            new ParallelDeadlineGroup(new WaitCommand(0.8), new NoteOuttakeCommand(m_intakeSubsystem, 1)),
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime)));
 
     NamedCommands.registerCommand("Intake",
@@ -85,7 +85,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Spin down Shooter",
       new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.01));
 
-    NamedCommands.registerCommand("Outtake", new NoteOuttakeCommand(m_intakeSubsystem));
+    NamedCommands.registerCommand("Outtake", new NoteOuttakeCommand(m_intakeSubsystem, 1));
 
     NamedCommands.registerCommand("Intake in",
         new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
@@ -174,7 +174,7 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
-            new NoteOuttakeCommand(m_intakeSubsystem)))
+            new NoteOuttakeCommand(m_intakeSubsystem, 30)))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     new JoystickButton(m_driverController, Button.kRightBumper.value)
@@ -194,7 +194,7 @@ public class RobotContainer {
     // Outtake, Operator Controller Right Trigger
     new Trigger(() -> {
       return m_operatorController.getRightTriggerAxis() > 0.5;
-    }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
+    }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem, 30));
 
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
