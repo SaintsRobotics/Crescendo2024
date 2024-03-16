@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.LEDConstants;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -34,9 +35,35 @@ public class LEDSubsystem extends SubsystemBase {
    * @param b Blue 0-255
    */
   public void setLED(int r, int g, int b) {
+
+    // If we get an invalid value just set it to a rainbow
+    if (r > 255 || b > 255 || g > 255) {
+      rainbow();
+      return;
+    }
+
     for (var i = 0; i < LEDConstants.kLEDLength; i++) {
       m_LEDBuffer.setRGB(i, r, g, b);
     }
+    m_LED.setData(m_LEDBuffer);
+    SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
+  }
+
+  private void rainbow() {
+    int m_rainbowFirstPixelHue = 0;
+    // For every pixel
+    for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+      // Calculate the hue - hue is easier for rainbows because the color
+      // shape is a circle so only one value needs to precess
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_LEDBuffer.getLength())) % 180;
+      // Set the value
+      m_LEDBuffer.setHSV(i, hue, 255, 128);
+    }
+    // Increase by to make the rainbow "move"
+    m_rainbowFirstPixelHue += 3;
+    // Check bounds
+    m_rainbowFirstPixelHue %= 180;
+
     m_LED.setData(m_LEDBuffer);
     SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
   }

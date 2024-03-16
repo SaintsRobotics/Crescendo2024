@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.DefaultLEDCommand;
 import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
 import frc.robot.commands.NoteOuttakeCommand;
@@ -36,6 +37,7 @@ import frc.robot.commands.ShooterSetSpeedCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShootSpeed;
@@ -54,6 +56,7 @@ public class RobotContainer {
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+  private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
@@ -119,6 +122,10 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+
+    m_ledSubsystem.setDefaultCommand(
+      new DefaultLEDCommand(m_ledSubsystem, m_intakeSubsystem, m_shooterSubsystem)
+    );
 
     m_robotDrive.setDefaultCommand(
         new RunCommand(
