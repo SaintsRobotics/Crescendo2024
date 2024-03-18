@@ -11,18 +11,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class NoteOuttakeCommand extends Command {
   private IntakeSubsystem m_intakeSubsystem;
 
-  private Timer m_timer = new Timer();
-  private double deadline;
-
   /** Creates a new intakeCommand. */
-  public NoteOuttakeCommand(IntakeSubsystem subsystem, double time) {
+  public NoteOuttakeCommand(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
     addRequirements(m_intakeSubsystem);
-
-    deadline = time;
-
-    m_timer.reset();
-    m_timer.start();
   }
 
   // Called when the command is initially scheduled.
@@ -46,6 +38,6 @@ public class NoteOuttakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.get() > deadline;
+    return false;
   }
 }
