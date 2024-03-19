@@ -100,10 +100,13 @@ public class IntakeSubsystem extends SubsystemBase {
    * Gets distance from Rev 2m sensor
    */
   private double getDistanceSensor() {
-    if (m_distanceSensor.getRange() == -1) {
-      m_distanceSensorToggle = false;
+    if(m_distanceSensorToggle){
+      if (m_distanceSensor.getRange() == -1) {
+        m_distanceSensorToggle = false;
+      }
+      return m_distanceSensor.getRange();
     }
-    return m_distanceSensor.getRange();
+    return -1;
   }
 
   public boolean getDistanceSensorToggle() {
