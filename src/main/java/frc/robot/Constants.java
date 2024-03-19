@@ -111,32 +111,6 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 0.5;
 
-
-    /** Intake Coordninates */
-    // TODO: MAKE THIS AN ACTUALY VALID VALUE + TUNE VALUES 
-    public static final double kIntakeDist = 999;
-    public static final double kIntakeError = 999;
-    public static final double KIntakeAngleTolerance = 1;
-    public static final double KIntakePositionTolerance = 1;
-
-    public static final double KLeftRingX = 2.9;
-    public static final double KTopLeftRingY = 7;
-
-    public static final double KMiddleLeftRingY = 5.5;
-
-    public static final double KBottomLeftRingY = 4;
-
-    public static final double KRightRingX = 8.3;
-
-    public static final double KTopRightRingY = 7.43;
-
-    public static final double KSecondTopRightRingY = 5.8;
-
-    public static final double KMiddleRightRingY = 4;
-
-    public static final double KSecondBottomRightRingY = 2.42;
-
-    public static final double KBottomRightRingY = 0.75;
     // TODO: Tune distance sensor threshold for detecting note
     public static final double kDistanceSensorThreshold = 10;
   }
