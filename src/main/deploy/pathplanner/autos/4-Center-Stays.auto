@@ -22,22 +22,21 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "CenterNote-Center"
-                      }
-                    }
-                  ]
+                  "pathName": "CenterNote-Center"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin up Shooter"
                 }
               }
             ]
@@ -52,7 +51,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Outtake"
           }
         },
         {
@@ -60,16 +59,9 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "LeftNote-Center"
-                      }
-                    }
-                  ]
+                  "pathName": "LeftNote-Center"
                 }
               },
               {
@@ -90,7 +82,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Outtake"
           }
         },
         {
@@ -98,16 +90,9 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "RightNote-Center"
-                      }
-                    }
-                  ]
+                  "pathName": "RightNote-Center"
                 }
               },
               {
@@ -128,7 +113,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Outtake"
           }
         }
       ]
