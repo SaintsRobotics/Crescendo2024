@@ -38,9 +38,9 @@ public class DefaultLEDCommand extends Command {
     armSetpoint = m_intakeSubsystem.getArmPosition();
     if (armSetpoint == IntakeConstants.kIntakeLoweredAngle) {
       rgb[0] = 255;
-      rgb[1] = 165;
+      rgb[1] = 0;
       rgb[2] = 0;
-    } else if (armSetpoint == IntakeConstants.kIntakeRaisedAngle) {
+    } else if (armSetpoint == IntakeConstants.kIntakeRaisedAngle && m_intakeSubsystem.haveNote()) {
       rgb[0] = 0;
       rgb[1] = 0;
       rgb[2] = 255;
