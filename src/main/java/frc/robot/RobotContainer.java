@@ -156,7 +156,7 @@ public class RobotContainer {
                     * (1 - m_driverController
                         .getRightTriggerAxis()
                         * IOConstants.kSlowModeScalar)
-                    / 2,
+                    * 0.75,
                 !m_driverController.getLeftBumper()),
             m_robotDrive));
   }
