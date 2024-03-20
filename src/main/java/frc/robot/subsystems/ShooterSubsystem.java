@@ -40,12 +40,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setShootingSpeed(ShootSpeed speed) {
     switch (speed) {
       case Shooting:
-        m_topSpeed = ShooterConstants.kTopShooterSpeed;
-        m_bottomSpeed = ShooterConstants.kBottomShooterSpeed;
+        m_topSpeed = ShooterConstants.kShooterSpeedTop;
+        m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
         break;
-      case Halfway:
-        m_topSpeed = ShooterConstants.kPreShooterSpeed;
-        m_bottomSpeed = ShooterConstants.kPreShooterSpeed;
+      case Prep:
+        m_topSpeed = ShooterConstants.kPrepShooterSpeed;
+        m_bottomSpeed = ShooterConstants.kPrepShooterSpeed;
         break;
       case Off:
         m_topSpeed = 0.0;
@@ -70,7 +70,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static enum ShootSpeed {
     Shooting,
-    Halfway,
+    Prep,
     Off
   }
 }
