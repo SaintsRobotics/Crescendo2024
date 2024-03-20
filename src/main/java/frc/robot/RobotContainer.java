@@ -134,7 +134,7 @@ public class RobotContainer {
         new RunCommand(
             () -> m_robotDrive.drive(
                 MathUtil.applyDeadband(
-                    -m_driverController.getLeftY(),
+                    scaleJoysticks(-m_driverController.getLeftY(), -m_driverController.getLeftX()),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
@@ -142,7 +142,7 @@ public class RobotContainer {
                         * IOConstants.kSlowModeScalar),
                 // * 0.8,
                 MathUtil.applyDeadband(
-                    -m_driverController.getLeftX(),
+                    scaleJoysticks(-m_driverController.getLeftX(), -m_driverController.getLeftY()),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
@@ -159,6 +159,17 @@ public class RobotContainer {
                     * 0.75,
                 !m_driverController.getLeftBumper()),
             m_robotDrive));
+  }
+
+  /** Scales joystick values so that diagonal driving is faster
+   * 
+   * @see https://www.desmos.com/calculator/uycqqtkumk
+   * 
+   * @param a The primary joystick axis value being scaled
+   * @param b The other joystick axis value being scaled
+   */
+  private double scaleJoysticks(double a, double b) {
+    return a * Math.min(1/Math.abs(a),1/Math.abs(b))*Math.sqrt(a*a+b*b);
   }
 
   /**
