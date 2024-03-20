@@ -52,7 +52,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
@@ -67,7 +67,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
-            new ParallelDeadlineGroup(new WaitCommand(0.8), new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem))),
+            new ParallelDeadlineGroup(new WaitCommand(0.25), new NoteOuttakeCommand(m_intakeSubsystem)),
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime)));
 
     NamedCommands.registerCommand("Intake",
@@ -85,10 +85,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("Spin down Shooter",
       new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.01));
 
-    NamedCommands.registerCommand("Outtake", new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem)));
+    NamedCommands.registerCommand("Outtake", new ParallelDeadlineGroup(new WaitCommand(0.25), new NoteOuttakeCommand(m_intakeSubsystem)));
 
     NamedCommands.registerCommand("Intake in",
         new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
+
+    NamedCommands.registerCommand("Intake out",
+        new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended));
 
     AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
         m_robotDrive::getChassisSpeeds,
@@ -202,16 +205,16 @@ public class RobotContainer {
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     // Climber Up, Operator Controller Right Bumper + A Button
-    // new Trigger(() -> {
-    //   return m_operatorController.getAButton() && m_operatorController.getRightBumper();
-    // }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
+    new Trigger(() -> {
+      return m_operatorController.getAButton() && m_operatorController.getRightBumper();
+    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
 
     // // Climber Down, Operator Controller Right Bumper + B Button
-    // new Trigger(() -> {
-    //   return m_operatorController.getBButton() && m_operatorController.getRightBumper();
-    // }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
+    new Trigger(() -> {
+      return m_operatorController.getBButton() && m_operatorController.getRightBumper();
+    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
-    // Toggle Distance Sensor, Operatoe Controller Left Bumper + Start Button
+    // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
     new Trigger(() -> {
       return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
     }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
