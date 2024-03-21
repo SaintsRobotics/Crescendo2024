@@ -26,12 +26,6 @@
         {
           "type": "deadline",
           "data": {
-            "commands": []
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
             "commands": [
               {
                 "type": "path",

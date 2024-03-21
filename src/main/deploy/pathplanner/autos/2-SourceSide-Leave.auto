@@ -32,8 +32,26 @@
                 "data": {
                   "name": "Intake"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Reset Distance Sensor"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reset Distance Sensor"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake in"
           }
         },
         {

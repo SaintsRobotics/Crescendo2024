@@ -100,8 +100,15 @@ public class IntakeSubsystem extends SubsystemBase {
    * Gets distance from Rev 2m sensor
    */
   private double getDistanceSensor() {
+
+    if (!Robot.isReal()) {
+      return -2;
+    }
+
     if (m_distanceSensor.getRange() == -1) {
       m_distanceSensorToggle = false;
+    } else {
+      m_distanceSensorToggle = true;
     }
     return m_distanceSensor.getRange();
   }
@@ -117,20 +124,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    haveNote = getDistanceSensorToggle() ? getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold : false;
+    haveNote = m_distanceSensorToggle ? getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold : false;
 
     // Note: negative because encoder goes from 0 to -193 cuz weird
     double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
     m_armMotor.set(armMotorSpeed);
     m_intakeMotor.set(m_intakeSpeed);
-    SmartDashboard.putNumber("intakespeed", m_intakeSpeed);
 
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putNumber("Arm Absolute Angle", m_armEncoder.getAbsolutePosition());
     SmartDashboard.putBoolean("Have Note?", haveNote);
-    SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange(Rev2mDistanceSensor.Unit.kInches) : -1);
-    SmartDashboard.putNumber("pid output", armMotorSpeed);
-    SmartDashboard.putNumber("Get offset", m_armEncoder.getPositionOffset());
+    SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange() : -1);
+    SmartDashboard.putBoolean("distance sensor toggle", m_distanceSensorToggle);
+    // SmartDashboard.putNumber("pid output", armMotorSpeed);
+    // SmartDashboard.putNumber("Get offset", m_armEncoder.getPositionOffset());
   }
 
   public boolean haveNote() {

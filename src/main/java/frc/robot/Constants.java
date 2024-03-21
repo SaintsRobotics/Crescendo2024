@@ -111,7 +111,7 @@ public final class Constants {
     public static final double kIntakeSpeed = 0.5;
 
     // TODO: Tune distance sensor threshold for detecting note
-    public static final double kDistanceSensorThreshold = 10;
+    public static final double kDistanceSensorThreshold = 3;
   }
 
   public static final class ShooterConstants {
