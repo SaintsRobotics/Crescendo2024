@@ -19,11 +19,7 @@ public class NoteIntakeCommand extends Command {
     m_intakeSubsystem = subsystem;
     addRequirements(m_intakeSubsystem);
 
-    // If the distance sensor is not being used, then we want to use a timer to stop this command
-    if (!m_intakeSubsystem.getDistanceSensorToggle()) {
-      m_intakeTimer.reset();
-      m_intakeTimer.start();
-    }
+    m_intakeTimer.start();
   }
 
   // Called when the command is initially scheduled.
