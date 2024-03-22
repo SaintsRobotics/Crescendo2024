@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -229,6 +230,11 @@ public class RobotContainer {
     new Trigger(() -> {
       return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
     }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+
+    // Toggle Compressor, Operator Controller Right Bumper + Menu
+    new Trigger(() -> {
+      return m_operatorController.getRightBumper() && m_operatorController.getStartButton();
+    }).onTrue(new InstantCommand(() -> m_climberSubsystem.toggleCompressor()));
   }
 
   /**
