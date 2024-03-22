@@ -225,10 +225,10 @@ public class RobotContainer {
       return m_operatorController.getBButton() && m_operatorController.getRightBumper();
     }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
-    // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
-    new Trigger(() -> {
-      return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
-    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+    // // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
+    // new Trigger(() -> {
+    //   return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
+    // }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
   }
 
   /**

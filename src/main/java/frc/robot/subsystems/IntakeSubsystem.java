@@ -7,9 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.Rev2mDistanceSensor;
-import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -29,19 +29,14 @@ public class IntakeSubsystem extends SubsystemBase {
   private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
   /** If true, the distance sensor will be used to determine if we have a note */
-  private boolean m_distanceSensorToggle = Robot.isReal();
-  private Rev2mDistanceSensor m_distanceSensor = m_distanceSensorToggle ? new Rev2mDistanceSensor(Port.kMXP) : null;
+  private boolean m_colorSensorToggle = Robot.isReal();
+  private ColorSensorV3 m_colorSensor = new ColorSensorV3(Port.kMXP);
 
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
-    if (m_distanceSensorToggle) {
-      m_distanceSensor.setAutomaticMode(true);
-      m_distanceSensor.setEnabled(true);
-      m_distanceSensor.setMeasurementPeriod(0.01);
-    }
 
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
     SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
@@ -60,7 +55,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armMotor.set(0);
 
     m_intakeSpeed = 0;
-    m_armSetpoint = getDistanceSensor();
+    m_armSetpoint = getArmPosition();
   }
 
   public void setArmPosition(ArmPosition position) {
@@ -101,34 +96,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   * Gets distance from Rev 2m sensor
+   * Gets distance from Color sensor
    */
-  private double getDistanceSensor() {
-
-    if (!Robot.isReal()) {
-      return -2;
-    }
-
-    if (m_distanceSensor.getRange() == -1) {
-      m_distanceSensorToggle = false;
-    } else {
-      m_distanceSensorToggle = true;
-    }
-    return m_distanceSensor.getRange();
-  }
-
-  public boolean getDistanceSensorToggle() {
-    return m_distanceSensorToggle;
-  }
-
-  /** Toggles whether the distance sensor is used */
-  public void toggleDistanceSensor() {
-    m_distanceSensorToggle = !m_distanceSensorToggle;
+  public int getProximity() {
+    return m_colorSensor.getProximity();
   }
 
   @Override
   public void periodic() {
-    haveNote = m_distanceSensorToggle ? (getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold && getDistanceSensor() > 0) : false;
+    haveNote = getProximity() > IntakeConstants.kProximityThreshold;
 
     // Note: negative because encoder goes from 0 to -193 cuz weird
     double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
@@ -138,10 +114,11 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putNumber("Arm Absolute Angle", m_armEncoder.getAbsolutePosition());
     SmartDashboard.putBoolean("Have Note?", haveNote);
-    SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange() : -1);
-    SmartDashboard.putBoolean("distance sensor toggle", m_distanceSensorToggle);
+    // SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange() : -1);
+    // SmartDashboard.putBoolean("distance sensor toggle", m_distanceSensorToggle);
     // SmartDashboard.putNumber("pid output", armMotorSpeed);
     // SmartDashboard.putNumber("Get offset", m_armEncoder.getPositionOffset());
+    SmartDashboard.putNumber("Proximity", getProximity());
   }
 
   public boolean haveNote() {
