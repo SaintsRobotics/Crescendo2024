@@ -30,14 +30,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** If true, the distance sensor will be used to determine if we have a note */
   private boolean m_distanceSensorToggle = Robot.isReal();
-  private Rev2mDistanceSensor m_distanceSensor = m_distanceSensorToggle ? new Rev2mDistanceSensor(Port.kMXP) : null; // NavX I2C access port
+  private Rev2mDistanceSensor m_distanceSensor = m_distanceSensorToggle ? new Rev2mDistanceSensor(Port.kMXP) : null;
 
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
-    if (m_distanceSensorToggle) m_distanceSensor.setAutomaticMode(true);
+    if (m_distanceSensorToggle) {
+      m_distanceSensor.setAutomaticMode(true);
+      m_distanceSensor.setEnabled(true);
+      m_distanceSensor.setMeasurementPeriod(0.01);
+    }
 
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
     SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
@@ -124,7 +128,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    haveNote = m_distanceSensorToggle ? getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold : false;
+    haveNote = m_distanceSensorToggle ? (getDistanceSensor() < IntakeConstants.kDistanceSensorThreshold && getDistanceSensor() > 0) : false;
 
     // Note: negative because encoder goes from 0 to -193 cuz weird
     double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
