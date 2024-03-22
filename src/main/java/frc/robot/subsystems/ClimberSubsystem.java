@@ -24,13 +24,11 @@ public class ClimberSubsystem extends SubsystemBase {
   private Value m_state;
 
   public ClimberSubsystem() {
-    m_compressorEnabled = false;
     m_pHub = new PneumaticHub(2);
 
     solenoidOff();
 
     m_compressorEnabled = false;
-    toggleCompressor();
   }
 
   // Runs once every tick (~20ms)

@@ -240,6 +240,10 @@ public class RobotContainer {
     m_robotDrive.reset();
   }
 
+  public void compressorInit(){
+    m_climberSubsystem.toggleCompressor();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
