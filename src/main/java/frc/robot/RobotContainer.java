@@ -151,7 +151,7 @@ public class RobotContainer {
                         * IOConstants.kSlowModeScalar),
                 // * 0.8,
                 MathUtil.applyDeadband(
-                    -m_driverController.getRightX(),
+                    -m_driverController.getRightX() * Math.abs(m_driverController.getRightX()),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxAngularSpeedRadiansPerSecond
                     * (1 - m_driverController
@@ -210,7 +210,7 @@ public class RobotContainer {
     // Outtake, Operator Controller Right Trigger
     new Trigger(() -> {
       return m_operatorController.getRightTriggerAxis() > 0.5;
-    }).whileTrue(new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem)));
+    }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
 
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
