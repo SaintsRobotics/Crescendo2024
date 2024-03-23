@@ -113,7 +113,8 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.getDistance());
     SmartDashboard.putNumber("Arm Absolute Angle", m_armEncoder.getAbsolutePosition());
     SmartDashboard.putBoolean("Have Note?", haveNote);
-    // SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ? m_distanceSensor.getRange() : -1);
+    // SmartDashboard.putNumber("distance sensor", m_distanceSensorToggle ?
+    // m_distanceSensor.getRange() : -1);
     // SmartDashboard.putBoolean("distance sensor toggle", m_distanceSensorToggle);
     // SmartDashboard.putNumber("pid output", armMotorSpeed);
     // SmartDashboard.putNumber("Get offset", m_armEncoder.getPositionOffset());
@@ -128,5 +129,13 @@ public class IntakeSubsystem extends SubsystemBase {
     Extended,
     Retracted,
     Amp
+  }
+
+  /**
+   * Toggles the uage of color sensor
+   */
+
+  public void colorSensorToggle() {
+    m_colorSensorToggle = !m_colorSensorToggle;
   }
 }

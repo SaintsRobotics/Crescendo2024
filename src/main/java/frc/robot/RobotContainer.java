@@ -162,7 +162,8 @@ public class RobotContainer {
             m_robotDrive));
   }
 
-  /** Scales joystick values so that diagonal driving is faster
+  /**
+   * Scales joystick values so that diagonal driving is faster
    * 
    * @see https://www.desmos.com/calculator/uycqqtkumk
    * 
@@ -170,7 +171,7 @@ public class RobotContainer {
    * @param b The other joystick axis value being scaled
    */
   private double scaleJoysticks(double a, double b) {
-    return a * Math.min(1/Math.abs(a),1/Math.abs(b))*Math.sqrt(a*a+b*b);
+    return a * Math.min(1 / Math.abs(a), 1 / Math.abs(b)) * Math.sqrt(a * a + b * b);
   }
 
   /**
@@ -229,7 +230,7 @@ public class RobotContainer {
     // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
     new Trigger(() -> {
       return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
-    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.colorSensorToggle()));
 
     // Toggle Compressor, Operator Controller Right Bumper + Menu
     new Trigger(() -> {
@@ -246,7 +247,7 @@ public class RobotContainer {
     m_robotDrive.reset();
   }
 
-  public void compressorInit(){
+  public void compressorInit() {
     m_climberSubsystem.toggleCompressor();
   }
 
