@@ -20,10 +20,8 @@ public class NoteIntakeCommand extends Command {
     addRequirements(m_intakeSubsystem);
 
     // If the distance sensor is not being used, then we want to use a timer to stop this command
-    if (!m_intakeSubsystem.getDistanceSensorToggle()) {
-      m_intakeTimer.reset();
-      m_intakeTimer.start();
-    }
+    m_intakeTimer.reset();
+    m_intakeTimer.start();
   }
 
   // Called when the command is initially scheduled.
@@ -49,6 +47,6 @@ public class NoteIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.getDistanceSensorToggle() ? (m_intakeSubsystem.haveNote() || m_intakeSubsystem.getArmPosition() != IntakeConstants.kIntakeLoweredAngle) : m_intakeTimer.hasElapsed(3);
+    return m_intakeSubsystem.m_colorSensorToggle ? (m_intakeSubsystem.haveNote() || m_intakeSubsystem.getArmPosition() != IntakeConstants.kIntakeLoweredAngle): m_intakeTimer.get()>3;
   }
 }

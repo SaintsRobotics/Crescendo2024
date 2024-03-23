@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -134,7 +135,7 @@ public class RobotContainer {
         new RunCommand(
             () -> m_robotDrive.drive(
                 MathUtil.applyDeadband(
-                    -m_driverController.getLeftY(),
+                    scaleJoysticks(-m_driverController.getLeftY(), -m_driverController.getLeftX()),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
@@ -142,7 +143,7 @@ public class RobotContainer {
                         * IOConstants.kSlowModeScalar),
                 // * 0.8,
                 MathUtil.applyDeadband(
-                    -m_driverController.getLeftX(),
+                    scaleJoysticks(-m_driverController.getLeftX(), -m_driverController.getLeftY()),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
@@ -156,9 +157,21 @@ public class RobotContainer {
                     * (1 - m_driverController
                         .getRightTriggerAxis()
                         * IOConstants.kSlowModeScalar)
-                    / 2,
+                    * 0.75,
                 !m_driverController.getLeftBumper()),
             m_robotDrive));
+  }
+
+  /**
+   * Scales joystick values so that diagonal driving is faster
+   * 
+   * @see https://www.desmos.com/calculator/uycqqtkumk
+   * 
+   * @param a The primary joystick axis value being scaled
+   * @param b The other joystick axis value being scaled
+   */
+  private double scaleJoysticks(double a, double b) {
+    return a * Math.min(1 / Math.abs(a), 1 / Math.abs(b)) * Math.sqrt(a * a + b * b);
   }
 
   /**
@@ -214,10 +227,15 @@ public class RobotContainer {
       return m_operatorController.getBButton() && m_operatorController.getRightBumper();
     }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
-    // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
+    // Toggle Color Sensor, Operator Controller Left Bumper + Start Button
     new Trigger(() -> {
       return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
-    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.colorSensorToggle()));
+
+    // Toggle Compressor, Operator Controller Right Bumper + Back Button
+    new Trigger(() -> {
+      return m_operatorController.getLeftBumper() && m_operatorController.getBackButton();
+    }).onTrue(new InstantCommand(() -> m_climberSubsystem.toggleCompressor()));
   }
 
   /**
@@ -227,6 +245,10 @@ public class RobotContainer {
     m_intakeSubsystem.reset();
     m_shooterSubsystem.reset();
     m_robotDrive.reset();
+  }
+
+  public void compressorInit() {
+    m_climberSubsystem.toggleCompressor();
   }
 
   /**

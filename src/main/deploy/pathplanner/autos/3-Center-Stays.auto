@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake out"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
