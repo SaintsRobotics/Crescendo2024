@@ -151,13 +151,13 @@ public class RobotContainer {
                         * IOConstants.kSlowModeScalar),
                 // * 0.8,
                 MathUtil.applyDeadband(
-                    -m_driverController.getRightX() * Math.abs(m_driverController.getRightX()),
+                    -m_driverController.getRightX(),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxAngularSpeedRadiansPerSecond
                     * (1 - m_driverController
                         .getRightTriggerAxis()
                         * IOConstants.kSlowModeScalar)
-                    * 0.75,
+                    * 0.8,
                 !m_driverController.getLeftBumper()),
             m_robotDrive));
   }
