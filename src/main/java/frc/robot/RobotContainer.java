@@ -227,14 +227,14 @@ public class RobotContainer {
       return m_operatorController.getBButton() && m_operatorController.getRightBumper();
     }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
-    // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
+    // Toggle Color Sensor, Operator Controller Left Bumper + Start Button
     new Trigger(() -> {
       return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
     }).onTrue(new InstantCommand(() -> m_intakeSubsystem.colorSensorToggle()));
 
-    // Toggle Compressor, Operator Controller Right Bumper + Menu
+    // Toggle Compressor, Operator Controller Right Bumper + Back Button
     new Trigger(() -> {
-      return m_operatorController.getRightBumper() && m_operatorController.getStartButton();
+      return m_operatorController.getLeftBumper() && m_operatorController.getBackButton();
     }).onTrue(new InstantCommand(() -> m_climberSubsystem.toggleCompressor()));
   }
 

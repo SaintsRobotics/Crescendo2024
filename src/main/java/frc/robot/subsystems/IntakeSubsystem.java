@@ -38,7 +38,6 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
-    SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
     m_armEncoder.setDistancePerRotation(360);
 
     m_intakeMotor.setIdleMode(IdleMode.kCoast);
@@ -97,13 +96,13 @@ public class IntakeSubsystem extends SubsystemBase {
   /**
    * Gets distance from Color sensor
    */
-  public int getColorIR() {
-    return m_colorSensor.getIR();
+  public int getColorProximity() {
+    return m_colorSensor.getProximity();
   }
 
   @Override
   public void periodic() {
-    haveNote = getColorIR() > IntakeConstants.kIRThreshold;
+    haveNote = m_colorSensorToggle ? getColorProximity() > IntakeConstants.kProximityThreshold : false;
 
     double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
     m_armMotor.set(armMotorSpeed);
@@ -113,7 +112,8 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Absolute Angle", m_armEncoder.getAbsolutePosition());
     SmartDashboard.putBoolean("Have Note?", haveNote);
     // SmartDashboard.putNumber("pid output", armMotorSpeed);
-    SmartDashboard.putNumber("Proximity", getColorIR());
+    SmartDashboard.putNumber("Proximity", m_colorSensor.getProximity());
+    SmartDashboard.putBoolean("Color Sensor Toggle", m_colorSensorToggle);
     SmartDashboard.putNumber("IR", m_colorSensor.getIR());
   }
 

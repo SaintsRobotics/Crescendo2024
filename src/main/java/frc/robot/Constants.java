@@ -110,8 +110,8 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 0.5;
 
-    // public static final int kProximityThreshold = 130;
-    public static final int kIRThreshold = 2;
+    public static final int kProximityThreshold = 130;
+    // public static final int kIRThreshold = 2;
   }
 
   public static final class ShooterConstants {

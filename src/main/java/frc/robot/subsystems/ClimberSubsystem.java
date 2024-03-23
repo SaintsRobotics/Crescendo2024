@@ -37,6 +37,8 @@ public class ClimberSubsystem extends SubsystemBase {
     m_rightSolenoid.set(m_state);
     SmartDashboard.putString("pneumatics state", m_state.name());
     SmartDashboard.putNumber("pressure", m_pHub.getPressure(0));
+    SmartDashboard.putBoolean("Compressor Enabled", m_compressorEnabled);
+    SmartDashboard.putBoolean("Compressor Running", m_pHub.getCompressor());
   }
 
   /**
