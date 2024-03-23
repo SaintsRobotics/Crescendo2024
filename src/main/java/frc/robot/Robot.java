@@ -96,6 +96,8 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.resetAllSubsystems();
+
+    m_robotContainer.compressorInit();
   }
 
   /** This function is called periodically during operator control. */

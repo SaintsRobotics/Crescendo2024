@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -225,10 +226,15 @@ public class RobotContainer {
       return m_operatorController.getBButton() && m_operatorController.getRightBumper();
     }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
-    // // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
-    // new Trigger(() -> {
-    //   return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
-    // }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+    // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
+    new Trigger(() -> {
+      return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
+    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+
+    // Toggle Compressor, Operator Controller Right Bumper + Menu
+    new Trigger(() -> {
+      return m_operatorController.getRightBumper() && m_operatorController.getStartButton();
+    }).onTrue(new InstantCommand(() -> m_climberSubsystem.toggleCompressor()));
   }
 
   /**
@@ -238,6 +244,10 @@ public class RobotContainer {
     m_intakeSubsystem.reset();
     m_shooterSubsystem.reset();
     m_robotDrive.reset();
+  }
+
+  public void compressorInit(){
+    m_climberSubsystem.toggleCompressor();
   }
 
   /**
