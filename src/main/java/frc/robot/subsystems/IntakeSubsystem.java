@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
   /** If true, the distance sensor will be used to determine if we have a note */
-  private boolean m_colorSensorToggle = Robot.isReal();
+  public boolean m_colorSensorToggle = Robot.isReal();
   private ColorSensorV3 m_colorSensor = new ColorSensorV3(Port.kMXP);
 
   private double m_intakeSpeed = 0;
@@ -37,7 +37,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem */
   public IntakeSubsystem() {
-
     m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
     SmartDashboard.putNumber("arm", m_armEncoder.getAbsolutePosition());
     m_armEncoder.setDistancePerRotation(360);
