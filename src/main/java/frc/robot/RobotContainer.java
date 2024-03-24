@@ -66,7 +66,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
-            new ParallelDeadlineGroup(new WaitCommand(0.25), new NoteOuttakeCommand(m_intakeSubsystem)),
+            new ParallelDeadlineGroup(new WaitCommand(0.65), new NoteOuttakeCommand(m_intakeSubsystem)),
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime)));
 
     NamedCommands.registerCommand("Intake",
