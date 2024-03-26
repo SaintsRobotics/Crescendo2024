@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -58,14 +59,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double returnCurrentSpeed() {
-    return m_bottom.getEncoder().getVelocity();
+    return Robot.isReal() ? m_bottom.getEncoder().getVelocity() : (m_topSpeed > 0.5) ? 4000 : 0;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("bottom Speed", m_bottomSpeed);
-    // SmartDashboard.putNumber("top Speed", m_topSpeed);
+    SmartDashboard.putNumber("top Speed", m_topSpeed);
 
     m_bottom.set(m_bottomSpeed);
     m_top.set(m_topSpeed);

@@ -218,6 +218,8 @@ public class RobotContainer {
       return m_operatorController.getRightTriggerAxis() > 0.5;
     }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
 
+
+    // Spin-up Shooter, Operator Controller left trigger
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
     }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime))
