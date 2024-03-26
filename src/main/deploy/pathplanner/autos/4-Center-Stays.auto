@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3470318873095533,
+      "x": 1.4,
       "y": 5.5216374597852385
     },
     "rotation": 0
@@ -21,12 +21,6 @@
           "type": "named",
           "data": {
             "name": "Intake out"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": []
           }
         },
         {

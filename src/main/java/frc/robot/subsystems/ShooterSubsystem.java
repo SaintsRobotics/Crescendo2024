@@ -43,6 +43,9 @@ public class ShooterSubsystem extends SubsystemBase {
         m_topSpeed = ShooterConstants.kShooterSpeedTop;
         m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
         break;
+      case Amp:
+        m_topSpeed = 0.2;
+        m_bottomSpeed = 0.3;
       case Prep:
         m_topSpeed = ShooterConstants.kPrepShooterSpeed;
         m_bottomSpeed = ShooterConstants.kPrepShooterSpeed;
@@ -61,8 +64,8 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("bottom Speed", m_bottomSpeed);
-    SmartDashboard.putNumber("top Speed", m_topSpeed);
+    // SmartDashboard.putNumber("bottom Speed", m_bottomSpeed);
+    // SmartDashboard.putNumber("top Speed", m_topSpeed);
 
     m_bottom.set(m_bottomSpeed);
     m_top.set(m_topSpeed);
@@ -71,6 +74,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public static enum ShootSpeed {
     Shooting,
     Prep,
+    Amp,
     Off
   }
 }

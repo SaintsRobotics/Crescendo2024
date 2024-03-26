@@ -67,8 +67,8 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
-            new ParallelDeadlineGroup(new WaitCommand(0.25), new NoteOuttakeCommand(m_intakeSubsystem)),
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5),
+            new ParallelDeadlineGroup(new WaitCommand(0.50), new NoteOuttakeCommand(m_intakeSubsystem)),
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime)));
 
     NamedCommands.registerCommand("Intake",
@@ -141,7 +141,7 @@ public class RobotContainer {
         new RunCommand(
             () -> m_robotDrive.drive(
                 MathUtil.applyDeadband(
-                    -m_driverController.getLeftY(),
+                    scaleJoysticks(-m_driverController.getLeftY(), -m_driverController.getLeftX()),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
@@ -149,7 +149,7 @@ public class RobotContainer {
                         * IOConstants.kSlowModeScalar),
                 // * 0.8,
                 MathUtil.applyDeadband(
-                    -m_driverController.getLeftX(),
+                    scaleJoysticks(-m_driverController.getLeftX(), -m_driverController.getLeftY()),
                     IOConstants.kControllerDeadband)
                     * DriveConstants.kMaxSpeedMetersPerSecond
                     * (1 - m_driverController
@@ -163,9 +163,21 @@ public class RobotContainer {
                     * (1 - m_driverController
                         .getRightTriggerAxis()
                         * IOConstants.kSlowModeScalar)
-                    / 2,
+                    * 0.8,
                 !m_driverController.getLeftBumper()),
             m_robotDrive));
+  }
+
+  /**
+   * Scales joystick values so that diagonal driving is faster
+   * 
+   * @see https://www.desmos.com/calculator/uycqqtkumk
+   * 
+   * @param a The primary joystick axis value being scaled
+   * @param b The other joystick axis value being scaled
+   */
+  private double scaleJoysticks(double a, double b) {
+    return a * Math.min(1 / Math.abs(a), 1 / Math.abs(b)) * Math.sqrt(a * a + b * b);
   }
 
   /**
@@ -204,12 +216,17 @@ public class RobotContainer {
     // Outtake, Operator Controller Right Trigger
     new Trigger(() -> {
       return m_operatorController.getRightTriggerAxis() > 0.5;
-    }).whileTrue(new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem)));
+    }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
 
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
     }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
+
+    new Trigger(() -> {
+      return m_operatorController.getXButtonPressed() == true;
+    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Amp, 0.1))
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.02));
 
     // Climber Up, Operator Controller Right Bumper + A Button
     new Trigger(() -> {
@@ -221,10 +238,15 @@ public class RobotContainer {
       return m_operatorController.getBButton() && m_operatorController.getRightBumper();
     }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
-    // Toggle Distance Sensor, Operator Controller Left Bumper + Start Button
+    // Toggle Color Sensor, Operator Controller Left Bumper + Start Button
     new Trigger(() -> {
       return m_operatorController.getLeftBumper() && m_operatorController.getStartButton();
-    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.toggleDistanceSensor()));
+    }).onTrue(new InstantCommand(() -> m_intakeSubsystem.colorSensorToggle()));
+
+    // Toggle Compressor, Operator Controller Right Bumper + Back Button
+    new Trigger(() -> {
+      return m_operatorController.getLeftBumper() && m_operatorController.getBackButton();
+    }).onTrue(new InstantCommand(() -> m_climberSubsystem.toggleCompressor()));
   }
 
   /**
@@ -234,6 +256,10 @@ public class RobotContainer {
     m_intakeSubsystem.reset();
     m_shooterSubsystem.reset();
     m_robotDrive.reset();
+  }
+
+  public void compressorInit() {
+    m_climberSubsystem.toggleCompressor();
   }
 
   /**

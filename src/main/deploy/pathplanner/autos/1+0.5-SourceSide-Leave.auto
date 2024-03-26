@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3470318873095533,
-      "y": 5.5216374597852385
+      "x": 0.8,
+      "y": 4.4
     },
-    "rotation": 0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -18,25 +18,19 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Intake out"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterNote-Center"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle5thNote"
                 }
               }
             ]
@@ -49,9 +43,28 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prep-Speed - 60%"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5thNote-Back"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Outtake"
           }
         }
       ]

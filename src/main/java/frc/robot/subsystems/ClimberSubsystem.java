@@ -24,13 +24,11 @@ public class ClimberSubsystem extends SubsystemBase {
   private Value m_state;
 
   public ClimberSubsystem() {
-    m_compressorEnabled = false;
     m_pHub = new PneumaticHub(2);
 
     solenoidOff();
 
     m_compressorEnabled = false;
-    toggleCompressor();
   }
 
   // Runs once every tick (~20ms)
@@ -39,6 +37,8 @@ public class ClimberSubsystem extends SubsystemBase {
     m_rightSolenoid.set(m_state);
     SmartDashboard.putString("pneumatics state", m_state.name());
     SmartDashboard.putNumber("pressure", m_pHub.getPressure(0));
+    SmartDashboard.putBoolean("Compressor Enabled", m_compressorEnabled);
+    SmartDashboard.putBoolean("Compressor Running", m_pHub.getCompressor());
   }
 
   /**
