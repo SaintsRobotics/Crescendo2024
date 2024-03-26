@@ -42,6 +42,9 @@ public class ShooterSubsystem extends SubsystemBase {
         m_topSpeed = ShooterConstants.kShooterSpeedTop;
         m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
         break;
+      case Amp:
+        m_topSpeed = 0.2;
+        m_bottomSpeed = 0.3;
       case Prep:
         m_topSpeed = ShooterConstants.kPrepShooterSpeed;
         m_bottomSpeed = ShooterConstants.kPrepShooterSpeed;
@@ -70,6 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public static enum ShootSpeed {
     Shooting,
     Prep,
+    Amp,
     Off
   }
 }

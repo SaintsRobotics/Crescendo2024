@@ -12,7 +12,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -216,6 +215,11 @@ public class RobotContainer {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
     }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
+
+    new Trigger(() -> {
+      return m_operatorController.getXButtonPressed() == true;
+    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Amp, 0.1))
+        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.02));
 
     // Climber Up, Operator Controller Right Bumper + A Button
     new Trigger(() -> {
