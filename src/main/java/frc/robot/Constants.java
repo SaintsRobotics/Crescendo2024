@@ -103,7 +103,7 @@ public final class Constants {
     // In degrees
     public static final double kIntakeLoweredAngle = -193;
     public static final double kIntakeRaisedAngle = 0;
-    public static final double kIntakeAmpScoringAngle = -93; // 193 - 100 (previous angle)
+    public static final double kIntakeAmpScoringAngle = -75; // 193 - 100 (previous angle)
 
     /** Encoder offset in rotations */
     public static final double kArmEncoderOffset = 0.715;
@@ -124,6 +124,9 @@ public final class Constants {
 
     public static final double kShooterOffTime = 0.04; 
     public static final double kShooterOnTime = 1; 
+
+    public static final double kAmpTop = 0.07;
+    public static final double kAmpBottom = 0.1;
   }
 
   public static class ClimberConstants {

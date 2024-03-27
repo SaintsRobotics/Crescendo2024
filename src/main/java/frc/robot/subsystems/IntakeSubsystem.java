@@ -86,7 +86,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void outtake() {
-    m_intakeSpeed = -IntakeConstants.kIntakeSpeed - 0.5;
+    m_intakeSpeed = -1.0;
+  }
+
+  public void outtakeAmp() {
+    m_intakeSpeed = -0.47;
   }
 
   public void stopIntake() {
