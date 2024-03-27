@@ -22,6 +22,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double m_topSpeed = 0;
   private double m_bottomSpeed = 0;
 
+  private double m_simRPM = 0;
+
   public ShooterSubsystem() {
     m_bottom.setIdleMode(IdleMode.kCoast);
     m_top.setIdleMode(IdleMode.kCoast);
@@ -59,7 +61,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double returnCurrentSpeed() {
-    return Robot.isReal() ? m_bottom.getEncoder().getVelocity() : (m_topSpeed > 0.5) ? 4000 : 0;
+    if (m_topSpeed > 0.5 && m_simRPM < 15) m_simRPM++;
+    else if (m_simRPM > 0) m_simRPM--;
+    return Robot.isReal() ? m_bottom.getEncoder().getVelocity() : m_simRPM * 400;
   }
 
   @Override
