@@ -8,47 +8,47 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.67400445912003,
-        "y": 2.0808286061016568
+        "x": 6.845031467840714,
+        "y": 1.8670448452008017
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.821211864645952,
-        "y": 1.1259278074111705
+        "x": 5.548076651708859,
+        "y": 1.3824683204921968
       },
       "prevControl": {
-        "x": 5.75271618512509,
-        "y": 0.7621975489383647
+        "x": 6.873535969294162,
+        "y": 1.5107385770327098
       },
       "nextControl": {
-        "x": 3.324725538339966,
-        "y": 1.7102700872068404
+        "x": 3.995894680748285,
+        "y": 1.2322571620121414
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6453024017159148,
+        "x": 0.65,
         "y": 4.361188722377445
       },
       "prevControl": {
-        "x": 1.6287077018598495,
+        "x": 1.6334053001439348,
         "y": 3.1212429091524863
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "4thNote-Back"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.4,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
