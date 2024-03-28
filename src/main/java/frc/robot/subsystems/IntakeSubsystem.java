@@ -32,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean m_colorSensorToggle = Robot.isReal();
   private ColorSensorV3 m_colorSensor = new ColorSensorV3(Port.kMXP);
 
+  private ArmPosition m_armPosition = ArmPosition.Retracted;
+
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
@@ -57,6 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setArmPosition(ArmPosition position) {
+    m_armPosition = position;
     switch (position) {
       case Amp:
         m_armSetpoint = IntakeConstants.kIntakeAmpScoringAngle;
@@ -86,11 +89,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void outtake() {
-    m_intakeSpeed = -1.0;
+    m_intakeSpeed = -1;
   }
 
   public void outtakeAmp() {
-    m_intakeSpeed = -0.47;
+    m_intakeSpeed = -0.55;
   }
 
   public void stopIntake() {
@@ -107,6 +110,14 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     haveNote = m_colorSensorToggle ? getColorProximity() > IntakeConstants.kProximityThreshold : false;
+
+    if (m_armPosition == ArmPosition.Amp) {
+      m_armPID.setTolerance(1);
+      m_armPID.setP(0.005);
+    } else {
+      m_armPID.setTolerance(10);
+      m_armPID.setP(0.002);
+    }
 
     double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
     m_armMotor.set(armMotorSpeed);
