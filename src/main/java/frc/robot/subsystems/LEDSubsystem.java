@@ -59,7 +59,7 @@ public class LEDSubsystem extends SubsystemBase {
       m_LEDBuffer.setHSV(i, hue, 255, 128);
     }
     // Increase by to make the rainbow "move"
-    m_rainbowFirstPixelHue += 1;
+    m_rainbowFirstPixelHue += 2;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
 

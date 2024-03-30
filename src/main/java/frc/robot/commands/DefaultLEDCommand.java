@@ -47,11 +47,11 @@ public class DefaultLEDCommand extends Command {
     }
 
     shootSpeed = m_shooterSubsystem.returnCurrentSpeed();
-    if (shootSpeed > 500 && shootSpeed < 1899 * 2) {// if charging up
+    if (shootSpeed > 500 && shootSpeed < 1899 * Math.PI) { // if charging up
       rgb[0] = 150;
       rgb[1] = 150;
       rgb[2] = 0;
-    } else if (shootSpeed > 1899 * 2) {// if the shooter is ready to shoot
+    } else if (shootSpeed > 1899 * Math.PI) { // if the shooter is ready to shoot
       rgb[0] = 0;
       rgb[1] = 255;
       rgb[2] = 0;
