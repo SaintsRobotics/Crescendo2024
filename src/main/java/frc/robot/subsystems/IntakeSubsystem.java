@@ -80,6 +80,10 @@ public class IntakeSubsystem extends SubsystemBase {
     return m_armSetpoint;
   }
 
+  public boolean ampReady(){
+    return ((m_armEncoder.getDistance() < IntakeConstants.kIntakeAmpScoringAngle + 1) || (m_armEncoder.getDistance() > IntakeConstants.kIntakeAmpScoringAngle - 1)); 
+  }
+
   public boolean armAtSetpoint() {
     return m_armPID.atSetpoint();
   }
