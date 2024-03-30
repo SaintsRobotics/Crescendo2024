@@ -135,7 +135,7 @@ public class RobotContainer {
     configureBindings();
 
     m_ledSubsystem.setDefaultCommand(
-      new DefaultLEDCommand(m_ledSubsystem, m_intakeSubsystem, m_shooterSubsystem)
+      new DefaultLEDCommand(m_ledSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_climberSubsystem)
     );
 
     m_robotDrive.setDefaultCommand(

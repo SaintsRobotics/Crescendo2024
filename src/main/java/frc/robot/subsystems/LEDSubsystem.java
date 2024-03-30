@@ -37,8 +37,13 @@ public class LEDSubsystem extends SubsystemBase {
   public void setLED(int r, int g, int b) {
 
     // If we get an invalid value just set it to a rainbow
-    if (r > 255 || b > 255 || g > 255) {
+    if (r == 256 && g == 256 && b == 256) {
       rainbow();
+      return;
+    }
+
+    else if (r == 257 && g == 257 && b == 257){
+      golden();
       return;
     }
 
@@ -62,6 +67,25 @@ public class LEDSubsystem extends SubsystemBase {
     m_rainbowFirstPixelHue += 2;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
+
+    m_LED.setData(m_LEDBuffer);
+    SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
+  }
+
+  private void golden() {
+    // For every pixel
+    for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+      // Calculate the hue - hue is easier for rainbows because the color
+      // shape is a circle so only one value needs to precess
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_LEDBuffer.getLength())) % 120 + 90;
+      // Set the value
+      m_LEDBuffer.setHSV(i, hue, 240, 180);
+    }
+    // Increase by to make the rainbow "move"
+    m_rainbowFirstPixelHue += 1;
+    // Check bounds
+    m_rainbowFirstPixelHue %= 120;
+    
 
     m_LED.setData(m_LEDBuffer);
     SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
