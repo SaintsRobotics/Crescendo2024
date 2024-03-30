@@ -199,9 +199,6 @@ public class DriveSubsystem extends SubsystemBase {
         },
         pose);
   }
-  public Pose2d getOdometry(){
-    return m_poseEstimator.getEstimatedPosition();
-  }
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
