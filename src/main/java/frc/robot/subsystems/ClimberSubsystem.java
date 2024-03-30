@@ -62,6 +62,10 @@ public class ClimberSubsystem extends SubsystemBase {
     m_state = kReverse;
   }
 
+  public Value getState(){
+    return m_state;
+  }
+
   /**
    * Toggles the state of the compressor (on/off)
    */
