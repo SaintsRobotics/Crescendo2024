@@ -54,9 +54,9 @@ public class DefaultLEDCommand extends Command {
     //check for shooter spinup and override b4 value
     shootSpeed = m_shooterSubsystem.returnCurrentSpeed();
     if (shootSpeed > 500 && shootSpeed < 1899 * Math.PI) { // if charging up
-      rgb[0] = 150;
-      rgb[1] = 150;
-      rgb[2] = 0;
+      rgb[0] = 128;
+      rgb[1] = 0;
+      rgb[2] = 255;
     } else if (shootSpeed > 1899 * Math.PI) { // if the shooter is ready to shoot
       rgb[0] = 0;
       rgb[1] = 255;
