@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShootSpeed;
 
@@ -14,7 +15,7 @@ public class ShooterSetSpeedCommand extends Command {
   double m_shooterSpeed = 0;
 
 
-  double set_time = 1.5;
+  double set_time = ShooterConstants.kShooterOnTime;
   Timer m_timer = new Timer();
 
   ShootSpeed m_shootSpeed;

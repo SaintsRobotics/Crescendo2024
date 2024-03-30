@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -12,16 +11,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class NoteIntakeCommand extends Command {
   private IntakeSubsystem m_intakeSubsystem;
 
-  private Timer m_intakeTimer = new Timer();
-
   /** Creates a new intakeCommand. */
   public NoteIntakeCommand(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
     addRequirements(m_intakeSubsystem);
-
-    // If the distance sensor is not being used, then we want to use a timer to stop this command
-    m_intakeTimer.reset();
-    m_intakeTimer.start();
   }
 
   // Called when the command is initially scheduled.
@@ -47,6 +40,8 @@ public class NoteIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.m_colorSensorToggle ? (m_intakeSubsystem.haveNote() || m_intakeSubsystem.getArmPosition() != IntakeConstants.kIntakeLoweredAngle): m_intakeTimer.get()>3;
+    return m_intakeSubsystem.m_colorSensorToggle
+        ? (m_intakeSubsystem.haveNote() || m_intakeSubsystem.getArmPosition() != IntakeConstants.kIntakeLoweredAngle)
+        : false;
   }
 }
