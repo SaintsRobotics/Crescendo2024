@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
@@ -23,9 +22,6 @@ public class ClimberSubsystem extends SubsystemBase {
   private boolean m_compressorEnabled;
 
   private Value m_state;
-
-  private double togglecount = 0;
-  private Timer m_timer = new Timer();
 
   public ClimberSubsystem() {
     m_pHub = new PneumaticHub(2);
@@ -43,10 +39,6 @@ public class ClimberSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("pressure", m_pHub.getPressure(0));
     SmartDashboard.putBoolean("Compressor Enabled", m_compressorEnabled);
     SmartDashboard.putBoolean("Compressor Running", m_pHub.getCompressor());
-
-    if (togglecount >= 3){
-      togglecount = 0;
-    }
   }
 
   /**
@@ -61,7 +53,6 @@ public class ClimberSubsystem extends SubsystemBase {
    */
   public void forward() {
     m_state = kForward;
-    togglecount++;
   }
 
   /**
@@ -69,15 +60,10 @@ public class ClimberSubsystem extends SubsystemBase {
    */
   public void reverse() {
     m_state = kReverse;
-    togglecount++;
   }
 
   public Value getState(){
     return m_state;
-  }
-
-  public boolean deployed(){
-    return togglecount > 0;
   }
 
   /**
