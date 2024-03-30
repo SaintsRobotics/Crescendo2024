@@ -210,8 +210,13 @@ public class RobotContainer {
     // Outtake, Operator Controller Right Trigger
     new Trigger(() -> {
       return m_operatorController.getRightTriggerAxis() > 0.5;
-    }).whileTrue(new AmpOuttakeCommand(m_intakeSubsystem));
+    }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
 
+    // Amp Outtake, Operator Controller X Button
+    new JoystickButton(m_operatorController, Button.kX.value)
+        .onTrue(new AmpOuttakeCommand(m_intakeSubsystem));
+
+    // Spin up Shooter, Operator Controller Left Trigger
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
     }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime))
