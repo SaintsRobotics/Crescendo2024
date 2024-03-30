@@ -5,11 +5,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -19,6 +21,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double m_topSpeed = 0;
   private double m_bottomSpeed = 0;
+
+  private double m_simRPM = 0;
 
   public ShooterSubsystem() {
     m_bottom.setIdleMode(IdleMode.kCoast);
@@ -57,14 +61,16 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double returnCurrentSpeed() {
-    return m_bottom.getEncoder().getVelocity();
+    if (m_topSpeed > 0.5 && m_simRPM < 15) m_simRPM++;
+    else if (m_simRPM > 0) m_simRPM--;
+    return Robot.isReal() ? m_bottom.getEncoder().getVelocity() : m_simRPM * 400;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("bottom Speed", m_bottomSpeed);
-    // SmartDashboard.putNumber("top Speed", m_topSpeed);
+    SmartDashboard.putNumber("top Speed", m_bottom.getEncoder().getVelocity()); 
 
     m_bottom.set(m_bottomSpeed);
     m_top.set(m_topSpeed);

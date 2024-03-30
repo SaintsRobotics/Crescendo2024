@@ -156,4 +156,10 @@ public final class Constants {
     public static final double kFieldLength = 16.54175;
   }
 
+  public static final class LEDConstants {
+    // TODO: find plz
+    public static final int kLEDPort = 0;
+    public static final int kLEDLength = 97;
+  }
+
 }
