@@ -71,7 +71,7 @@ public class DefaultLEDCommand extends Command {
     }
 
     if (m_intakeSubsystem.getArmPosition() == IntakeConstants.kIntakeAmpScoringAngle){
-      if (m_intakeSubsystem.armAtSetpoint()){
+      if (m_intakeSubsystem.ampReady()){
         rgb[0] = 0;
         rgb[1] = 255;
         rgb[2] = 0;   
