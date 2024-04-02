@@ -116,11 +116,13 @@ public class IntakeSubsystem extends SubsystemBase {
     haveNote = m_colorSensorToggle ? getColorProximity() > IntakeConstants.kProximityThreshold : false;
 
     if (m_armPosition == ArmPosition.Amp) {
-      m_armPID.setTolerance(1);
+      m_armPID.setTolerance(0.25);
       m_armPID.setP(0.005);
+      m_armPID.setD(0.0003);
     } else {
       m_armPID.setTolerance(10);
       m_armPID.setP(0.002);
+      m_armPID.setD(0);
     }
 
     double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
@@ -147,7 +149,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   * Toggles the uage of color sensor
+   * Toggles the usage of color sensor
    */
 
   public void colorSensorToggle() {

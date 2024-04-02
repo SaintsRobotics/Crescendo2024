@@ -221,7 +221,12 @@ public class RobotContainer {
 
     // Amp Outtake, Operator Controller X Button
     new JoystickButton(m_operatorController, Button.kX.value)
-        .onTrue(new AmpOuttakeCommand(m_intakeSubsystem));
+        .whileTrue(new AmpOuttakeCommand(m_intakeSubsystem));
+
+    // Quick Intake, Operator Controller Y Button
+    new JoystickButton(m_operatorController, Button.kY.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.intake(), m_intakeSubsystem))
+        .onFalse(new InstantCommand(() -> m_intakeSubsystem.stopIntake()));
 
     // Spin up Shooter, Operator Controller Left Trigger
     new Trigger(() -> {
