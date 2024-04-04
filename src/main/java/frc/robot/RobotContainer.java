@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.AmpOuttakeCommand;
 import frc.robot.commands.DefaultLEDCommand;
 import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
@@ -67,7 +68,7 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("Shoot",
         new SequentialCommandGroup(
-            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 1.5),
+            new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime),
             new ParallelDeadlineGroup(new WaitCommand(0.50), new NoteOuttakeCommand(m_intakeSubsystem)),
             new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime)));
 
@@ -218,17 +219,20 @@ public class RobotContainer {
       return m_operatorController.getRightTriggerAxis() > 0.5;
     }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
 
+    // Amp Outtake, Operator Controller X Button
+    new JoystickButton(m_operatorController, Button.kX.value)
+        .whileTrue(new AmpOuttakeCommand(m_intakeSubsystem));
 
-    // Spin-up Shooter, Operator Controller left trigger
+    // Quick Intake, Operator Controller Y Button
+    new JoystickButton(m_operatorController, Button.kY.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.intake(), m_intakeSubsystem))
+        .onFalse(new InstantCommand(() -> m_intakeSubsystem.stopIntake()));
+
+    // Spin up Shooter, Operator Controller Left Trigger
     new Trigger(() -> {
       return m_operatorController.getLeftTriggerAxis() > 0.5;
     }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, ShooterConstants.kShooterOnTime))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
-
-    new Trigger(() -> {
-      return m_operatorController.getXButtonPressed() == true;
-    }).onTrue(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Amp, 0.1))
-        .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, 0.02));
 
     // Climber Up, Operator Controller Right Bumper + A Button
     new Trigger(() -> {

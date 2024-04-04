@@ -32,6 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean m_colorSensorToggle = Robot.isReal();
   private ColorSensorV3 m_colorSensor = new ColorSensorV3(Port.kMXP);
 
+  private ArmPosition m_armPosition = ArmPosition.Retracted;
+
   private double m_intakeSpeed = 0;
   private double m_armSetpoint = IntakeConstants.kIntakeRaisedAngle;
 
@@ -57,6 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setArmPosition(ArmPosition position) {
+    m_armPosition = position;
     switch (position) {
       case Amp:
         m_armSetpoint = IntakeConstants.kIntakeAmpScoringAngle;
@@ -77,6 +80,10 @@ public class IntakeSubsystem extends SubsystemBase {
     return m_armSetpoint;
   }
 
+  public boolean ampReady(){
+    return ((m_armEncoder.getDistance() < IntakeConstants.kIntakeAmpScoringAngle + 1) || (m_armEncoder.getDistance() > IntakeConstants.kIntakeAmpScoringAngle - 1)); 
+  }
+
   public boolean armAtSetpoint() {
     return m_armPID.atSetpoint();
   }
@@ -86,7 +93,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void outtake() {
-    m_intakeSpeed = -IntakeConstants.kIntakeSpeed - 0.5;
+    m_intakeSpeed = -1;
+  }
+
+  public void outtakeAmp() {
+    m_intakeSpeed = -0.55;
   }
 
   public void stopIntake() {
@@ -103,6 +114,16 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     haveNote = m_colorSensorToggle ? getColorProximity() > IntakeConstants.kProximityThreshold : false;
+
+    if (m_armPosition == ArmPosition.Amp) {
+      m_armPID.setTolerance(0.25);
+      m_armPID.setP(0.005);
+      m_armPID.setD(0.0003);
+    } else {
+      m_armPID.setTolerance(10);
+      m_armPID.setP(0.002);
+      m_armPID.setD(0);
+    }
 
     double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.getDistance(), m_armSetpoint), -0.3, 0.3);
     m_armMotor.set(armMotorSpeed);
@@ -128,7 +149,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   * Toggles the uage of color sensor
+   * Toggles the usage of color sensor
    */
 
   public void colorSensorToggle() {

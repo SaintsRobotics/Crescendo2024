@@ -5,14 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class NoteIntakeCommand extends Command {
+public class AmpOuttakeCommand extends Command {
   private IntakeSubsystem m_intakeSubsystem;
 
   /** Creates a new intakeCommand. */
-  public NoteIntakeCommand(IntakeSubsystem subsystem) {
+  public AmpOuttakeCommand(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
     addRequirements(m_intakeSubsystem);
   }
@@ -20,15 +19,13 @@ public class NoteIntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSubsystem.intake();
+    m_intakeSubsystem.outtakeAmp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intakeSubsystem.haveNote()) {
-      m_intakeSubsystem.stopIntake();
-    }
+
   }
 
   // Called once the command ends or is interrupted.
@@ -40,8 +37,6 @@ public class NoteIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intakeSubsystem.m_colorSensorToggle
-        ? (m_intakeSubsystem.haveNote() || m_intakeSubsystem.getArmPosition() != IntakeConstants.kIntakeLoweredAngle)
-        : false;
+    return false;
   }
 }
