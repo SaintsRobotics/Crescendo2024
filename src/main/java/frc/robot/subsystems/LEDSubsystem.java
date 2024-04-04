@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Random;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +16,8 @@ public class LEDSubsystem extends SubsystemBase {
   private final AddressableLED m_LED = new AddressableLED(LEDConstants.kLEDPort);
   private final AddressableLEDBuffer m_LEDBuffer = new AddressableLEDBuffer(LEDConstants.kLEDLength);
   private int m_rainbowFirstPixelHue = 0;
+
+  private Random rand = new Random();
 
   /** Creates a new {@link LEDSubsystem}. */
   public LEDSubsystem() {
@@ -38,12 +42,17 @@ public class LEDSubsystem extends SubsystemBase {
 
     // If we get an invalid value just set it to a rainbow
     if (r == 256 && g == 256 && b == 256) {
-      rainbow();
+      disco();
       return;
     }
 
     else if (r == 257 && g == 257 && b == 257){
       golden();
+      return;
+    }
+
+    else if (r == 258 && g == 258 && b == 258){
+      disco();
       return;
     }
 
@@ -77,12 +86,31 @@ public class LEDSubsystem extends SubsystemBase {
     for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
-      final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_LEDBuffer.getLength())) % 120 + 90;
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_LEDBuffer.getLength())) % 120;
       // Set the value
       m_LEDBuffer.setHSV(i, hue, 240, 180);
     }
     // Increase by to make the rainbow "move"
     m_rainbowFirstPixelHue += 1;
+    // Check bounds
+    m_rainbowFirstPixelHue %= 120;
+    
+
+    m_LED.setData(m_LEDBuffer);
+    SmartDashboard.putString("led", m_LEDBuffer.getLED(1).toString());
+  }
+
+  private void disco() {
+    // For every pixel
+    for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+      // Calculate the hue - hue is easier for rainbows because the color
+      // shape is a circle so only one value needs to precess
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_LEDBuffer.getLength())) % 120;
+      // Set the value
+      m_LEDBuffer.setHSV(i, hue, rand.nextInt(50, 180), rand.nextInt(50, 180));
+    }
+    // Increase by to make the rainbow "move"
+    m_rainbowFirstPixelHue += rand.nextInt(1, 8);
     // Check bounds
     m_rainbowFirstPixelHue %= 120;
     
