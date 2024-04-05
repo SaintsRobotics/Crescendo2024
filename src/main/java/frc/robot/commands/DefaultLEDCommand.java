@@ -64,19 +64,19 @@ public class DefaultLEDCommand extends Command {
     }
 
     //check for pneumatics state and override b4 value
-    if (m_climberSubsystem.getState() == Value.kForward){
+    if (m_climberSubsystem.getState() == Value.kForward) {
       rgb[0] = 257;
       rgb[1] = 257;
       rgb[2] = 257;
     }
 
-    if (m_intakeSubsystem.getArmPosition() == IntakeConstants.kIntakeAmpScoringAngle){
-      if (m_intakeSubsystem.ampReady()){
+    if (m_intakeSubsystem.getArmPosition() == IntakeConstants.kIntakeAmpScoringAngle) {
+      if (m_intakeSubsystem.ampReady()) {
         rgb[0] = 0;
         rgb[1] = 255;
         rgb[2] = 0;   
       }
-      else{
+      else {
         rgb[0] = 0;
         rgb[1] = 255;
         rgb[2] = 0;
