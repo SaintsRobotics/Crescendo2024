@@ -41,6 +41,10 @@ public class ClimberSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Compressor Running", m_pHub.getCompressor());
   }
 
+  public void reset() {
+    m_state = kOff;
+  }
+
   /**
    * Sets the state of the solenoid to off
    */

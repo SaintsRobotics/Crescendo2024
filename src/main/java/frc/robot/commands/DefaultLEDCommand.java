@@ -70,6 +70,12 @@ public class DefaultLEDCommand extends Command {
       rgb[2] = 257;
     }
 
+    // if (m_climberSubsystem.getState() == Value.kReverse){
+    //   rgb[0] = 258;
+    //   rgb[1] = 258;
+    //   rgb[2] = 258;
+    // }
+
     if (m_intakeSubsystem.getArmPosition() == IntakeConstants.kIntakeAmpScoringAngle){
       if (m_intakeSubsystem.ampReady()){
         rgb[0] = 0;

@@ -262,6 +262,7 @@ public class RobotContainer {
     m_intakeSubsystem.reset();
     m_shooterSubsystem.reset();
     m_robotDrive.reset();
+    m_climberSubsystem.reset();
   }
 
   public void compressorInit() {
