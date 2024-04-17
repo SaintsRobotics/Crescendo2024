@@ -24,6 +24,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double m_simRPM = 0;
 
+  private double tuningRPM = 0;
+
   public ShooterSubsystem() {
     m_bottom.setIdleMode(IdleMode.kCoast);
     m_top.setIdleMode(IdleMode.kCoast);
@@ -43,8 +45,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setShootingSpeed(ShootSpeed speed) {
     switch (speed) {
       case Shooting:
-        m_topSpeed = ShooterConstants.kShooterSpeedTop;
-        m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
+        m_topSpeed = tuningRPM;
+        m_bottomSpeed = tuningRPM;
         break;
       case Amp:
         m_topSpeed = 0.2;
@@ -71,6 +73,9 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("bottom Speed", m_bottomSpeed);
     SmartDashboard.putNumber("top Speed", m_bottom.getEncoder().getVelocity()); 
+
+    SmartDashboard.putNumber("tune speed", tuningRPM);
+    SmartDashboard.getNumber("tune speed", tuningRPM);
 
     m_bottom.set(m_bottomSpeed);
     m_top.set(m_topSpeed);
