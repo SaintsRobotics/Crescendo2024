@@ -38,6 +38,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.ServoSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShootSpeed;
@@ -57,6 +58,8 @@ public class RobotContainer {
   private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
+
+//   private final ServoSubsystem m_servoSubsystem = new ServoSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
@@ -206,8 +209,14 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kA.value)
         .onTrue(new InstantCommand(() -> m_ampServo.setAngle(90)));
 
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(2500)));
+
     new JoystickButton(m_driverController, Button.kB.value)
         .onTrue(new InstantCommand(() -> m_ampServo.setAngle(0)));
+
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(1500)));
 
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp))
