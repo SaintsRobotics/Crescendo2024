@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -61,6 +62,8 @@ public class RobotContainer {
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
   private final SendableChooser<Command> autoChooser;
+
+  private final Servo m_ampServo = new Servo(1);
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -200,6 +203,12 @@ public class RobotContainer {
             new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem))))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(90)));
+
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(0)));
+
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp))
         .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
@@ -218,6 +227,10 @@ public class RobotContainer {
     new Trigger(() -> {
       return m_operatorController.getRightTriggerAxis() > 0.5;
     }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
+
+    new Trigger(() -> {
+      return m_operatorController.getAButton() && !m_operatorController.getRightBumper();
+    }).onTrue(new InstantCommand(() -> m_shooterSubsystem.setShootingSpeed(ShootSpeed.Amp))).onFalse(new InstantCommand(() -> m_shooterSubsystem.setShootingSpeed(ShootSpeed.Off)));
 
     // Amp Outtake, Operator Controller X Button
     new JoystickButton(m_operatorController, Button.kX.value)
