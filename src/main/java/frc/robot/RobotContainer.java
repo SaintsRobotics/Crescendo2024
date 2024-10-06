@@ -207,13 +207,26 @@ public class RobotContainer {
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(90)));
+        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(135)));
+
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new InstantCommand(() -> {
+          m_intakeSubsystem.getCurrentCommand().cancel();
+          m_intakeSubsystem.resetArmEncoder();
+          DriverStation.reportError("reset intake in", false);
+        }));
+
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //     .onTrue(new InstantCommand(() -> {
+    //       // m_intakeSubsystem.getCurrentCommand().cancel();
+    //       DriverStation.reportError("reset intake out", false);
+    //     }));
 
     // new JoystickButton(m_driverController, Button.kA.value)
     //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(2500)));
 
     new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(0)));
+        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(-20)));
 
     // new JoystickButton(m_driverController, Button.kB.value)
     //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(1500)));

@@ -155,4 +155,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public void colorSensorToggle() {
     m_colorSensorToggle = !m_colorSensorToggle;
   }
+
+  /** honestly its been a rough day i dont care enough 
+   * 
+   * yolo 
+   */
+  public void resetArmEncoder() {
+    m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
+
+    m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
+    m_armEncoder.setDistancePerRotation(360);
+
+    m_armSetpoint = m_armEncoder.getDistance();
+  }
 }
