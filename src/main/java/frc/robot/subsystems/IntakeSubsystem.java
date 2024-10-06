@@ -58,6 +58,24 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armSetpoint = getArmPosition();
   }
 
+  /**
+   * what time is it!
+   * 
+   * 
+   * 
+   * bed time
+   */
+  public void resetHard() {
+    reset();
+
+    m_armEncoder.reset();
+  }
+
+  /** just play some hans zimmer and hope he gets distracted */
+  public void daveImSorry() {
+    IntakeConstants.kArmEncoderOffset = m_armEncoder.getAbsolutePosition();
+  }
+
   public void setArmPosition(ArmPosition position) {
     m_armPosition = position;
     switch (position) {
@@ -161,11 +179,11 @@ public class IntakeSubsystem extends SubsystemBase {
    * yolo 
    */
   public void resetArmEncoder() {
-    m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
+    // m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
-    m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
-    m_armEncoder.setDistancePerRotation(360);
+    // m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
+    // m_armEncoder.setDistancePerRotation(360);
 
-    m_armSetpoint = m_armEncoder.getDistance();
+    // m_armSetpoint = m_armEncoder.getDistance();
   }
 }

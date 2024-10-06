@@ -206,15 +206,28 @@ public class RobotContainer {
             new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem))))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
-    new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(135)));
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .onTrue(new InstantCommand(() -> m_ampServo.setAngle(135)));
 
+    // i need some more sleep
     new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(new InstantCommand(() -> {
           m_intakeSubsystem.getCurrentCommand().cancel();
           m_intakeSubsystem.resetArmEncoder();
           DriverStation.reportError("reset intake in", false);
         }));
+
+    // soft reset, should stop driving
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.reset()));
+
+    // slightly harder reset
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.resetHard()));
+
+    // i better run
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.daveImSorry()));
 
     // new JoystickButton(m_driverController, Button.kX.value)
     //     .onTrue(new InstantCommand(() -> {
@@ -225,8 +238,8 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kA.value)
     //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(2500)));
 
-    new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_ampServo.setAngle(-20)));
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //     .onTrue(new InstantCommand(() -> m_ampServo.setAngle(-20)));
 
     // new JoystickButton(m_driverController, Button.kB.value)
     //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(1500)));
