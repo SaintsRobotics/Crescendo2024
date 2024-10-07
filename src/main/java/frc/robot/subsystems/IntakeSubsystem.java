@@ -71,9 +71,22 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armEncoder.reset();
   }
 
+  public void resetEvenHarder() {
+    reset();
+
+    // m_armEncoder.reset();
+    m_armEncoder.setPositionOffset(0.7);
+    // m_armEncoder.reset();
+  }
+
   /** just play some hans zimmer and hope he gets distracted */
   public void daveImSorry() {
     IntakeConstants.kArmEncoderOffset = m_armEncoder.getAbsolutePosition();
+  }
+
+  /** i wish i was at the hans zimmer concert rn */
+  public void heCantKillMeTwice() {
+    IntakeConstants.kArmEncoderOffset = m_armEncoder.getAbsolutePosition() - IntakeConstants.kIntakeLoweredAngle;
   }
 
   public void setArmPosition(ArmPosition position) {

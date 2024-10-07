@@ -218,8 +218,11 @@ public class RobotContainer {
         }));
 
     // soft reset, should stop driving
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .onTrue(new InstantCommand(() -> m_intakeSubsystem.reset()));
+
     new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_intakeSubsystem.reset()));
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.resetEvenHarder()));
 
     // slightly harder reset
     new JoystickButton(m_driverController, Button.kB.value)
@@ -228,6 +231,9 @@ public class RobotContainer {
     // i better run
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new InstantCommand(() -> m_intakeSubsystem.daveImSorry()));
+
+    new JoystickButton(m_driverController, Button.kBack.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.heCantKillMeTwice()));
 
     // new JoystickButton(m_driverController, Button.kX.value)
     //     .onTrue(new InstantCommand(() -> {
