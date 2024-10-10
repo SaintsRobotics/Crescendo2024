@@ -71,6 +71,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armEncoder.reset();
   }
 
+  /** CS swears the problem isnt their fault yet here I am */
   public void resetEvenHarder() {
     reset();
 
@@ -192,6 +193,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * yolo 
    */
   public void resetArmEncoder() {
+    // Double initalizing the encoder crashes the code
     // m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
 
     // m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
