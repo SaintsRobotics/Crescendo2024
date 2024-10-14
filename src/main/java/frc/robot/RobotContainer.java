@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.ServoSubsystem;
 import frc.robot.subsystems.IntakeSubsystem.ArmPosition;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShootSpeed;
@@ -57,10 +59,14 @@ public class RobotContainer {
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
 
+//   private final ServoSubsystem m_servoSubsystem = new ServoSubsystem();
+
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
   private final SendableChooser<Command> autoChooser;
+
+  private final Servo m_ampServo = new Servo(1);
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -200,6 +206,50 @@ public class RobotContainer {
             new ParallelDeadlineGroup(new WaitCommand(1), new NoteOuttakeCommand(m_intakeSubsystem))))
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .onTrue(new InstantCommand(() -> m_ampServo.setAngle(135)));
+
+    // i need some more sleep
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new InstantCommand(() -> {
+          m_intakeSubsystem.getCurrentCommand().cancel();
+          m_intakeSubsystem.resetArmEncoder();
+          DriverStation.reportError("reset intake in", false);
+        }));
+
+    // soft reset, should stop driving
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .onTrue(new InstantCommand(() -> m_intakeSubsystem.reset()));
+
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.resetEvenHarder()));
+
+    // slightly harder reset
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.resetHard()));
+
+    // i better run
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.daveImSorry()));
+
+    new JoystickButton(m_driverController, Button.kBack.value)
+        .onTrue(new InstantCommand(() -> m_intakeSubsystem.heCantKillMeTwice()));
+
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //     .onTrue(new InstantCommand(() -> {
+    //       // m_intakeSubsystem.getCurrentCommand().cancel();
+    //       DriverStation.reportError("reset intake out", false);
+    //     }));
+
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(2500)));
+
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //     .onTrue(new InstantCommand(() -> m_ampServo.setAngle(-20)));
+
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //     .onTrue(new InstantCommand(() -> m_servoSubsystem.setPulseWidth(1500)));
+
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Amp))
         .onFalse(new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Retracted));
@@ -218,6 +268,10 @@ public class RobotContainer {
     new Trigger(() -> {
       return m_operatorController.getRightTriggerAxis() > 0.5;
     }).whileTrue(new NoteOuttakeCommand(m_intakeSubsystem));
+
+    new Trigger(() -> {
+      return m_operatorController.getAButton() && !m_operatorController.getRightBumper();
+    }).onTrue(new InstantCommand(() -> m_shooterSubsystem.setShootingSpeed(ShootSpeed.Amp))).onFalse(new InstantCommand(() -> m_shooterSubsystem.setShootingSpeed(ShootSpeed.Off)));
 
     // Amp Outtake, Operator Controller X Button
     new JoystickButton(m_operatorController, Button.kX.value)

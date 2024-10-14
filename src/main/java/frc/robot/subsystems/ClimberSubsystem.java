@@ -68,6 +68,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public Value getState(){
     return m_state;
+    // return Value.kOff;
   }
 
   /**
