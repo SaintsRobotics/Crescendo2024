@@ -87,7 +87,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** i wish i was at the hans zimmer concert rn */
   public void heCantKillMeTwice() {
+    SmartDashboard.putNumber("yolo", m_armEncoder.getAbsolutePosition() - IntakeConstants.kIntakeLoweredAngle);
     IntakeConstants.kArmEncoderOffset = m_armEncoder.getAbsolutePosition() - IntakeConstants.kIntakeLoweredAngle;
+    // m_armSetpoint = m_armEncoder.get() - 60;
   }
 
   public void setArmPosition(ArmPosition position) {
