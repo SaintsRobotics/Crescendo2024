@@ -30,7 +30,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     m_compressorEnabled = false;
   }
-
+  //Hi
   // Runs once every tick (~20ms)
   public void periodic() {
     m_leftSolenoid.set(m_state);
