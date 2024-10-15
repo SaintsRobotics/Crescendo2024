@@ -22,6 +22,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private boolean m_compressorEnabled;
 
   private Value m_state;
+  String y = "y";
 
   public ClimberSubsystem() {
     m_pHub = new PneumaticHub(2);
