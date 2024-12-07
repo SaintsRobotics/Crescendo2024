@@ -41,7 +41,7 @@ public final class Constants {
     // TODO: set motor and encoder constants
     public static final int kFrontLeftDriveMotorPort = 32;
     public static final int kRearLeftDriveMotorPort = 29;
-    public static final int kFrontRightDriveMotorPort = 38;
+    public static final int kFrontRightDriveMotorPort = 36;
     public static final int kRearRightDriveMotorPort = 34;
 
     public static final int kFrontLeftTurningMotorPort = 28;
@@ -101,7 +101,7 @@ public final class Constants {
     public static final int kArmEncoderChannel = 1;
 
     // In degrees
-    public static final double kIntakeLoweredAngle = -193;
+    public static final double kIntakeLoweredAngle = -188;
     public static final double kIntakeRaisedAngle = 0;
     public static final double kIntakeAmpScoringAngle = -71; // 193 - 100 (previous angle)
 
