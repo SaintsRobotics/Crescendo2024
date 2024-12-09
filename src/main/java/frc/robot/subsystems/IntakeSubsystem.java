@@ -58,6 +58,40 @@ public class IntakeSubsystem extends SubsystemBase {
     m_armSetpoint = getArmPosition();
   }
 
+  /**
+   * what time is it!
+   * 
+   * 
+   * 
+   * bed time
+   */
+  public void resetHard() {
+    reset();
+
+    m_armEncoder.reset();
+  }
+
+  /** CS swears the problem isnt their fault yet here I am */
+  public void resetEvenHarder() {
+    reset();
+
+    // m_armEncoder.reset();
+    m_armEncoder.setPositionOffset(0.7);
+    // m_armEncoder.reset();
+  }
+
+  /** just play some hans zimmer and hope he gets distracted */
+  public void daveImSorry() {
+    IntakeConstants.kArmEncoderOffset = m_armEncoder.getAbsolutePosition();
+  }
+
+  /** i wish i was at the hans zimmer concert rn */
+  public void heCantKillMeTwice() {
+    SmartDashboard.putNumber("yolo", m_armEncoder.getAbsolutePosition() - IntakeConstants.kIntakeLoweredAngle);
+    IntakeConstants.kArmEncoderOffset = m_armEncoder.getAbsolutePosition() - IntakeConstants.kIntakeLoweredAngle;
+    // m_armSetpoint = m_armEncoder.get() - 60;
+  }
+
   public void setArmPosition(ArmPosition position) {
     m_armPosition = position;
     switch (position) {
@@ -154,5 +188,19 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void colorSensorToggle() {
     m_colorSensorToggle = !m_colorSensorToggle;
+  }
+
+  /** honestly its been a rough day i dont care enough 
+   * 
+   * yolo 
+   */
+  public void resetArmEncoder() {
+    // Double initalizing the encoder crashes the code
+    // m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
+
+    // m_armEncoder.setPositionOffset(IntakeConstants.kArmEncoderOffset);
+    // m_armEncoder.setDistancePerRotation(360);
+
+    // m_armSetpoint = m_armEncoder.getDistance();
   }
 }

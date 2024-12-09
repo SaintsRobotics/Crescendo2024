@@ -46,9 +46,12 @@ public class ShooterSubsystem extends SubsystemBase {
         m_topSpeed = ShooterConstants.kShooterSpeedTop;
         m_bottomSpeed = ShooterConstants.kShooterSpeedBottom;
         break;
+      case SlowShoot:
+        // m_topSpeed = 
       case Amp:
         m_topSpeed = 0.2;
         m_bottomSpeed = 0.3;
+        break;
       case Prep:
         m_topSpeed = ShooterConstants.kPrepShooterSpeed;
         m_bottomSpeed = ShooterConstants.kPrepShooterSpeed;
@@ -80,6 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Shooting,
     Prep,
     Amp,
-    Off
+    Off,
+    SlowShoot
   }
 }
