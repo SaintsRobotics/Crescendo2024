@@ -281,6 +281,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return null;
 
     /// List<PathPlannerPath> pathGroup =
     /// PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected().getName());
@@ -294,7 +295,7 @@ public class RobotContainer {
     // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
     // return new PathPlannerAuto(autoChooser.getSelected().getName());
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
 
     // return new SequentialCommandGroup(
     // new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 3),
