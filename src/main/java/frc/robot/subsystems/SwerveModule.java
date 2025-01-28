@@ -53,7 +53,7 @@ public class SwerveModule {
     driveConfig.idleMode(IdleMode.kBrake);
 
     m_driveMotor = new SparkFlex(driveMotorPort, MotorType.kBrushless);
-    m_driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_driveMotor.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     SparkFlexConfig turnConfig = new SparkFlexConfig();
     turnConfig.inverted(true);
@@ -61,7 +61,7 @@ public class SwerveModule {
 
     m_turningEncoder = new CANcoder(turningEncoderPort);
     m_turningMotor = new SparkFlex(turningMotorPort, MotorType.kBrushless);
-    m_turningMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_turningMotor.configure(turnConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }

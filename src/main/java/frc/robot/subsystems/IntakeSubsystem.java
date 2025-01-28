@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private PIDController m_armPID = new PIDController(0.002, 0, 0);
 
-  private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel);
+  private DutyCycleEncoder m_armEncoder = new DutyCycleEncoder(IntakeConstants.kArmEncoderChannel, 360, IntakeConstants.kArmEncoderOffset);
 
   /** If true, the distance sensor will be used to determine if we have a note */
   public boolean m_colorSensorToggle = Robot.isReal();
@@ -44,23 +44,25 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
   SparkFlexConfig intakeConfig = new SparkFlexConfig();
   intakeConfig.idleMode(IdleMode.kCoast);
+
+  m_armEncoder.setInverted(true);
+  //m_armPID.enableContinuousInput(0, 360);
+
   m_intakeMotor = new SparkFlex(IntakeConstants.kIntakeMotorID, MotorType.kBrushless);
-  m_intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+  m_intakeMotor.configure(intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     SparkFlexConfig armConfig = new SparkFlexConfig();
+    armConfig.inverted(true);
     armConfig.idleMode(IdleMode.kBrake);
     m_armMotor = new SparkFlex(IntakeConstants.kArmMotorID, MotorType.kBrushless);
-    m_armMotor.configure(armConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);    
+    m_armMotor.configure(armConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);    
 
     m_armPID.setTolerance(10);
 
-    m_armSetpoint = m_armEncoder.get();
+    m_armSetpoint = 10;
   }
 
   public void reset() {
-    m_intakeMotor.set(0);
-    m_armMotor.set(0);
-
     m_intakeSpeed = 0;
     m_armSetpoint = getArmPosition();
   }
@@ -132,17 +134,19 @@ public class IntakeSubsystem extends SubsystemBase {
       m_armPID.setD(0);
     }
 
-    double armMotorSpeed = MathUtil.clamp(m_armPID.calculate(m_armEncoder.get(), m_armSetpoint), -0.3, 0.3);
-    m_armMotor.set(armMotorSpeed);
-    m_intakeMotor.set(m_intakeSpeed);
+    m_armPID.setSetpoint(m_armSetpoint);
+    double armMotorSpeed = m_armPID.atSetpoint() ? 0 : MathUtil.clamp(m_armPID.calculate(m_armEncoder.get()), -0.3, 0.3);
 
+    SmartDashboard.putNumber("Motor Speed", armMotorSpeed);
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.get());
-    SmartDashboard.putNumber("Arm Absolute Angle", m_armEncoder.get());
     SmartDashboard.putBoolean("Have Note?", haveNote);
     // SmartDashboard.putNumber("pid output", armMotorSpeed);
     SmartDashboard.putNumber("Proximity", m_colorSensor.getProximity());
     SmartDashboard.putBoolean("Color Sensor Toggle", m_colorSensorToggle);
     SmartDashboard.putNumber("IR", m_colorSensor.getIR());
+
+    m_armMotor.set(armMotorSpeed);
+    m_intakeMotor.set(m_intakeSpeed);
   }
 
   public boolean haveNote() {
