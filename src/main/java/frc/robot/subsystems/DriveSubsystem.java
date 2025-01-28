@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.util.DriveFeedforwards;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -49,8 +51,10 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightTurningEncoderPort,
       DriveConstants.kRearRightDriveMotorReversed);
 
-  private final AHRS m_gyro = new AHRS();
+  private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI); //TODO: check if this is what is written in swerve base
   private double m_gyroAngle;
+
+  private DriveFeedforwards m_feedforwards = null;
 
   private final Timer m_headingCorrectionTimer = new Timer();
   private final PIDController m_headingCorrectionPID = new PIDController(DriveConstants.kPHeadingCorrectionController,
@@ -210,8 +214,9 @@ public class DriveSubsystem extends SubsystemBase {
     m_poseEstimator.addVisionMeasurement(measurement.pose.toPose2d(), measurement.timestamp);
   }
 
-  public void autonDrive(ChassisSpeeds desiredChassisSpeeds) {
+  public void autonDrive(ChassisSpeeds desiredChassisSpeeds, DriveFeedforwards feedforwards) {
     swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
+    m_feedforwards = feedforwards;
   }
 
   /**
@@ -222,6 +227,7 @@ public class DriveSubsystem extends SubsystemBase {
   private void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 
+    //TODO: use m_feedforwards and do null check
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);

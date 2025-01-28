@@ -5,9 +5,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,8 +20,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 
 public class SwerveModule {
-  private final CANSparkFlex m_driveMotor;
-  private final CANSparkFlex m_turningMotor;
+  private final SparkFlex m_driveMotor;
+  private final SparkFlex m_turningMotor;
 
   private final CANcoder m_turningEncoder;
 
@@ -44,23 +47,21 @@ public class SwerveModule {
       int turningMotorPort,
       int turningEncoderPort,
       boolean driveMotorReversed) {
-    m_driveMotor = new CANSparkFlex(driveMotorPort, MotorType.kBrushless);
-    m_turningMotor = new CANSparkFlex(turningMotorPort, MotorType.kBrushless);
+
+    SparkFlexConfig driveConfig = new SparkFlexConfig();
+    driveConfig.inverted(driveMotorReversed);
+    driveConfig.idleMode(IdleMode.kBrake);
+
+    m_driveMotor = new SparkFlex(driveMotorPort, MotorType.kBrushless);
+    m_driveMotor.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    SparkFlexConfig turnConfig = new SparkFlexConfig();
+    turnConfig.inverted(true);
+    turnConfig.idleMode(IdleMode.kBrake);
+
     m_turningEncoder = new CANcoder(turningEncoderPort);
-
-    // converts default units to meters per second
-    m_driveMotor.getEncoder().setVelocityConversionFactor(
-        DriveConstants.kWheelDiameterMeters * Math.PI / 60 / DriveConstants.kDrivingGearRatio);
-    m_driveMotor.getEncoder().setPositionConversionFactor(
-        DriveConstants.kWheelDiameterMeters * Math.PI / DriveConstants.kDrivingGearRatio);
-
-    m_driveMotor.setInverted(driveMotorReversed);
-
-    m_driveMotor.setIdleMode(IdleMode.kBrake);
-
-    m_turningMotor.setInverted(true);
-
-    m_turningMotor.setIdleMode(IdleMode.kBrake);
+    m_turningMotor = new SparkFlex(turningMotorPort, MotorType.kBrushless);
+    m_turningMotor.configure(turnConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -89,7 +90,9 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    m_state = SwerveModuleState.optimize(desiredState, getTurnEncoderAngle());
+    desiredState.optimize(getTurnEncoderAngle());
+    m_state = desiredState;
+    
     driveOutput = m_state.speedMetersPerSecond / DriveConstants.kMaxSpeedMetersPerSecond;
 
     turnOutput = m_turningPIDController.calculate(getTurnEncoderAngle().getRadians(),

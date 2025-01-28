@@ -6,12 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AutonConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -96,7 +94,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake out",
         new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended));
 
-    AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
+    AutoBuilder.configure(m_robotDrive::getPose, m_robotDrive::resetOdometry,
+     m_robotDrive::getChassisSpeeds, m_robotDrive::autonDrive, 
+     
+     new PPHolonomicDriveController(AutonConstants.kTranslation, 
+     AutonConstants.kRotation), AutonConstants.kConfig, () -> false, m_robotDrive);
+
+  
+
+    /* AutoBuilder.configureHolonomic(m_robotDrive::getPose, m_robotDrive::resetOdometry,
         m_robotDrive::getChassisSpeeds,
         m_robotDrive::autonDrive,
         new HolonomicPathFollowerConfig(
@@ -119,7 +125,7 @@ public class RobotContainer {
             return alliance.get() == DriverStation.Alliance.Red;
           }
           return false;
-        }, m_robotDrive);
+        }, m_robotDrive); */
 
     // new SequentialCommandGroup(new ShooterSetSpeedCommand(m_shooterSubsystem,
     // ShootSpeed.Shooting),
@@ -275,6 +281,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return null;
 
     /// List<PathPlannerPath> pathGroup =
     /// PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected().getName());
@@ -288,7 +295,7 @@ public class RobotContainer {
     // m_robotDrive.resetOdometry(autonPath.getPreviewStartingHolonomicPose());
 
     // return new PathPlannerAuto(autoChooser.getSelected().getName());
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
 
     // return new SequentialCommandGroup(
     // new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Shooting, 3),

@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.IdleMode;
 
-import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,8 +19,8 @@ import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
-  CANSparkFlex m_bottom = new CANSparkFlex(ShooterConstants.kBottomShooterMotorPort, MotorType.kBrushless);
-  CANSparkFlex m_top = new CANSparkFlex(ShooterConstants.kTopShooterMotorPort, MotorType.kBrushless);
+  SparkFlex m_bottom;
+  SparkFlex m_top;
 
   private double m_topSpeed = 0;
   private double m_bottomSpeed = 0;
@@ -25,11 +28,17 @@ public class ShooterSubsystem extends SubsystemBase {
   private double m_simRPM = 0;
 
   public ShooterSubsystem() {
-    m_bottom.setIdleMode(IdleMode.kCoast);
-    m_top.setIdleMode(IdleMode.kCoast);
+    SparkFlexConfig bottomConfig = new SparkFlexConfig();
+    bottomConfig.idleMode(IdleMode.kCoast);
+    bottomConfig.inverted(true);
+    m_bottom =  new SparkFlex(ShooterConstants.kBottomShooterMotorPort, MotorType.kBrushless);
+    m_bottom.configure(bottomConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-    m_bottom.setInverted(true);
-    m_top.setInverted(true);
+    SparkFlexConfig topConfig = new SparkFlexConfig();
+    topConfig.idleMode(IdleMode.kCoast);
+    topConfig.inverted(true);
+    m_top = new SparkFlex(ShooterConstants.kTopShooterMotorPort, MotorType.kBrushless);
+    m_top.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   public void reset() {
