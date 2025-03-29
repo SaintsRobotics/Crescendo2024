@@ -110,9 +110,9 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     /** For a a SDS Mk4i L1 swerve base with Neo Vortexes */
-    public static final double kMaxSpeedMetersPerSecond = 4.4196;
+    public static final double kMaxSpeedMetersPerSecond = 1.5147;
     /** For a a SDS Mk4i L1 swerve base with Neo Vortexes */
-    public static final double kMaxAngularSpeedRadiansPerSecond = 10.8164;
+    public static final double kMaxAngularSpeedRadiansPerSecond = 6.268;
     // ^^ Calculated using the method taken from the old SDS github example
 
     /** Heading Correction */
