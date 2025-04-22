@@ -23,11 +23,11 @@ public class DefaultLEDCommand extends Command {
   private int[] rgb = new int[3];
 
   /** Creates a new SetLED. */
-  public DefaultLEDCommand(LEDSubsystem LED, IntakeSubsystem intake, ShooterSubsystem shooter, ClimberSubsystem climb) {
+  public DefaultLEDCommand(LEDSubsystem LED, IntakeSubsystem intake, ShooterSubsystem shooter) {
     m_ledSubsystem = LED;
     m_intakeSubsystem = intake;
     m_shooterSubsystem = shooter;
-    m_climberSubsystem = climb;
+    //m_climberSubsystem = climb;
     addRequirements(m_ledSubsystem);
   }
 

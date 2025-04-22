@@ -22,7 +22,7 @@ import frc.robot.Robot;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private boolean haveNote = false;
+  private boolean haveNote1 = false;
 
   private SparkFlex m_intakeMotor;
   private SparkFlex m_armMotor;
@@ -122,7 +122,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    haveNote = m_colorSensorToggle ? getColorProximity() > IntakeConstants.kProximityThreshold : false;
+    haveNote1 = m_colorSensorToggle ? getColorProximity() > IntakeConstants.kProximityThreshold : false;
 
     if (m_armPosition == ArmPosition.Amp) {
       m_armPID.setTolerance(0.25);
@@ -139,7 +139,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Motor Speed", armMotorSpeed);
     SmartDashboard.putNumber("Arm Angle", m_armEncoder.get());
-    SmartDashboard.putBoolean("Have Note?", haveNote);
+    SmartDashboard.putBoolean("Have Note?", haveNote1);
     // SmartDashboard.putNumber("pid output", armMotorSpeed);
     SmartDashboard.putNumber("Proximity", m_colorSensor.getProximity());
     SmartDashboard.putBoolean("Color Sensor Toggle", m_colorSensorToggle);
@@ -150,7 +150,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean haveNote() {
-    return haveNote;
+    return haveNote1;
   }
 
   public static enum ArmPosition {
