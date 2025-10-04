@@ -31,7 +31,7 @@ import frc.robot.commands.IntakeArmPositionCommand;
 import frc.robot.commands.NoteIntakeCommand;
 import frc.robot.commands.NoteOuttakeCommand;
 import frc.robot.commands.ShooterSetSpeedCommand;
-import frc.robot.subsystems.ClimberSubsystem;
+//import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -51,14 +51,14 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
-  private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
+  // private final ClimberSubsystem m_climberSubsystem = new ClimberSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final LEDSubsystem m_ledSubsystem = new LEDSubsystem();
 
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
-  private final SendableChooser<Command> autoChooser;
+  //private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -94,11 +94,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake out",
         new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended));
 
-    AutoBuilder.configure(m_robotDrive::getPose, m_robotDrive::resetOdometry,
-     m_robotDrive::getChassisSpeeds, m_robotDrive::autonDrive, 
+    //AutoBuilder.configure(m_robotDrive::getPose, m_robotDrive::resetOdometry,
+     //m_robotDrive::getChassisSpeeds, m_robotDrive::autonDrive, 
      
-     new PPHolonomicDriveController(AutonConstants.kTranslation, 
-     AutonConstants.kRotation), AutonConstants.kConfig, () -> false, m_robotDrive);
+    //  new PPHolonomicDriveController(AutonConstants.kTranslation, 
+    //  AutonConstants.kRotation), AutonConstants.kConfig, () -> false, m_robotDrive);
 
   
 
@@ -134,14 +134,15 @@ public class RobotContainer {
 
     m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    //autoChooser = AutoBuilder.buildAutoChooser();
+    //SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Configure the trigger bindings
     configureBindings();
 
     m_ledSubsystem.setDefaultCommand(
-      new DefaultLEDCommand(m_ledSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_climberSubsystem)
+      //new DefaultLEDCommand(m_ledSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_climberSubsystem)
+      new DefaultLEDCommand(m_ledSubsystem, m_intakeSubsystem, m_shooterSubsystem)
     );
 
     m_robotDrive.setDefaultCommand(
@@ -241,14 +242,14 @@ public class RobotContainer {
         .onFalse(new ShooterSetSpeedCommand(m_shooterSubsystem, ShootSpeed.Off, ShooterConstants.kShooterOffTime));
 
     // Climber Up, Operator Controller Right Bumper + A Button
-    new Trigger(() -> {
-      return m_operatorController.getAButton() && m_operatorController.getRightBumper();
-    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
+   // new Trigger(() -> {
+     // return m_operatorController.getAButton() && m_operatorController.getRightBumper();
+   // }).whileTrue(new InstantCommand(() -> m_climberSubsystem.forward()));
 
     // // Climber Down, Operator Controller Right Bumper + B Button
-    new Trigger(() -> {
-      return m_operatorController.getBButton() && m_operatorController.getRightBumper();
-    }).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
+    //new Trigger(() -> {
+      //return m_operatorController.getBButton() && m_operatorController.getRightBumper();
+    //}).whileTrue(new InstantCommand(() -> m_climberSubsystem.reverse()));
 
     // Toggle Color Sensor, Operator Controller Left Bumper + Start Button
     new Trigger(() -> {
@@ -256,9 +257,9 @@ public class RobotContainer {
     }).onTrue(new InstantCommand(() -> m_intakeSubsystem.colorSensorToggle()));
 
     // Toggle Compressor, Operator Controller Right Bumper + Back Button
-    new Trigger(() -> {
-      return m_operatorController.getLeftBumper() && m_operatorController.getBackButton();
-    }).onTrue(new InstantCommand(() -> m_climberSubsystem.toggleCompressor()));
+    //new Trigger(() -> {
+      //return m_operatorController.getLeftBumper() && m_operatorController.getBackButton();
+    //}).onTrue(new InstantCommand(() -> m_climberSubsystem.toggleCompressor()));
   }
 
   /**
@@ -268,11 +269,11 @@ public class RobotContainer {
     m_intakeSubsystem.reset();
     m_shooterSubsystem.reset();
     m_robotDrive.reset();
-    m_climberSubsystem.reset();
+    //m_climberSubsystem.reset();
   }
 
   public void compressorInit() {
-    m_climberSubsystem.toggleCompressor();
+    //m_climberSubsystem.toggleCompressor();
   }
 
   /**

@@ -23,11 +23,11 @@ public class DefaultLEDCommand extends Command {
   private int[] rgb = new int[3];
 
   /** Creates a new SetLED. */
-  public DefaultLEDCommand(LEDSubsystem LED, IntakeSubsystem intake, ShooterSubsystem shooter, ClimberSubsystem climb) {
+  public DefaultLEDCommand(LEDSubsystem LED, IntakeSubsystem intake, ShooterSubsystem shooter) {
     m_ledSubsystem = LED;
     m_intakeSubsystem = intake;
     m_shooterSubsystem = shooter;
-    m_climberSubsystem = climb;
+    //m_climberSubsystem = climb;
     addRequirements(m_ledSubsystem);
   }
 
@@ -64,11 +64,11 @@ public class DefaultLEDCommand extends Command {
     }
 
     //check for pneumatics state and override b4 value
-    if (m_climberSubsystem.getState() == Value.kForward) {
-      rgb[0] = 257;
-      rgb[1] = 257;
-      rgb[2] = 257;
-    }
+    // if (m_climberSubsystem.getState() == Value.kForward) {
+    //   rgb[0] = 257;
+    //   rgb[1] = 257;
+    //   rgb[2] = 257;
+    // }
 
     if (m_intakeSubsystem.getArmPosition() == IntakeConstants.kIntakeAmpScoringAngle) {
       if (m_intakeSubsystem.ampReady()) {
