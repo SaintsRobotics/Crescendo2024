@@ -58,7 +58,7 @@ public class RobotContainer {
   private final XboxController m_driverController = new XboxController(IOConstants.kDriverControllerPort);
   private final XboxController m_operatorController = new XboxController(IOConstants.kOperatorControllerPort);
 
-  private final SendableChooser<Command> autoChooser;
+  //private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, IO devices, and commands.
@@ -94,11 +94,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake out",
         new IntakeArmPositionCommand(m_intakeSubsystem, ArmPosition.Extended));
 
-    AutoBuilder.configure(m_robotDrive::getPose, m_robotDrive::resetOdometry,
-     m_robotDrive::getChassisSpeeds, m_robotDrive::autonDrive, 
+    //AutoBuilder.configure(m_robotDrive::getPose, m_robotDrive::resetOdometry,
+     //m_robotDrive::getChassisSpeeds, m_robotDrive::autonDrive, 
      
-     new PPHolonomicDriveController(AutonConstants.kTranslation, 
-     AutonConstants.kRotation), AutonConstants.kConfig, () -> false, m_robotDrive);
+    //  new PPHolonomicDriveController(AutonConstants.kTranslation, 
+    //  AutonConstants.kRotation), AutonConstants.kConfig, () -> false, m_robotDrive);
 
   
 
@@ -134,8 +134,8 @@ public class RobotContainer {
 
     m_visionSubsystem.addConsumer(m_robotDrive::addVisionMeasurement);
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    //autoChooser = AutoBuilder.buildAutoChooser();
+    //SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Configure the trigger bindings
     configureBindings();
