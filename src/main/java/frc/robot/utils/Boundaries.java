@@ -15,7 +15,7 @@ import java.awt.Point;
 /** Add your docs here. */
 public class Boundaries {
 
-    public class Point() {
+    public class Point {
         public final double x;
         public final double y;
 
@@ -26,4 +26,4 @@ public class Boundaries {
         }
 
     }
-    }
+}
